@@ -1,0 +1,82 @@
+[colors.primary]
+background = "{{ .colors.generic.background }}"
+foreground = "{{ .colors.generic.text }}"
+
+[colors.normal]
+black = "{{ .colors.terminal.black }}"
+red = "{{ .colors.terminal.red }}"
+green = "{{ .colors.terminal.green }}"
+yellow = "{{ .colors.terminal.yellow }}"
+blue = "{{ .colors.terminal.blue }}"
+magenta = "{{ .colors.terminal.magenta }}"
+cyan = "{{ .colors.terminal.cyan }}"
+white = "{{ .colors.terminal.white }}"
+
+[colors.bright]
+black = "{{ .colors.terminal.bright_black }}"
+red = "{{ .colors.terminal.bright_red }}"
+green = "{{ .colors.terminal.bright_green }}"
+yellow = "{{ .colors.terminal.bright_yellow }}"
+blue = "{{ .colors.terminal.bright_blue }}"
+magenta = "{{ .colors.terminal.bright_magenta }}"
+cyan = "{{ .colors.terminal.bright_cyan }}"
+white = "{{ .colors.terminal.bright_white }}"
+
+[colors]
+
+[colors.cursor]
+text = "{{ .colors.terminal.white }}"
+cursor = "{{ .colors.terminal.color_16 }}"
+
+[colors.vi_mode_cursor]
+text = "{{ .colors.terminal.white }}"
+cursor = "{{ .colors.terminal.color_16 }}"
+
+[colors.search.matches]
+foreground = "{{ .colors.terminal.color_16 }}"
+background = "{{ .colors.terminal.bright_white }}"
+
+[colors.search.focused_match]
+foreground = "{{ .colors.terminal.cyan }}"
+background = "{{ .colors.terminal.black }}"
+
+[colors.hints.start]
+foreground = "{{ .colors.terminal.bright_white }}"
+background = "{{ .colors.generic.background_selection }}"
+
+[colors.hints.end]
+foreground = "{{ .colors.terminal.white }}"
+background = "{{ .colors.generic.background_selection }}"
+
+[colors.footer_bar]
+foreground = "{{ .colors.terminal.white }}"
+background = "{{ .colors.generic.background_secondary }}"
+
+[colors.selection]
+text = "{{ .colors.terminal.white }}"
+background = "{{ .colors.generic.background_selection }}"
+
+[[colors.indexed_colors]]
+index = 16
+color = "{{ .colors.terminal.color_16 }}"
+
+[[colors.indexed_colors]]
+index = 17
+color = "{{ .colors.terminal.color_17 }}"
+
+[[colors.indexed_colors]]
+index = 18
+color = "{{ .colors.terminal.color_18 }}"
+
+[[colors.indexed_colors]]
+index = 19
+color = "{{ .colors.terminal.color_19 }}"
+
+[[colors.indexed_colors]]
+index = 20
+color = "{{ .colors.terminal.color_20 }}"
+
+[[colors.indexed_colors]]
+index = 21
+color = "{{ .colors.terminal.color_21 }}"
+

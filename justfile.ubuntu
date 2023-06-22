@@ -1,0 +1,246 @@
+set shell := ["bash", "-uc"]
+
+install-desktop: _install-generic install-xmonad install-ui install-desktop-apps
+install-server: _install-generic install-server-apps
+_install-generic: upgrade-apt install-python install-shell install-vim install-network
+
+upgrade: upgrade-apt upgrade-python upgrade-shell upgrade-snaps upgrade-vim
+
+
+[group('install')]
+[doc('Install Python packages')]
+install-python:
+    sudo apt install -y python3 python-is-python3 pip
+    # Install uv
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    uvx setup
+    mkdir -p "$HOME/VirtualEnvs"
+
+[group('install')]
+[doc('Install Shell packages')]
+install-shell:
+    sudo apt install -y zsh alacritty
+    # Set ZSH as default shell
+    if [[ "${SHELL##*/}" != "zsh" ]]; then \
+        chsh -s /usr/bin/zsh; sudo chsh -s /usr/bin/zsh; \
+    fi
+    # Add Git PPA for latest version
+    if ! grep -q git-core /etc/apt/sources.list.d/*; then \
+        sudo apt-add-repository ppa:git-core/ppa; \
+        sudo apt-get update && sudo apt-get install -y git; \
+    fi
+    # Install common build tools
+    sudo apt install -y make
+    which cargo || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    "$HOME"/.cargo/bin/rustup default stable
+    sudo apt install -y nodejs npm
+    sudo snap install go --classic
+    # Install Sheldon plugin manager for ZSH
+    cargo install sheldon --locked
+    # Install the Starship prompt for ZSH
+    cargo install starship --locked
+    # Install Network and SSH utilities
+    sudo apt install -y curl wget net-tools keychain
+    # Install Desktop-interface utilities
+    sudo apt install -y xclip xdotool
+    # Install CLI utilities
+    sudo apt install -y bat tree fd-find fzf ripgrep sshuttle jq eza unzip
+    sudo apt install -y btop ranger
+    sudo snap install json-tui
+    sudo snap install yq 
+    sudo snap install httpie
+    sudo snap install pastel
+    uv tool install speedtest-cli
+    # Development tools
+    sudo apt install -y shellcheck
+    which argc || curl -fsSL https://raw.githubusercontent.com/sigoden/argc/main/install.sh | sudo sh -s -- --to /usr/local/bin
+    mkdir -p ~/.local/go && export GOPATH=~/.local/go && go install github.com/charmbracelet/gum@latest
+    # Tailscale
+    curl -fsSL https://tailscale.com/install.sh | sh
+    # Other apps
+    sudo apt install -y hledger
+    
+[group('install')]
+[doc('Install Network configurations')]
+install-network:
+    #!/usr/bin/env bash
+    sudo sed -i "/^.*[Aa]uto.*$/d" /etc/hosts
+    echo """
+    # Auto-generated local hosts
+    192.168.178.1 home.dev # auto
+    192.168.178.2 hestia.dev # auto
+    192.168.178.100 hades.dev # auto
+    192.168.178.101 zeus.dev # auto
+    192.168.178.102 hera.dev # auto
+    """ | sudo tee -a /etc/hosts >/dev/null
+    sudo sed -i "/^$/d" /etc/hosts
+
+[group('install')]
+[doc('Install AstroNvim')]
+install-vim: install-shell
+    #!/usr/bin/env bash
+    # Install pre-requisites for AstroNvim
+    sudo apt install -y neovim
+    cargo install tree-sitter-cli --locked
+    go install github.com/jesseduffield/lazygit@latest
+
+[group('install')]
+[doc('Install XMonad')]
+install-xmonad: install-kde
+    #!/usr/bin/env bash
+    if [[ "$XDG_CURRENT_DESKTOP" =~ "KDE" ]]; then
+        echo "KDE session detected: all good.";
+    else
+        echo "Make sure to install KDE and switch to it before install XMonad";
+        exit 1;
+    fi
+    ## Install XMonad
+    sudo apt install -y xmonad libghc-xmonad-dev libghc-xmonad-contrib-dev xmobar
+    ## Install the compositor
+    sudo apt install -y picom
+    ## Create the service
+    SYSTEMD_FOLDER="$HOME/.config/systemd/user"
+    mkdir -p "$SYSTEMD_FOLDER"
+    PLASMA_CUSTOM_WM='[Install]
+    WantedBy=plasma-workspace.target
+
+    [Unit]
+    Description=Plasma Custom Window Manager
+    Before=plasma-workspace.target
+
+    [Service]
+    ExecStart=/usr/bin/xmonad
+    Slice=session.slice
+    Restart=on-failure'
+    if test -f $SYSTEMD_FOLDER/plasma-custom-wm.service; then
+        echo "XMonad (on KDE) session file already exists.";
+    else
+        echo "Writing session file for XMonad (on KDE)"
+        echo "$PLASMA_CUSTOM_WM" > $SYSTEMD_FOLDER/plasma-custom-wm.service;
+    fi
+    ## Enable the service
+    systemctl --user is-enabled plasma-custom-wm.service || systemctl --user enable plasma-custom-wm.service --now
+
+[group('install')]
+[doc('Install KDE')]
+install-kde:
+    sudo apt install -y kde-plasma-desktop
+
+[group('install')]
+[doc('Install UI Components')]
+install-ui:
+    # Install Polybar
+    sudo apt install -y mpd polybar
+    # Install Rofi
+    sudo apt install -y rofi rofi-dev
+    # Install Rofi Emoji
+    uv tool install rofimoji
+    # Install Dunst
+    sudo apt install -y dunst
+    # Install Redshift
+    sudo apt install -y redshift
+    # Install Spectactle (screenshots)
+    sudo apt install -y kde-spectacle
+    # Install Flameshot (screenshots)
+    sudo apt install -y flameshot
+    # Install fonts
+    cp "$(chezmoi source-path)/dot_scripts/executable_nerdfonts" /tmp/nerdfonts; chmod +x /tmp/nerdfonts; /tmp/nerdfonts install --font Monofur --font SpaceMono; rm /tmp/nerdfonts
+
+[group('install')]
+[doc('Install Desktop Applications')]
+install-desktop-apps:
+    sudo snap install thunderbird
+    sudo snap install --channel=edge ferdium && sudo snap connect ferdium:camera && sudo snap connect ferdium:audio-record
+    sudo snap install obsidian --classic
+    sudo apt install -y syncthing && sudo systemctl enable syncthing@aegis.service --now
+    # Activate Bluetooth
+    systemctl is-enabled bluetooth.service || sudo systemctl enable bluetooth.service --now
+    # Install Brave Browser
+    if ! which brave-browser; then \
+        sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
+        https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg; \
+        echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] \
+        https://brave-browser-apt-release.s3.brave.com/ stable main" | \
+        sudo tee /etc/apt/sources.list.d/brave-browser-release.list; \
+        sudo apt update && sudo apt install -y brave-browser; \
+    fi
+    # Install Spotify
+    if ! which spotify; then \
+        curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | \
+        sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg; \
+        echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list; \
+        sudo apt update && sudo apt install -y spotify-client; \
+    fi
+    # Install ueberzugpp (requirement for something, I don't remember what)
+    echo 'deb http://download.opensuse.org/repositories/home:/justkidding/xUbuntu_24.04/ /' \
+        sudo tee /etc/apt/sources.list.d/home:justkidding.list; \
+        curl -fsSL https://download.opensuse.org/repositories/home:justkidding/xUbuntu_24.04/Release.key \
+        | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_justkidding.gpg > /dev/null; \
+        sudo systemctl daemon-reload; sudo apt update; sudo apt install ueberzugpp
+    sudo apt install -y mplayer
+
+[group('install')]
+[doc('Install Server Applications')]
+install-server-apps:
+    # OpenSSH server
+    sudo apt install openssh-server
+    sudo systemctl enable --now ssh
+    # Docker
+    ## Add Docker's official GPG key:
+    sudo apt update
+    sudo apt install -y ca-certificates curl
+    sudo install -m 0755 -d /etc/apt/keyrings
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    sudo chmod a+r /etc/apt/keyrings/docker.asc
+    ## Add the repository to Apt sources:
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+      $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+      sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt-get update
+    ## Install Docker
+    sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    groups | grep -q docker || (sudo groupadd docker; sudo usermod -a -G docker $USER; sudo snap disable docker && sudo snap enable docker)
+    # CTop for Docker
+    sudo wget https://github.com/bcicen/ctop/releases/download/v0.7.7/ctop-0.7.7-linux-amd64 -O /usr/local/bin/ctop && sudo chmod +x /usr/local/bin/ctop
+    # Benchmarking
+    sudo apt -y install sysbench
+
+
+[group('upgrade')]
+[doc('Upgrade APT packages')]
+upgrade-apt:
+    sudo apt update
+    sudo apt upgrade
+
+[group('upgrade')]
+[doc('Upgrade Shell')]
+upgrade-shell: upgrade-apt
+    rustup update
+    cargo install sheldon --locked
+    cargo install starship --locked
+    # Update argc
+    sudo rm -f /usr/local/bin/argc && curl -fsSL https://raw.githubusercontent.com/sigoden/argc/main/install.sh | sudo sh -s -- --to /usr/local/bin
+    # Update gum
+    go install github.com/charmbracelet/gum@latest
+    # Update Tailscale
+    sudo tailscale update
+
+[group('upgrade')]
+[doc('Upgrade AstroNvim')]
+upgrade-vim: upgrade-apt
+    cargo install tree-sitter-cli --locked
+    go install github.com/jesseduffield/lazygit@latest
+    vim +AstroUpdate +qa
+
+[group('upgrade')]
+[doc('Upgrade Python')]
+upgrade-python: upgrade-apt
+    uv self update
+    uv tool upgrade --all
+
+[group('upgrade')]
+[doc('Upgrade Snaps')]
+upgrade-snaps:
+    sudo snap refresh
+

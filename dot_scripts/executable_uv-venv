@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# uv-venv
+# @describe Manage Python virtual environments with UV
+# @author Luca Bello
+# @meta version 0.1
+# @meta require-tools uv
+# @env WORKON_HOME! <DIR> Folder to contain all the virtual environments
+
+uv_venv (){
+  uv venv --allow-existing --relocatable --no-config --directory="$WORKON_HOME" "$@"
+}
+
+# @cmd Create a new virtual environment
+new() {
+  uv_venv "$WORKON_HOME/$1"
+}
+
+# @cmd Remove a virtual environment
+# @alias rm
+remove() {
+  echo "Removing $WORKON_HOME/$1"
+  rm -rI "$WORKON_HOME/$1"
+}
+
+# @cmd List all the virtual environments
+# @alias ls
+list() {
+  ls "$WORKON_HOME"
+}
+
+# @cmd Activate a virtual environment
+activate() {
+  source "$WORKON_HOME/$1/bin/activate"
+  exec $SHELL -i
+}
+
+eval "$(argc --argc-eval "$0" "$@")"

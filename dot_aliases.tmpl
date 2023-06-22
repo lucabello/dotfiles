@@ -1,0 +1,40 @@
+alias rgrep='rgrep --color=auto'
+alias vim='nvim'
+alias bat='batcat --paging=never'
+alias bess='batcat --paging=always'
+alias brave='brave-browser'
+alias venv='uv-venv'
+activate() { if [[ -z "$1" ]]; then source ".venv/bin/activate"; else source "$WORKON_HOME/$1/bin/activate"; fi }
+
+# ls aliases (eza)
+alias l='eza --all --long --group-directories-first --icons --git'
+alias lt='eza --all --long --group-directories-first --icons --git --total-size'
+alias ls='eza'
+alias tree='eza --tree --icons'
+
+# common aliases
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+alias zshrc='${=EDITOR} ~/.zshrc'
+
+# keychain aliases
+alias keychain='keychain --nogui'
+
+# chezmoi aliases
+alias chezmoicd="cd $(chezmoi source-path)"
+
+# just aliases
+alias justubuntu='just -f $(chezmoi source-path)/justfile.ubuntu'
+alias justcanonical='just -f $(chezmoi source-path)/justfile.canonical'
+
+# Utilities
+alias restart-polybar="pkill polybar; ~/.config/polybar/launch.sh"
+alias restart-dunst="pkill dunst; ~/.config/dunst/launch.sh"
+alias daily-timer='termdown 2m -t OVERTIME -f digital'
+
+# Work aliases
+alias charm-resources='if [ -f metadata.yaml ]; then METADATA_FILE=metadata.yaml; else METADATA_FILE=charmcraft.yaml; fi; echo -n $(yq eval ".resources | to_entries | map(select(.value.upstream-source != null) | \"--resource \" + .key + \"=\" + .value.upstream-source) | join (\" \")" $METADATA_FILE)'
+{{ if eq .metadata.profile "server" -}}
+alias dtop='lazydocker'
+{{ end -}}

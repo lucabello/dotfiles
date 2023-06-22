@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [[ `pidof dunst` ]]; then
+  pkill dunst
+fi
+
+dunst -config "$HOME"/.config/dunst/dunstrc_{{ .metadata.theme.style }} &
+

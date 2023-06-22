@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# rockcraft-purge
+# @describe Delete all the LXC instances that rockcraft creates to pack rocks.
+# @author Luca Bello
+# @meta version 0.2
+# @meta require-tools lxc
+
+# @flag --dry-run Perform a dry run (don't delete instances)
+
+eval "$(argc --argc-eval "$0" "$@")"
+
+lxc_instances=$(lxc list --project=rockcraft --format=json)
+lxc_instances_count=$(echo "$lxc_instances" | jq -r '[ .[] | select(.name | startswith("rockcraft-")) | .name ] | length')
+echo "$lxc_instances_count lxc containers will be removed"
+for instance in $(echo $lxc_instances | jq -r '.[] | select(.name | startswith("rockcraft-")) | .name'); do
+  echo "Deleting $instance"
+  if [ "$argc_dry_run" = false ]; then
+    lxc --project=rockcraft delete "$instance"
+  fi
+done

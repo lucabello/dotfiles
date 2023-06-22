@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# hledger-budget
+# @describe Set of utilities to display budgeting information with HLedger
+# @author Luca Bello
+# @meta version 0.6
+# @meta require-tools hledger
+
+# @env LEDGER_FILE! <FILE> Path to the HLedger file
+LEDGER_BUDGET_FILE="$(dirname $LEDGER_FILE)/budgets.journal"
+BUDGET_OPTS="--file=$LEDGER_BUDGET_FILE -V --auto"
+
+# @cmd Display the monthly balance from three months ago to today
+# @alias monthly
+monthly-balance() {
+  hledger bs assets:budget $BUDGET_OPTS --monthly --forecast="from 2023/08 to today" --period="from 4 months ago to today" $2
+}
+
+# @cmd Display the current balance for all budgets
+# @alias print
+budget-print() {
+echo "Budget balance:"
+hledger bal assets:budget $BUDGET_OPTS --forecast="from 2023/08 to today" $2
+}
+
+# @cmd Display the current bash balance next to the budget balance
+# @alias compare
+budget-compare() {
+  echo "Current Commerzbank balance:"
+  hledger bal expr:"credit-card OR commerzbank:checking"
+  echo; echo "Current Budget balance:"
+  hledger bal assets:budget $BUDGET_OPTS --forecast="from 2023/08 to today" --depth=2
+}
+
+# @cmd Display the monthly budget allocation
+# @alias allocation
+budget-allocation() {
+  echo "Current budget allocation:"
+  cat "$LEDGER_BUDGET_FILE" | grep "~ monthly in 2024" --after-context=11
+}
+
+
+eval "$(argc --argc-eval "$0" "$@")"

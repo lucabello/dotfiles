@@ -1,0 +1,30 @@
+import = ["~/.config/alacritty/themes/auto.toml"]
+
+[font]
+size = 
+{{- if eq .metadata.profile "desktop" }} 20{{- end }}
+{{- if eq .metadata.profile "laptop" }} 12{{- end }}
+
+[font.normal]
+family = "Monofur Nerd Font Mono"
+style = "Regular"
+
+[font.bold]
+family = "Monofur Nerd Font Mono"
+style = "Bold"
+
+[font.italic]
+family = "Monofur Nerd Font Mono"
+style = "Italic"
+
+[window]
+dynamic_padding = true
+
+[window.padding]
+x = 
+{{- if eq .metadata.profile "desktop" }} 16{{- end }}
+{{- if eq .metadata.profile "laptop" }} 8{{- end }}
+y = 
+{{- if eq .metadata.profile "desktop" }} 16{{- end }}
+{{- if eq .metadata.profile "laptop" }} 8{{- end }}
+

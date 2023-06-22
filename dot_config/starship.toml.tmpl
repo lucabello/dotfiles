@@ -1,0 +1,214 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+right_format = "$time"
+
+# Inserts a blank line between shell prompts
+add_newline = false
+
+# Replace the '❯' symbol in the prompt with another one
+[character] # The name of the module we are configuring is 'character'
+success_symbol = '[∮](bold green)' # The 'success_symbol' segment is being set to '➜' with the color 'bold green'
+error_symbol = '[∮](bold red)'
+
+[username]
+show_always = true
+style_user = 'yellow'
+format = '[⌀ ]($style bold)[$user]($style) at '
+
+[hostname]
+ssh_symbol = " "
+ssh_only = false
+{{- if eq .chezmoi.hostname "zeus" }}
+format = '[$ssh_symbol⚡$hostname]($style) in '
+{{- else if eq .chezmoi.hostname "hades" }}
+format = '[$ssh_symbol♇ $hostname]($style) in '
+{{- else if eq .chezmoi.hostname "hestia" }}
+format = '[$ssh_symbol⚶ $hostname]($style) in '
+{{- else if eq .chezmoi.hostname "hera" }}
+format = '[$ssh_symbol⚵ $hostname]($style) in '
+{{- else }}
+format = '[$ssh_symbol $hostname]($style) in '
+{{- end }}
+
+[directory]
+read_only = " 󰌾"
+truncation_symbol = '.../'
+truncation_length = 5
+format = '[$path]($style)[$read_only]($read_only_style) '
+
+[line_break]
+disabled = false # Disable the line_break module, making the prompt a single line
+
+[time]
+disabled = false
+format = '[ $time]($style)'
+style = "bright-black"
+
+[cmd_duration]
+style = "bright-black"
+
+[git_status]
+conflicted = " "
+deleted = "󰧧"
+untracked = ""
+modified = ""
+staged = "󱇬"
+
+[aws]
+symbol = "  "
+
+[buf]
+symbol = " "
+
+[c]
+symbol = " "
+
+[conda]
+symbol = " "
+
+[crystal]
+symbol = " "
+
+[dart]
+symbol = " "
+
+[docker_context]
+symbol = " "
+
+[elixir]
+symbol = " "
+
+[elm]
+symbol = " "
+
+[fennel]
+symbol = " "
+
+[fossil_branch]
+symbol = " "
+
+[git_branch]
+symbol = " "
+
+[golang]
+symbol = " "
+
+[guix_shell]
+symbol = " "
+
+[haskell]
+symbol = " "
+
+[haxe]
+symbol = " "
+
+[hg_branch]
+symbol = " "
+
+[java]
+symbol = " "
+
+[julia]
+symbol = " "
+
+[kotlin]
+symbol = " "
+
+[lua]
+symbol = " "
+
+[memory_usage]
+symbol = "󰍛 "
+
+[meson]
+symbol = "󰔷 "
+
+[nim]
+symbol = "󰆥 "
+
+[nix_shell]
+symbol = " "
+
+[nodejs]
+symbol = " "
+
+[ocaml]
+symbol = " "
+
+[os.symbols]
+Alpaquita = " "
+Alpine = " "
+AlmaLinux = " "
+Amazon = " "
+Android = " "
+Arch = " "
+Artix = " "
+CentOS = " "
+Debian = " "
+DragonFly = " "
+Emscripten = " "
+EndeavourOS = " "
+Fedora = " "
+FreeBSD = " "
+Garuda = "󰛓 "
+Gentoo = " "
+HardenedBSD = "󰞌 "
+Illumos = "󰈸 "
+Kali = " "
+Linux = " "
+Mabox = " "
+Macos = " "
+Manjaro = " "
+Mariner = " "
+MidnightBSD = " "
+Mint = " "
+NetBSD = " "
+NixOS = " "
+OpenBSD = "󰈺 "
+openSUSE = " "
+OracleLinux = "󰌷 "
+Pop = " "
+Raspbian = " "
+Redhat = " "
+RedHatEnterprise = " "
+RockyLinux = " "
+Redox = "󰀘 "
+Solus = "󰠳 "
+SUSE = " "
+Ubuntu = " "
+Unknown = " "
+Void = " "
+Windows = "󰍲 "
+
+[package]
+symbol = "󰏗 "
+
+[perl]
+symbol = " "
+
+[php]
+symbol = " "
+
+[pijul_channel]
+symbol = " "
+
+[python]
+symbol = " "
+
+[rlang]
+symbol = "󰟔 "
+
+[ruby]
+symbol = " "
+
+[rust]
+symbol = " "
+
+[scala]
+symbol = " "
+
+[swift]
+symbol = " "
+
+[zig]
+symbol = " "

@@ -1,0 +1,117 @@
+#!/bin/bash
+# nerdfonts
+# @author from the Internet + Luca Bello
+# @meta version 0.3
+# @meta require-tools gum,curl,wget,unzip,tar,fc-cache,jq
+
+# @cmd Download and install a Nerd Font
+# @option --font*,[`_var_available_fonts`] Name of the font to download
+# @option --format[=.zip|.tar.xz]
+# @option --font-version=`_var_latest_font_version`
+install() {
+  for i in "${!argc_font[@]}"; do
+    # Initalize variables
+    local font_filename=${argc_font[$i]}${argc_format}
+    local download_url="https://github.com/ryanoasis/nerd-fonts/releases/download/${argc_font_version}/${font_filename}"
+    local font_dir="$HOME/.local/share/fonts"
+    # Make the font folder if it doesn't exist
+    test -d "$font_dir" || mkdir -p "$font_dir"
+    
+    # Download the font
+    echo "Downloading and installing ${argc_font[$i]}"
+    wget --quiet "$download_url" -O "/tmp/${font_filename}" \
+      || { echo "Error: Unable to download '${argc_font[$i]}'."; return 1; }
+    # Extract the font to the correct folder
+    if [[ $argc_format == ".zip" ]]; then
+      unzip -q "/tmp/${font_filename}" -d "${font_dir}" || { echo "Error: Unable to extract '${argc_font[$i]}'."; return 1; }
+    elif [[ $argc_format == ".tar.xz" ]]; then
+      tar -xf "/tmp/${font_filename}" -C "${font_dir}" || { echo "Error: Unable to extract '${argc_font[$i]}'."; return 1; }
+    fi
+
+    # Cleanup
+    rm /tmp/${font_filename}
+    fc-cache -f >/dev/null || { echo "Error: Unable to update font cache. Exiting."; exit 1; }
+    echo "'${argc_font[$i]}' installed successfully."
+  done
+} 
+
+# @cmd List the Nerd Fonts
+# @meta default-subcommand
+list() {
+  echo "Nerd fonts:"
+  for i in "${!fonts[@]}"; do echo "- ${fonts[$i]}"; done;
+}
+
+# Constants and variable helpers
+declare -a fonts=(
+  "0xProto"
+  "3270"
+  "Agave"
+  "AnonymousPro"
+  "Arimo"
+  "AurulentSansMono"
+  "BigBlueTerminal"
+  "BitstreamVeraSansMono"
+  "CascadiaCode"
+  "CascadiaMono"
+  "CodeNewRoman"
+  "ComicShannsMono"
+  "CommitMono"
+  "Cousine"
+  "D2Coding"
+  "DaddyTimeMono"
+  "DejaVuSansMono"
+  "DroidSansMono"
+  "EnvyCodeR"
+  "FantasqueSansMono"
+  "FiraCode"
+  "FiraMono"
+  "FontPatcher"
+  "GeistMono"
+  "Go-Mono"
+  "Gohu"
+  "Hack"
+  "Hasklig"
+  "HeavyData"
+  "Hermit"
+  "iA-Writer"
+  "IBMPlexMono"
+  "Inconsolata"
+  "InconsolataGo"
+  "InconsolataLGC"
+  "IntelOneMono"
+  "Iosevka"
+  "IosevkaTerm"
+  "IosevkaTermSlab"
+  "JetBrainsMono"
+  "Lekton"
+  "LiberationMono"
+  "Lilex"
+  "MartianMono"
+  "Meslo"
+  "Monaspace"
+  "Monofur"
+  "Monoid"
+  "Mononoki"
+  "MPlus"
+  "NerdFontsSymbolsOnly"
+  "Noto"
+  "OpenDyslexic"
+  "Overpass"
+  "ProFont"
+  "ProggyClean"
+  "RobotoMono"
+  "ShareTechMono"
+  "SourceCodePro"
+  "SpaceMono"
+  "Terminus"
+  "Tinos"
+  "Ubuntu"
+  "UbuntuMono"
+  "VictorMono"
+)
+_var_available_fonts() { for i in "${!fonts[@]}"; do echo "${fonts[$i]}"; done; }
+_var_latest_font_version() { curl -s "https://api.github.com/repos/ryanoasis/nerd-fonts/tags" | jq -r '.[0].name'; }
+
+
+eval "$(argc --argc-eval "$0" "$@")"

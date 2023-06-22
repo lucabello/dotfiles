@@ -1,0 +1,19 @@
+[includeIf "gitdir:~/Repositories/Canonical/"]
+  path = ~/.gitconfig.canonical
+[includeIf "gitdir:~/Repositories/Personal/"]
+  path = ~/.gitconfig.personal
+[includeIf "gitdir:~/.local/share/chezmoi/"]
+  path = ~/.gitconfig.personal
+
+[commit]
+	gpgsign = true
+[tag]
+  gpgsign = true
+[gpg]
+	format = ssh
+[user]
+  signingKey = ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQChZfWM6e6ldYUQUaH+MQDFeD0borixpq2p+8mpz2OPn9MJXkh18puLXC7H4Hmtap7VzVogSqQjxaF8pYf+6btpAMBIt0oEi8jHW2xWS2MvsoxZi/n/KJaL4Pbf7FYYDiZVQ1tJwVEoJPR1ReV9cSlUuWaa9SosVqHMT1orwbEte5Wh2yzMZxu2GFE1aG2z7VliL4gcXyynvThYKcW1vMI9MaMQBD8tz998xjshuGxkUnxwFP78QTj90DEwaggyS4sVbmAFKL2UdijQjMmrwarNJF2ZRWr1LZRU3Az9ESZ9u0uEDlvoWMPVxKhDQm3rYnBa9pBCvsphA+sylVdEv29SISeSQJNcMDqGDHHwGEMY1pzMtAvq1r8hz41kh2kDnP9yO9I09aZEJdzRKTWMg4zWF6ZrNpvW7UONICW5UgDdKOQRtbt1d3GbHsz01VYucPKPvM/aFbpvfDeB6bUzjYxKQiA/+l7HMtMFcXqRWumGhLJZrho7N4wdeFsUlcp9qP0= aegis@zeus
+[core]
+	pager = diff-so-fancy | less --tabs=4 -RFX
+[push]
+	autoSetupRemote = true

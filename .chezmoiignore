@@ -1,0 +1,31 @@
+# Repository files
+README
+README.md
+LICENSE
+# Others
+justfile
+justfile.canonical
+
+# Desktop ignores
+{{- if ne .metadata.profile "server" }}
+Deployments
+{{- end }}
+
+# Server ignores
+{{- if eq .metadata.profile "server" }}
+dot_config/alacritty
+dot_config/autostart
+dot_config/dunst
+dot_config/Ferdium
+dot_config/polybar
+dot_config/rofi
+dot_config/spicetify
+dot_config/xmonad
+dot_local/
+dot_scripts/executable_charmcraft-purge
+dot_scripts/executable_lxc-shell
+dot_scripts/executable_nerdfonts
+dot_scripts/executable_rockcraft-purge
+dot_scripts/executable_rockcraft-run
+dot_gitconfig.canonical
+{{- end }}

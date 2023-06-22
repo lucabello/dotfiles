@@ -1,0 +1,89 @@
+# Main background, empty for terminal default, need to be empty if you want transparent background
+## theme[main_bg]="{{ .colors.generic.background }}"
+
+# Main text color
+theme[main_fg]="{{ .colors.generic.text }}"
+
+# Title color for boxes
+theme[title]="{{ .colors.generic.text }}"
+
+# Highlight color for keyboard shortcuts
+theme[hi_fg]="{{ .colors.generic.text }}"
+
+# Background color of selected item in processes box
+theme[selected_bg]="{{ .colors.generic.background_selection }}"
+
+# Foreground color of selected item in processes box
+theme[selected_fg]="{{ .colors.generic.accent }}"
+
+# Color of inactive/disabled text
+theme[inactive_fg]="{{ .colors.generic.text_disabled }}"
+
+# Color of text appearing on top of graphs, i.e uptime and current network graph scaling
+theme[graph_text]="{{ .colors.generic.accent_secondary }}"
+
+# Background color of the percentage meters
+theme[meter_bg]="{{ .colors.generic.accent_secondary }}"
+
+# Misc colors for processes box including mini cpu graphs, details memory graph and details status text
+theme[proc_misc]="{{ .colors.generic.accent_secondary }}"
+
+# Cpu box outline color
+theme[cpu_box]="{{ .colors.generic.accent }}"
+
+# Memory/disks box outline color
+theme[mem_box]="{{ .colors.generic.accent }}"
+
+# Net up/down box outline color
+theme[net_box]="{{ .colors.generic.accent }}"
+
+# Processes box outline color
+theme[proc_box]="{{ .colors.generic.accent }}"
+
+# Box divider line and small boxes line color
+theme[div_line]="{{ .colors.generic.text_disabled }}"
+
+# Temperature graph colors
+theme[temp_start]="{{ .colors.terminal.green }}"
+theme[temp_mid]="{{ .colors.terminal.yellow }}"
+theme[temp_end]="{{ .colors.terminal.red }}"
+
+# CPU graph colors
+theme[cpu_start]="{{ .colors.terminal.green }}"
+theme[cpu_mid]="{{ .colors.terminal.yellow }}"
+theme[cpu_end]="{{ .colors.terminal.red }}"
+
+# Mem/Disk free meter
+theme[free_start]="{{ .colors.terminal.green  }}"
+theme[free_mid]="{{ .colors.terminal.yellow }}"
+theme[free_end]="{{ .colors.terminal.red }}"
+
+# Mem/Disk cached meter
+theme[cached_start]="{{ .colors.terminal.green }}"
+theme[cached_mid]="{{ .colors.terminal.yellow }}"
+theme[cached_end]="{{ .colors.terminal.red }}"
+
+# Mem/Disk available meter
+theme[available_start]="{{ .colors.terminal.green }}"
+theme[available_mid]="{{ .colors.terminal.yellow }}"
+theme[available_end]="{{ .colors.terminal.red }}"
+
+# Mem/Disk used meter
+theme[used_start]="{{ .colors.terminal.green }}"
+theme[used_mid]="{{ .colors.terminal.yellow }}"
+theme[used_end]="{{ .colors.terminal.red }}"
+
+# Download graph colors
+theme[download_start]="{{ .colors.terminal.green }}"
+theme[download_mid]="{{ .colors.terminal.yellow }}"
+theme[download_end]="{{ .colors.terminal.red }}"
+
+# Upload graph colors
+theme[upload_start]="{{ .colors.terminal.green }}"
+theme[upload_mid]="{{ .colors.terminal.yellow }}"
+theme[upload_end]="{{ .colors.terminal.red }}"
+
+# Process box color gradient for threads, mem and cpu usage
+theme[process_start]="{{ .colors.terminal.green }}"
+theme[process_mid]="{{ .colors.terminal.yellow }}"
+theme[process_end]="{{ .colors.terminal.red }}"

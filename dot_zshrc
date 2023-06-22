@@ -1,0 +1,42 @@
+# ZSH-specific options
+autoload -Uz compinit && compinit       # Loads completion modules
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt APPEND_HISTORY                   # Multiple sessions append to one history
+setopt AUTO_MENU                        # Show completion menu on tab press
+setopt ALWAYS_TO_END                    # Move cursor after completion
+setopt COMPLETE_ALIASES                 # Allow autocompletion for aliases
+setopt COMPLETE_IN_WORD                 # Allow completion from middle of word
+setopt HIST_REDUCE_BLANKS               # Remove extra blanks from history
+setopt HIST_IGNORE_SPACE                # Remove lines starting with a space
+setopt INC_APPEND_HISTORY               # Write to history immediately
+setopt SHARE_HISTORY                    # Share history among all sessions
+setopt LIST_PACKED                      # Smallest completion menu
+setopt AUTO_PARAM_KEYS                  # Intelligent handling of characters
+setopt AUTO_PARAM_SLASH                 # after a completion
+setopt AUTO_REMOVE_SLASH                # Remove trailing slash when needed
+
+
+# Key Bindings
+## Config for ZSH Plugins
+### Search the history from a substring with arrows
+bindkey '^[OA' history-substring-search-up
+bindkey '^[OB' history-substring-search-down
+### Cycle completions with Tab and Shift+Tab
+bindkey '^I' menu-complete
+bindkey '^[[Z' reverse-menu-complete
+## Others
+bindkey '^[[1;5C' forward-word
+bindkey '^[[1;5D' backward-word
+
+source ~/.env
+source ~/.aliases
+
+# SSH Key Management
+eval $(keychain --eval --quiet --noask)
+
+# Load plugins and prompt
+eval "$(sheldon source)"
+eval "$(starship init zsh)"
+

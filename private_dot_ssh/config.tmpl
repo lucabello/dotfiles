@@ -1,0 +1,13 @@
+Host github.com
+  User git
+  IdentityFile ~/.ssh/git
+
+{{ if ne .chezmoi.hostname "hades" -}}
+Host hades
+  IdentityFile ~/.ssh/{{ .chezmoi.hostname }}
+{{- end }}
+
+{{ if ne .chezmoi.hostname "hestia" -}}
+Host hestia
+  IdentityFile ~/.ssh/{{ .chezmoi.hostname }}
+{{- end }}

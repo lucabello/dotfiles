@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# lxc-shell
+# @describe Open a shell to a LXC container.
+# @author Luca Bello
+# @meta version 0.2
+# @meta require-tools lxc
+
+# @arg user! The username for the shell
+# @arg lxc_container! The LXC container to shell into (list with 'lxc ls')
+
+eval "$(argc --argc-eval "$0" "$@")"
+
+startup_env="$(dircolors | grep -Eo \"LS_COLORS='.+'\")"
+lxc exec "$argc_lxc_container" -- su --login "$argc_user"

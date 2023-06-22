@@ -1,0 +1,128 @@
+# `sheldon` configuration file
+# ----------------------------
+#
+# You can modify this file directly or you can use one of the following
+# `sheldon` commands which are provided to assist in editing the config file:
+#
+# - `sheldon add` to add a new plugin to the config file
+# - `sheldon edit` to open up the config file in the default editor
+# - `sheldon remove` to remove a plugin from the config file
+#
+# See the documentation for more https://github.com/rossmacarthur/sheldon#readme
+
+shell = "zsh"
+
+[templates]
+defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}{{ hooks?.post | nl }}"
+
+[plugins]
+
+[plugins.zsh-defer]
+github = "romkatv/zsh-defer"
+
+[plugins.ansiweather]
+github = "fcambus/ansiweather"
+
+[plugins.apt-zsh-plugin]
+github = "GeoLMg/apt-zsh-plugin"
+
+[plugins.colorize]
+github = "zpm-zsh/colorize"
+
+[plugins.zsh-help]
+github = "Freed-Wu/zsh-help"
+
+[plugins.history-search-multi-word]
+github = "zdharma-continuum/history-search-multi-word"
+
+[plugins.diff-so-fancy]
+github = "z-shell/zsh-diff-so-fancy"
+
+[plugins.zsh-show-path]
+github = "redxtech/zsh-show-path"
+
+[plugins.zsh-you-should-use]
+github = "MichaelAquilina/zsh-you-should-use"
+
+[plugins.zeza]
+github = "duggum/zeza"
+
+# OhMyZsh plugins
+[plugins.colored-man-pages]
+github = "ohmyzsh/ohmyzsh"
+use = ["plugins/{{name}}/{{name}}.plugin.zsh"]
+apply = ["defer"]
+
+[plugins.command-not-found]
+github = "ohmyzsh/ohmyzsh"
+use = ["plugins/{{name}}/{{name}}.plugin.zsh"]
+
+[plugins.extract]
+github = "ohmyzsh/ohmyzsh"
+use = ["plugins/{{name}}/{{name}}.plugin.zsh"]
+apply = ["defer"]
+
+[plugins.fancy-ctrl-z]
+github = "ohmyzsh/ohmyzsh"
+use = ["plugins/{{name}}/{{name}}.plugin.zsh"]
+apply = ["defer"]
+
+[plugins.git-auto-fetch]
+github = "ohmyzsh/ohmyzsh"
+use = ["plugins/{{name}}/{{name}}.plugin.zsh"]
+apply = ["defer"]
+
+[plugins.git-escape-magic]
+github = "ohmyzsh/ohmyzsh"
+use = ["plugins/{{name}}/{{name}}.plugin.zsh"]
+apply = ["defer"]
+
+[plugins.lxd]
+github = "ohmyzsh/ohmyzsh"
+use = ["plugins/{{name}}/{{name}}.plugin.zsh"]
+apply = ["defer"]
+
+[plugins.microk8s]
+github = "ohmyzsh/ohmyzsh"
+use = ["plugins/{{name}}/{{name}}.plugin.zsh"]
+apply = ["defer"]
+
+[plugins.multipass]
+github = "ohmyzsh/ohmyzsh"
+use = ["plugins/{{name}}/{{name}}.plugin.zsh"]
+apply = ["defer"]
+
+[plugins.qrcode]
+github = "ohmyzsh/ohmyzsh"
+use = ["plugins/{{name}}/{{name}}.plugin.zsh"]
+apply = ["defer"]
+
+[plugins.rand-quote]
+github = "ohmyzsh/ohmyzsh"
+use = ["plugins/{{name}}/{{name}}.plugin.zsh"]
+apply = ["defer"]
+
+[plugins.safe-paste]
+github = "ohmyzsh/ohmyzsh"
+use = ["plugins/{{name}}/{{name}}.plugin.zsh"]
+apply = ["defer"]
+
+[plugins.urltools]
+github = "ohmyzsh/ohmyzsh"
+use = ["plugins/{{name}}/{{name}}.plugin.zsh"]
+apply = ["defer"]
+
+[plugins.zsh-autosuggestions]
+github = "zsh-users/zsh-autosuggestions"
+use = ["{{ name }}.zsh"]
+
+# [plugins.syntax-highlighting]
+# github = "zdharma-continuum/fast-syntax-highlighting"
+# apply = ["defer"]
+
+[plugins.zsh-syntax-highlighting]
+github = "zsh-users/zsh-syntax-highlighting"
+
+[plugins.history-substring-search]
+github = "zsh-users/zsh-history-substring-search"
+

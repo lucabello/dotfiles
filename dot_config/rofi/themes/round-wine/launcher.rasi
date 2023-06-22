@@ -1,0 +1,102 @@
+/*******************************************************************************
+ * ROUNDED THEME FOR ROFI 
+ * User                 : LR-Tech               
+ * Theme Repo           : https://github.com/lr-tech/rofi-themes-collection
+ *******************************************************************************/
+
+@import "~/.config/rofi/themes/round-wine/colors.rasi"
+@import "~/.config/rofi/themes/round-wine/fonts.rasi"
+
+* {
+    font: @fontlauncher;
+
+    background-color:   transparent;
+    text-color:         @foreground;
+
+    margin:     0px;
+    padding:    0px;
+    spacing:    0px;
+}
+
+window {
+    location:       center;
+    anchor:         center;
+    width:          620;
+    background-color:   @background;
+    border: 2px;
+    border-color: @selected;
+}
+
+mainbox {
+    padding:    30px;
+}
+
+inputbar {
+    background-color:   @hint;
+    border-color:       @foreground;
+
+    border:         0px;
+    border-radius:  16px;
+
+    padding:    16px 180px;
+    spacing:    8px;
+    children:   [ prompt, entry ];
+}
+
+prompt {
+    text-color: @background;
+}
+
+entry {
+    placeholder:        "Search";
+    placeholder-color:  @hint;
+    text-color: @background;
+}
+
+message {
+    margin:             12px 0 0;
+    border-radius:      16px;
+    border-color:       @border;
+    background-color:   @border;
+    children: [textbox];
+}
+
+textbox {
+    expand: true;
+    padding:    8px 24px;
+}
+
+listview {
+    background-color:   transparent;
+    margin:     22px 0 0;
+    lines:      8;
+    columns:    1;
+    fixed-height: false;
+    spacing: 12px;
+}
+
+element {
+    padding:        16px 32px;
+    spacing:        8px;
+    border-radius:  16px;
+    background-color: @background-alt;
+}
+
+element normal active {
+    text-color: @foreground;
+}
+
+element selected normal, element selected active {
+    background-color: @selected;
+    text-color: @background;
+}
+
+element-icon {
+    size:           1em;
+    vertical-align: 0.5;
+}
+
+element-text {
+    text-color: inherit;
+    highlight: underline;
+}
