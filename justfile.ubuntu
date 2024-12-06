@@ -236,7 +236,6 @@ upgrade-vim: upgrade-apt
 [group('upgrade')]
 [doc('Upgrade Python')]
 upgrade-python: upgrade-apt
-    uv self update
     uv tool upgrade --all
 
 [group('upgrade')]
