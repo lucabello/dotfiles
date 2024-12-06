@@ -12,7 +12,7 @@ upgrade: upgrade-apt upgrade-python upgrade-shell upgrade-snaps upgrade-vim
 install-python:
     sudo apt install -y python3 python-is-python3 pip
     # Install uv
-    curl -LsSf https://astral.sh/uv/install.sh | sh
+    sudo snap install astral-uv --channel=latest/candidate
     uvx setup
     mkdir -p "$HOME/VirtualEnvs"
 
