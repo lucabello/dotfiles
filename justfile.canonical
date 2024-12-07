@@ -33,6 +33,20 @@ install-juju:
 [group('install')]
 [doc('Install developer tools')]
 install-dev:
-    pipx install tox
+    if ! which tox; then uv tool install tox; fi
     sudo snap install jhack && sudo snap connect jhack:dot-local-share-juju snapd 
     cargo install --git https://github.com/sed-i/juju-graph
+    # go install github.com/snapcore/spread/cmd/spread@latest
+    curl -fsSL https://goss.rocks/install | sudo sh
+    # Install GH and GH Dashboard
+    if ! which gh; then \
+        sudo curl -fsSLo /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+        https://cli.github.com/packages/githubcli-archive-keyring.gpg; \
+        echo "deb [arch=$(dpkg --print-architecture) \
+        signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] \
+        https://cli.github.com/packages stable main" | \
+        sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null; \
+        sudo apt update && sudo apt install gh -y; \
+    fi
+    gh auth login
+    gh extension install dlvhdr/gh-dash
