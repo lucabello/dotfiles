@@ -1,97 +1,62 @@
-#!/usr/bin/env python3
-import argparse
+#!/usr/bin/env -S uv run -s -q
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["questionary", "typer", "sh"]
+# ///
+import questionary
+import typer
+import sh
 import json
 import os
 import re
 import shutil
-import subprocess
 import tomllib
 from pathlib import Path
-from typing import List
+from typing import Dict, List, Optional
+
+PROFILES: List = [" Desktop", " Laptop", " Server"]
+STYLES: List = [" Round Wine", " Square Box"]
 
 CHEZMOI_PATH: Path = Path.home() / ".local/share/chezmoi"
 CHEZMOI_COLORS_PATH: Path = CHEZMOI_PATH / ".colors"
 CHEZMOI_METADATA_PATH: Path = CHEZMOI_PATH / ".variables.json"
 
-
-def parse_args():
-    """Parse the arguments passed via the CLI."""
-    parser = argparse.ArgumentParser(
-        description="GUI to select and generate metadata for chezmoi"
-    )
-    # Add positional arguments
-    parser.add_argument(
-        "command", help="The command to execute (generate|switch|print)"
-    )
-    # Parse the command line arguments
-    return parser.parse_args()
-
-
-def pick_option(options: List[str]) -> str:
-    """Pick an option from a list and return it."""
-    for i, option in enumerate(options):
-        print(f"{i + 1}. {option}")
-
-    while True:
-        choice = input("Enter a number: ")
-        try:
-            choice = int(choice)
-            if 0 < choice <= len(options):
-                return options[choice - 1]
-            else:
-                print(
-                    "Invalid choice. Please enter a number between 1 and", len(options)
-                )
-        except ValueError:
-            print("Invalid input. Please enter a number.")
+app = typer.Typer(no_args_is_help=True)
 
 
 class ChezmoiMetadata:
     """Helper for handling custom Chezmoi metadata."""
 
     def __init__(self, profile: str, colors: str, style: str):
-        self._profile = profile
-        self._colors = colors
-        self._style = style
-
-    def __str__(self):
-        return f"Profile: {self.profile} | Colors: {self.colors} | Style: {self.style}"
-
-    @property
-    def profile(self):
-        return self._profile.title()
-
-    @property
-    def colors(self):
-        return self._colors
-
-    @property
-    def style(self):
-        return self._style.replace("-", " ").title()
+        self.profile = profile
+        self.colors = colors
+        self.style = style
 
     def ask_profile(self):
-        print("Choose a profile:")
-        available_profiles = ["Desktop", "Laptop", "Server"]
-        profile = ChezmoiMetadata.prompt_options(available_profiles).lower()
-        self._profile = profile
+        profile = questionary.select("Choose a profile:", choices=PROFILES).ask()
+        self.profile = profile[2:].lower()
 
     def ask_colors(self):
-        available_colors: List[str] = sorted(os.listdir(CHEZMOI_COLORS_PATH))
-        print("Choose a color scheme:")
-        colors = ChezmoiMetadata.prompt_options(available_colors)
-        self._colors = Path(colors).name
+        dark_colors: Dict = self.available_colors(mode_filter="Dark")
+        light_colors: Dict = self.available_colors(mode_filter="Light")
+        available_colors: Dict = {}
+        available_colors.update(dark_colors)
+        available_colors[questionary.Separator()] = ""
+        available_colors.update(light_colors)
+        colors = questionary.select(
+            "Choose a color scheme:", choices=list(available_colors.keys())
+        ).ask()
+        self.colors = Path(available_colors[colors]).name
 
     def ask_style(self):
-        available_styles = ["Round Wine", "Square Box"]
-        print("Choose a style:")
-        style = ChezmoiMetadata.prompt_options(available_styles)
-        self._style = style.lower().replace(" ", "-")
+        style = questionary.select("Choose a style:", choices=STYLES).ask()
+        self.style = style[2:].lower().replace(" ", "-")
 
     def write(self):
         metadata = {
-            "profile": self._profile,
-            "colors": self._colors,
-            "style": self._style,
+            "profile": self.profile,
+            "colors": self.colors,
+            "style": self.style,
         }
         file_path = CHEZMOI_METADATA_PATH
         # Save the metadata to file
@@ -99,12 +64,12 @@ class ChezmoiMetadata:
             json.dump(metadata, f)
         # Generate the chezmoi metadata
         chezmoidata_path = CHEZMOI_PATH / ".chezmoidata.toml"
-        shutil.copy(CHEZMOI_COLORS_PATH / self._colors, chezmoidata_path)
+        shutil.copy(CHEZMOI_COLORS_PATH / self.colors, chezmoidata_path)
         with open(chezmoidata_path, "a") as f:
             f.write("\n[metadata]\n")
-            f.write(f'profile = "{self._profile}"\n\n')
+            f.write(f'profile = "{self.profile}"\n\n')
             f.write("[metadata.theme]\n")
-            f.write(f'style = "{self._style}"\n')
+            f.write(f'style = "{self.style}"\n')
 
     @staticmethod
     def read():
@@ -113,32 +78,23 @@ class ChezmoiMetadata:
         return ChezmoiMetadata(**metadata)
 
     @staticmethod
-    def prompt_options(options: List[str]) -> str:
-        for i, option in enumerate(options):
-            print(f"{i + 1}. {option}")
+    def available_colors(mode_filter: Optional[str] = None) -> Dict[str, str]:
+        """Available colors filtered by 'mode'.
 
-        while True:
-            choice = input("Enter a number: ")
-            try:
-                choice = int(choice)
-                if 0 < choice <= len(options):
-                    return options[choice - 1]
-                else:
-                    print(
-                        "Invalid choice. Please enter a number between 1 and",
-                        len(options),
-                    )
-            except ValueError:
-                print("Invalid input. Please enter a number.")
-
-    @staticmethod
-    def get_user_input():
-        metadata = ChezmoiMetadata("", "", "")
-        metadata.ask_profile()
-        metadata.ask_colors()
-        metadata.ask_style()
-
-        return metadata
+        Returns:
+            colors: Dict of pretty-printed color names (key) and their filename (value).
+        """
+        filenames: List[str] = sorted(os.listdir(CHEZMOI_COLORS_PATH))
+        colors = {}
+        for filename in filenames:
+            with open(f"{CHEZMOI_COLORS_PATH}/{filename}", "rb") as f:
+                _raw = tomllib.load(f)
+            name = _raw["colors"]["metadata"]["name"]
+            mode = _raw["colors"]["metadata"]["mode"]
+            if mode_filter and mode != mode_filter:
+                continue
+            colors[name] = filename
+        return colors
 
 
 class ChezmoiColors:
@@ -171,13 +127,9 @@ class ChezmoiColors:
         )
 
     def _add_extra_colors(self, black: str, white: str):
-        gradient = subprocess.run(
-            ["pastel", "gradient", black, white, "--number=8"], capture_output=True
-        )
-        formatted_gradient = subprocess.run(
-            ["pastel", "format"], input=gradient.stdout, capture_output=True
-        )
-        extra_colors = formatted_gradient.stdout.decode().strip().split("\n")
+        pastel = sh.pastel.bake(_tty_out=False)  # type: ignore
+        gradient = pastel.format.hex(_in=pastel.gradient(black, white, number=8))
+        extra_colors = gradient.strip().split("\n")
         # The first and last colors in the gradient are black and white, so skip them
         self._colors_terminal["color_16"] = extra_colors[1]
         self._colors_terminal["color_17"] = extra_colors[2]
@@ -188,20 +140,11 @@ class ChezmoiColors:
 
     @staticmethod
     def _modify_color(color: str, saturation: float = 0.2, light: float = 0.1):
-        saturated_color = subprocess.run(
-            ["pastel", "saturate", str(saturation)],
-            input=color.encode(),
-            capture_output=True,
+        pastel = sh.pastel.bake(_tty_out=False)  # type: ignore
+        hex_color = pastel.format(
+            _in=pastel.lighten(light, _in=pastel.saturate(saturation, color))
         )
-        bright_color = subprocess.run(
-            ["pastel", "lighten", str(light)],
-            input=saturated_color.stdout,
-            capture_output=True,
-        )
-        hex_color = subprocess.run(
-            ["pastel", "format"], input=bright_color.stdout, capture_output=True
-        )
-        return hex_color.stdout.decode().strip()
+        return hex_color.strip()
 
     @property
     def name(self) -> str:
@@ -210,10 +153,6 @@ class ChezmoiColors:
     @property
     def series(self) -> str:
         return self._metadata["series"]
-
-    @property
-    def variant(self) -> str:
-        return self._metadata["variant"]
 
     @property
     def mode(self) -> str:
@@ -233,24 +172,45 @@ class ChezmoiColors:
             f.write(new_toml)
 
 
-if __name__ == "__main__":
-    args = parse_args()
+@app.command()
+def generate(apply: bool = True):
+    """Generate custom metadata for Chezmo."""
+    metadata = ChezmoiMetadata("", "", "")
+    metadata.ask_profile()
+    metadata.ask_colors()
+    metadata.ask_style()
+    metadata.write()
+    if apply:
+        sh.chezmoi.apply(_fg=True)  # type: ignore
 
-    match args.command:
-        case "generate":
-            metadata = ChezmoiMetadata.get_user_input()
-            metadata.write()
-        case "switch":
-            metadata = ChezmoiMetadata.read()
-            metadata.ask_colors()
-            metadata.write()
-        case "print":
-            metadata = ChezmoiMetadata.read()
-            print(metadata)
-        case "generate-colors":
-            available_colors: List[str] = sorted(os.listdir(CHEZMOI_COLORS_PATH))
-            for color_path in available_colors:
-                ChezmoiColors(CHEZMOI_COLORS_PATH / color_path).write()
-                print(f"Filled colors for {color_path}")
-        case _:
-            print("Available commands: generate|switch|print|generate-colors")
+
+@app.command()
+def theme(apply: bool = True):
+    """Switch color scheme."""
+    metadata = ChezmoiMetadata.read()
+    metadata.ask_colors()
+    metadata.write()
+    if apply:
+        sh.chezmoi.apply(_fg=True)  # type: ignore
+
+
+@app.command()
+def metadata():
+    """Print the custom metadata used for Chezmoi."""
+    print(sh.jq(".", CHEZMOI_METADATA_PATH).strip())  # type: ignore
+
+
+@app.command()
+def complete_colors():
+    """Generate the 'extra colors' for the available themes.
+
+    Add the 'bright' colors and 'color16-color21' to a theme by automatically
+    generating them using the 'pastel' CLI tool.
+    """
+    for color_path in ChezmoiMetadata.available_colors().values():
+        ChezmoiColors(CHEZMOI_COLORS_PATH / color_path).write()
+        print(f"Updated colors for {color_path}")
+
+
+if __name__ == "__main__":
+    app()

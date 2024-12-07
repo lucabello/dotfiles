@@ -1,7 +1,6 @@
 [colors.metadata]
-name = "Gruvbox"
+name = " Gruvbox"
 series = "Gruvbox"
-variant = "Medium"
 mode = "Light"
 
 [colors.generic]

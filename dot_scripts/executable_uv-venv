@@ -1,37 +1,31 @@
-#!/usr/bin/env bash
-# uv-venv
-# @describe Manage Python virtual environments with UV
-# @author Luca Bello
-# @meta version 0.1
-# @meta require-tools uv
-# @env WORKON_HOME! <DIR> Folder to contain all the virtual environments
+#!/usr/bin/env -S just --working-directory . --justfile
+set quiet
 
-uv_venv (){
-  uv venv --allow-existing --relocatable --no-config --directory="$WORKON_HOME" "$@"
-}
+uv := `which uv` # require `uv`
+venv_home := env('WORKON_HOME') # require env variable
 
-# @cmd Create a new virtual environment
-new() {
-  uv_venv "$WORKON_HOME/$1"
-}
+[private]
+default:
+  echo "Virtual Environment manager - in Just!\n"
+  just --justfile={{justfile()}} --list
 
-# @cmd Remove a virtual environment
-# @alias rm
-remove() {
-  echo "Removing $WORKON_HOME/$1"
-  rm -rI "$WORKON_HOME/$1"
-}
+# Create a new virtual environment under {{venv_home}}
+new name:
+  uv venv --allow-existing --relocatable --no-config --directory="{{venv_home}}" "{{name}}"
 
-# @cmd List all the virtual environments
-# @alias ls
-list() {
-  ls "$WORKON_HOME"
-}
+alias rm := remove
+# Remove a virtual environment from {{venv_home}}
+remove name:
+  echo "Removing {{venv_home}}/{{name}}"
+  rm -rI "{{venv_home}}/{{name}}"
 
-# @cmd Activate a virtual environment
-activate() {
-  source "$WORKON_HOME/$1/bin/activate"
+alias ls := list
+# List all the virtual environments in {{venv_home}}
+list:
+  ls "{{venv_home}}"
+
+# Activate a virtual environment
+activate name:
+  #!/usr/bin/env bash
+  source "{{venv_home}}/{{name}}/bin/activate"
   exec $SHELL -i
-}
-
-eval "$(argc --argc-eval "$0" "$@")"

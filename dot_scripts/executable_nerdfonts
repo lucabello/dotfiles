@@ -1,8 +1,8 @@
 #!/bin/bash
 # nerdfonts
 # @author from the Internet + Luca Bello
-# @meta version 0.3
-# @meta require-tools gum,curl,wget,unzip,tar,fc-cache,jq
+# @meta version 0.4
+# @meta require-tools curl,wget,unzip,tar,fc-cache,jq
 
 # @cmd Download and install a Nerd Font
 # @option --font*,[`_var_available_fonts`] Name of the font to download
