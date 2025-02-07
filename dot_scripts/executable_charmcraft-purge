@@ -22,7 +22,7 @@ lxc_instances_count=$(echo "$lxc_instances" | jq -r '[ .[] | select(.name | star
 echo "$lxc_instances_count lxc containers will be removed (not used since $argc_last_used)"
 for instance in $(echo $lxc_instances | jq -r '.[] | select(.name | startswith("charmcraft-")) | .name'); do
   echo "Deleting $instance"
-  if [ "$argc_dry_run" = 0 ]; then
+  if [ "$argc_dry_run" != 1 ]; then
     lxc --project=charmcraft delete "$instance"
   fi
 done

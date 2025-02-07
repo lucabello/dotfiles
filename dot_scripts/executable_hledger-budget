@@ -39,4 +39,4 @@ compare:
 # Display the monthly budget allocation
 allocation:
   echo "Current budget allocation:"
-  cat {{ledger_budget_file}} | grep "~ monthly in 2024" --after-context=11
+  cat {{ledger_budget_file}} | grep "~ monthly in 2025" --after-context=11

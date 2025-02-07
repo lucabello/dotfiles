@@ -3,10 +3,10 @@ export EDITOR="nvim"
 export BROWSER="brave-browser"
 export PAGER="batcat --paging=always"
 {{ if eq .metadata.profile "server" -}}
-export LEDGER_FILE="$HOME/.data/syncthing/Sync/Finance/2024.journal"
+export LEDGER_FILE="$HOME/.data/syncthing/Sync/Finance/2025.journal"
 export COMPOSE_HOME="$HOME/Deployments"
 {{- else -}}
-export LEDGER_FILE="$HOME/Sync/Finance/2024.journal"
+export LEDGER_FILE="$HOME/Sync/Finance/2025.journal"
 {{- end }}
 export GOPATH="$HOME/.local/go"
 # Python Virtual Environments

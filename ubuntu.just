@@ -149,7 +149,7 @@ install-ui:
 [group('install')]
 [doc('Install Desktop Applications')]
 install-desktop-apps:
-    sudo snap install thunderbird
+    sudo snap install vivaldi
     sudo snap install --channel=edge ferdium && sudo snap connect ferdium:camera && sudo snap connect ferdium:audio-record
     sudo snap install obsidian --classic
     sudo apt install -y syncthing && sudo systemctl enable syncthing@aegis.service --now
