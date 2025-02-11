@@ -1,4 +1,10 @@
+# Install Canonical blueprints
 mod canonical
+# Initialize a new machine
+mod init
+# Install and update Ubuntu packages
+mod ubuntu
 
-default:
-  just --list
+[no-cd, private]
+@default:
+  just -f {{justfile()}} --list

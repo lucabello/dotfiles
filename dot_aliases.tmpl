@@ -24,8 +24,7 @@ alias keychain='keychain --nogui'
 alias chezmoicd="cd $(chezmoi source-path)"
 
 # just aliases
-alias justubuntu='just -f $(chezmoi source-path)/justfile.ubuntu'
-alias justcanonical='just -f $(chezmoi source-path)/justfile.canonical'
+alias dotfiles='just -f $(chezmoi source-path)/justfile'
 
 # Utilities
 alias restart-polybar="pkill polybar; ~/.config/polybar/launch.sh"

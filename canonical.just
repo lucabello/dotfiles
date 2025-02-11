@@ -6,13 +6,12 @@ charmcraft-channel := '3.x/candidate'
 
 ipaddr := `ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'`
 
-[private]
-[no-cd]
+[private, no-cd]
 @default:
-    just -f canonical.just --list
+    just -f {{justfile_directory()}}/canonical.just --list
 
-[doc("Setup all things Canonical"), no-cd]
-setup: setup-microk8s setup-lxd setup-juju setup-dev
+[group('presets'), doc("Setup a charm development environment"), no-cd]
+charm-dev: setup-microk8s setup-lxd setup-juju setup-dev
 
 [group('setup'), doc('Setup MicroK8s'), no-cd]
 setup-microk8s:
@@ -55,5 +54,3 @@ setup-dev:
         sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null; \
         sudo apt update && sudo apt install gh -y; \
     fi
-    gh auth login
-    gh extension install dlvhdr/gh-dash
