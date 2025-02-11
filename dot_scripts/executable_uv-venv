@@ -25,7 +25,11 @@ list:
   ls "{{venv_home}}"
 
 # Activate a virtual environment
-activate name:
+activate name="":
   #!/usr/bin/env bash
-  source "{{venv_home}}/{{name}}/bin/activate"
+  if [[ -z "{{name}}" ]]; then
+    source ".venv/bin/activate"
+  else
+    source "{{venv_home}}/{{name}}/bin/activate"
+  fi
   exec $SHELL -i

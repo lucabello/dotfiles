@@ -14,7 +14,7 @@ lxc_instances_count=$(echo "$lxc_instances" | jq -r '[ .[] | select(.name | star
 echo "$lxc_instances_count lxc containers will be removed"
 for instance in $(echo $lxc_instances | jq -r '.[] | select(.name | startswith("rockcraft-")) | .name'); do
   echo "Deleting $instance"
-  if [ "$argc_dry_run" = false ]; then
+  if [ "$argc_dry_run" != 1 ]; then
     lxc --project=rockcraft delete "$instance"
   fi
 done

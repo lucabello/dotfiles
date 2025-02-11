@@ -18,3 +18,14 @@ vim.filetype.add {
     ["%.?[jJ]ustfile.*"] = "just",
   },
 }
+
+-- My custom additions!
+vim.opt.scrolloff = 12 -- scroll when close to the screen edges
+vim.opt.shiftwidth = 2 -- convert typed Tab to n spaces
+vim.opt.tabstop = 2
+vim.opt.softtabstop = 2
+vim.cmd "set autoindent"
+vim.cmd "setglobal expandtab"
+vim.cmd "setglobal smartindent"
+-- vim.cmd "set smarttab"
+-- End of my custom additions

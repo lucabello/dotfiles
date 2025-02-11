@@ -1,6 +1,6 @@
 #!/usr/bin/env -S uv run -s -q
 # /// script
-# requires-python = ">=3.10"
+# requires-python = ">=3.12"
 # dependencies = ["questionary", "typer", "sh"]
 # ///
 import questionary
@@ -27,7 +27,7 @@ app = typer.Typer(no_args_is_help=True)
 class ChezmoiMetadata:
     """Helper for handling custom Chezmoi metadata."""
 
-    def __init__(self, profile: str, colors: str, style: str):
+    def __init__(self, profile: Optional[str], colors: Optional[str], style: Optional[str]):
         self.profile = profile
         self.colors = colors
         self.style = style
@@ -173,12 +173,17 @@ class ChezmoiColors:
 
 
 @app.command()
-def generate(apply: bool = True):
-    """Generate custom metadata for Chezmo."""
-    metadata = ChezmoiMetadata("", "", "")
-    metadata.ask_profile()
-    metadata.ask_colors()
-    metadata.ask_style()
+def generate(
+    apply: bool = True,
+    profile: Optional[str] = None, 
+    colors: Optional[str] = None, 
+    style: Optional[str] = None,
+):
+    """Generate custom metadata for Chezmoi."""
+    metadata = ChezmoiMetadata(profile=profile, colors=colors, style=style)
+    metadata.ask_profile() if not profile else None
+    metadata.ask_colors() if not colors else None
+    metadata.ask_style() if not style else None
     metadata.write()
     if apply:
         sh.chezmoi.apply(_fg=True)  # type: ignore

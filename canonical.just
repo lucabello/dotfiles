@@ -1,12 +1,20 @@
+#!/usr/bin/env -S just -f
 microk8s-channel := '1.30-strict/stable'
 juju-channel := '3.5/stable'
+rockcraft-channel := 'latest/candidate'
+charmcraft-channel := '3.x/candidate'
+
 ipaddr := `ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'`
 
-install-canonical: install-microk8s install-lxd install-juju install-dev
+[private, no-cd]
+@default:
+    just -f {{justfile_directory()}}/canonical.just --list
 
-[group('install')]
-[doc('Install MicroK8s')]
-install-microk8s:
+[group('presets'), doc("Setup a charm development environment"), no-cd]
+charm-dev: setup-microk8s setup-lxd setup-juju setup-dev
+
+[group('setup'), doc('Setup MicroK8s'), no-cd]
+setup-microk8s:
     sudo snap install microk8s --channel={{microk8s-channel}}
     sudo snap alias microk8s.kubectl kubectl
     mkdir -p "$HOME"/.kube
@@ -17,22 +25,20 @@ install-microk8s:
     exec sg snap_microk8s "sudo microk8s enable metallb:{{ipaddr}}-{{ipaddr}} && microk8s status --wait-ready"
     exec sg snap_microk8s "sudo microk8s enable registry --wait-ready"
 
-[group('install')]
-[doc('Install LXD')]
-install-lxd:
+[group('setup'), doc('Setup LXD'), no-cd]
+setup-lxd:
     sudo snap install lxd && sudo usermod -aG lxd $USER
     exec sg lxd "lxd init --auto"
 
-[group('install')]
-[doc('Install Juju and Craft-tools')]
-install-juju:
+[group('setup'), doc('Setup Juju and Craft-tools'), no-cd]
+setup-juju:
     sudo snap install juju --channel={{juju-channel}}
-    sudo snap install rockcraft --classic
-    sudo snap install charmcraft --classic
+    sudo snap install rockcraft --classic --channel={{rockcraft-channel}}
+    sudo snap install charmcraft --classic --channel={{charmcraft-channel}}
 
-[group('install')]
-[doc('Install developer tools')]
-install-dev:
+[group('setup'), doc('Setup developer tools'), no-cd]
+setup-dev:
+    if ! which uv; then sudo snap install astral-uv --classic; fi
     if ! which tox; then uv tool install tox; fi
     sudo snap install jhack && sudo snap connect jhack:dot-local-share-juju snapd 
     cargo install --git https://github.com/sed-i/juju-graph
@@ -48,5 +54,3 @@ install-dev:
         sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null; \
         sudo apt update && sudo apt install gh -y; \
     fi
-    gh auth login
-    gh extension install dlvhdr/gh-dash

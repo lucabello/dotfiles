@@ -5,6 +5,8 @@ LICENSE
 # Others
 justfile
 justfile.canonical
+justfile.chezmoi
+justfile.ubuntu
 
 # Desktop ignores
 {{- if ne .metadata.profile "server" }}

@@ -1,24 +1,19 @@
 set shell := ["bash", "-uc"]
 
-install-desktop: _install-generic install-xmonad install-ui install-desktop-apps
-install-server: _install-generic install-server-apps
-_install-generic: upgrade-apt install-python install-shell install-vim install-network
 
-upgrade: upgrade-apt upgrade-python upgrade-shell upgrade-snaps upgrade-vim
+[private]
+@default:
+  just -f {{justfile_directory()}}/ubuntu.just --list
 
-
-[group('install')]
-[doc('Install Python packages')]
-install-python:
+[group('install'), doc('Install Shell packages')]
+install-shell:
+    sudo apt update && sudo apt upgrade -y
+    # Install Python and related utilities
     sudo apt install -y python3 python-is-python3 pip
     # Install uv
     sudo snap install astral-uv --channel=latest/candidate
-    uvx setup
     mkdir -p "$HOME/VirtualEnvs"
-
-[group('install')]
-[doc('Install Shell packages')]
-install-shell:
+    # Install shell and terminal
     sudo apt install -y zsh alacritty
     # Set ZSH as default shell
     if [[ "${SHELL##*/}" != "zsh" ]]; then \
@@ -35,10 +30,15 @@ install-shell:
     "$HOME"/.cargo/bin/rustup default stable
     sudo apt install -y nodejs npm
     sudo snap install go --classic
+    # Install AstroNvim (prerequisites)
+    sudo apt install -y neovim
+    "$HOME"/.cargo/bin/cargo install tree-sitter-cli --locked
+    go install github.com/jesseduffield/lazygit@latest
     # Install Sheldon plugin manager for ZSH
-    cargo install sheldon --locked
+    sudo apt install -y pkg-config cmake
+    "$HOME"/.cargo/bin/cargo install sheldon --locked
     # Install the Starship prompt for ZSH
-    cargo install starship --locked
+    "$HOME"/.cargo/bin/cargo install starship --locked
     # Install Network and SSH utilities
     sudo apt install -y curl wget net-tools keychain
     # Install Desktop-interface utilities
@@ -59,41 +59,18 @@ install-shell:
     curl -fsSL https://tailscale.com/install.sh | sh
     # Other apps
     sudo apt install -y hledger
-    
-[group('install')]
-[doc('Install Network configurations')]
-install-network:
-    #!/usr/bin/env bash
-    sudo sed -i "/^.*[Aa]uto.*$/d" /etc/hosts
-    echo """
-    # Auto-generated local hosts
-    192.168.178.1 home.dev # auto
-    192.168.178.2 hestia.dev # auto
-    192.168.178.100 hades.dev # auto
-    192.168.178.101 zeus.dev # auto
-    192.168.178.102 hera.dev # auto
-    """ | sudo tee -a /etc/hosts >/dev/null
-    sudo sed -i "/^$/d" /etc/hosts
-
-[group('install')]
-[doc('Install AstroNvim')]
-install-vim: install-shell
-    #!/usr/bin/env bash
-    # Install pre-requisites for AstroNvim
-    sudo apt install -y neovim
-    cargo install tree-sitter-cli --locked
-    go install github.com/jesseduffield/lazygit@latest
-
-[group('install')]
-[doc('Install XMonad')]
-install-xmonad: install-kde
-    #!/usr/bin/env bash
-    if [[ "$XDG_CURRENT_DESKTOP" =~ "KDE" ]]; then
-        echo "KDE session detected: all good.";
-    else
-        echo "Make sure to install KDE and switch to it before install XMonad";
-        exit 1;
+    # Chezmoi
+    if [[ ! -f "$HOME/.local/bin/chezmoi" ]]; then \
+      pushd "$HOME"; \
+      sh -c "$(curl -fsLS get.chezmoi.io/lb)" --init lucabello; \
+      popd; \
     fi
+
+[group('install'), doc('Install XMonad')]
+install-xmonad:
+    #!/usr/bin/env bash
+    # Install KDE
+    sudo apt install -y kde-plasma-desktop
     ## Install XMonad
     sudo apt install -y xmonad libghc-xmonad-dev libghc-xmonad-contrib-dev xmobar
     ## Install the compositor
@@ -119,38 +96,29 @@ install-xmonad: install-kde
         echo "$PLASMA_CUSTOM_WM" > $SYSTEMD_FOLDER/plasma-custom-wm.service;
     fi
     ## Enable the service
-    systemctl --user is-enabled plasma-custom-wm.service || systemctl --user enable plasma-custom-wm.service --now
+    systemctl --user is-enabled plasma-custom-wm.service || systemctl --user enable plasma-custom-wm.service
 
-[group('install')]
-[doc('Install KDE')]
-install-kde:
-    sudo apt install -y kde-plasma-desktop
-
-[group('install')]
-[doc('Install UI Components')]
-install-ui:
-    # Install Polybar
-    sudo apt install -y mpd polybar
-    # Install Rofi
-    sudo apt install -y rofi rofi-dev
-    # Install Rofi Emoji
-    uv tool install rofimoji
-    # Install Dunst
-    sudo apt install -y dunst
-    # Install Redshift
-    sudo apt install -y redshift
-    # Install Spectactle (screenshots)
-    sudo apt install -y kde-spectacle
-    # Install Flameshot (screenshots)
-    sudo apt install -y flameshot
-    # Install fonts
-    cp "$(chezmoi source-path)/dot_scripts/executable_nerdfonts" /tmp/nerdfonts; chmod +x /tmp/nerdfonts; /tmp/nerdfonts install --font Monofur --font SpaceMono; rm /tmp/nerdfonts
-
-[group('install')]
-[doc('Install Desktop Applications')]
+[group('install'), doc('Install Desktop apps')]
 install-desktop-apps:
-    sudo snap install thunderbird
-    sudo snap install --channel=edge ferdium && sudo snap connect ferdium:camera && sudo snap connect ferdium:audio-record
+    # Install UI components
+    ## Install Polybar
+    sudo apt install -y mpd polybar
+    ## Install Rofi
+    sudo apt install -y rofi rofi-dev
+    ## Install Rofi Emoji
+    uv tool install rofimoji
+    ## Install Dunst
+    sudo apt install -y dunst
+    ## Install Redshift
+    sudo apt install -y redshift
+    ## Install Spectactle (screenshots)
+    sudo apt install -y kde-spectacle
+    ## Install Flameshot (screenshots)
+    sudo apt install -y flameshot
+    ## Install fonts
+    cp "$(chezmoi source-path)/dot_scripts/executable_nerdfonts" /tmp/nerdfonts; chmod +x /tmp/nerdfonts; /tmp/nerdfonts install --font Monofur --font SpaceMono; rm /tmp/nerdfonts
+    # Install Desktop applications
+    sudo snap install vivaldi
     sudo snap install obsidian --classic
     sudo apt install -y syncthing && sudo systemctl enable syncthing@aegis.service --now
     # Activate Bluetooth
@@ -179,8 +147,7 @@ install-desktop-apps:
         sudo systemctl daemon-reload; sudo apt update; sudo apt install ueberzugpp
     sudo apt install -y mplayer
 
-[group('install')]
-[doc('Install Server Applications')]
+[group('install'), doc('Install Server Applications')]
 install-server-apps:
     # OpenSSH server
     sudo apt install openssh-server
@@ -207,39 +174,26 @@ install-server-apps:
     sudo apt -y install sysbench
 
 
-[group('upgrade')]
-[doc('Upgrade APT packages')]
-upgrade-apt:
+[group('update'), doc('Update all packages')]
+update:
+    # Update and upgrade apt packages
     sudo apt update
     sudo apt upgrade
-
-[group('upgrade')]
-[doc('Upgrade Shell')]
-upgrade-shell: upgrade-apt
+    # Refresh snaps
+    sudo snap refresh
+    # Upgrade Shell-related packages
     rustup update
     cargo install sheldon --locked
     cargo install starship --locked
-    # Update argc
+    ## Update argc
     sudo rm -f /usr/local/bin/argc && curl -fsSL https://raw.githubusercontent.com/sigoden/argc/main/install.sh | sudo sh -s -- --to /usr/local/bin
-    # Update gum
+    ## Update gum
     go install github.com/charmbracelet/gum@latest
     # Update Tailscale
     sudo tailscale update
-
-[group('upgrade')]
-[doc('Upgrade AstroNvim')]
-upgrade-vim: upgrade-apt
+    # Update AstroNvim
     cargo install tree-sitter-cli --locked
     go install github.com/jesseduffield/lazygit@latest
     vim +AstroUpdate +qa
-
-[group('upgrade')]
-[doc('Upgrade Python')]
-upgrade-python: upgrade-apt
+    # Update uv-installed tools
     uv tool upgrade --all
-
-[group('upgrade')]
-[doc('Upgrade Snaps')]
-upgrade-snaps:
-    sudo snap refresh
-

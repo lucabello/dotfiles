@@ -23,9 +23,9 @@ install() {
       || { echo "Error: Unable to download '${argc_font[$i]}'."; return 1; }
     # Extract the font to the correct folder
     if [[ $argc_format == ".zip" ]]; then
-      unzip -q "/tmp/${font_filename}" -d "${font_dir}" || { echo "Error: Unable to extract '${argc_font[$i]}'."; return 1; }
+      unzip -u -q "/tmp/${font_filename}" -d "${font_dir}" || { echo "Error: Unable to extract '${argc_font[$i]}'."; return 1; }
     elif [[ $argc_format == ".tar.xz" ]]; then
-      tar -xf "/tmp/${font_filename}" -C "${font_dir}" || { echo "Error: Unable to extract '${argc_font[$i]}'."; return 1; }
+      tar --overwrite -xf "/tmp/${font_filename}" -C "${font_dir}" || { echo "Error: Unable to extract '${argc_font[$i]}'."; return 1; }
     fi
 
     # Cleanup

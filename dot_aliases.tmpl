@@ -4,7 +4,6 @@ alias bat='batcat --paging=never'
 alias bess='batcat --paging=always'
 alias brave='brave-browser'
 alias venv='uv-venv'
-activate() { if [[ -z "$1" ]]; then source ".venv/bin/activate"; else source "$WORKON_HOME/$1/bin/activate"; fi }
 
 # ls aliases (eza)
 alias l='eza --all --long --group-directories-first --icons --git'
@@ -25,8 +24,7 @@ alias keychain='keychain --nogui'
 alias chezmoicd="cd $(chezmoi source-path)"
 
 # just aliases
-alias justubuntu='just -f $(chezmoi source-path)/justfile.ubuntu'
-alias justcanonical='just -f $(chezmoi source-path)/justfile.canonical'
+alias dotfiles='just -f $(chezmoi source-path)/justfile'
 
 # Utilities
 alias restart-polybar="pkill polybar; ~/.config/polybar/launch.sh"
