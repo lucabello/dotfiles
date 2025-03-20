@@ -1,0 +1,19 @@
+#!/usr/bin/env -S just --working-directory . --justfile
+set quiet
+
+hledger := `which hledger`  # require 'hledger'
+ledger_budget_file := parent_directory(env('LEDGER_FILE')) + "/budgets.journal"
+budget_opts := "--file=" + ledger_budget_file + " -V --auto"
+
+[private]
+default:
+  echo "Set of utilities for HLedger\n"
+  just --justfile {{justfile()}} --list
+
+# Show the unmarked transactions
+unmarked account="credit-card":
+  hledger reg {{account}} --period="from 2025" --unmarked
+
+# Print the journal in order
+print year="2025":
+  hledger print --explicit --strict --period="from {{year}}"

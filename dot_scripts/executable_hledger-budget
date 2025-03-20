@@ -12,19 +12,22 @@ default:
 
 # Display the monthly balance from three months ago to today
 [positional-arguments]
-monthly:
-  hledger bs assets:budget {{budget_opts}} \
+monthly *args="":
+  hledger bal budget {{budget_opts}} \
     --monthly \
-    --forecast="from 2023/08 to today" \
-    --period="from 4 months ago to today" \
+    --forecast="from 2025/01 to today" \
+    --period="from 2025/01 to today" \
+    --cumulative \
     "$@"
 
 # Display the current balance for all budgets
 [positional-arguments]
 print:
   echo "Budget balance:"
-  hledger bal assets:budget {{budget_opts}} \
-    --forecast="from 2023/08 to today" \
+  hledger bal budget {{budget_opts}} \
+    --forecast="from 2025/01 to today" \
+    --period="from 2025/01 to today" \
+    --cumulative \
     "$@"
 
 # Display the current cash balance next to the budget balance
@@ -32,8 +35,10 @@ compare:
   echo "Current Commerzbank balance:"
   hledger bal expr:"credit-card OR commerzbank:checking"
   echo "\nCurrent Budget balance:"
-  hledger bal assets:budget {{budget_opts}} \
-    --forecast="from 2023/08 to today" \
+  hledger bal budget {{budget_opts}} \
+    --forecast="from 2025/01 to today" \
+    --period="from 2025/01 to today" \
+    --cumulative \
     --depth=2
 
 # Display the monthly budget allocation
