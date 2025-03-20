@@ -1,6 +1,5 @@
 set shell := ["bash", "-uc"]
 
-
 [private]
 @default:
   just -f {{justfile_directory()}}/ubuntu.just --list
@@ -28,7 +27,7 @@ install-shell:
     sudo apt install -y make
     which cargo || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     "$HOME"/.cargo/bin/rustup default stable
-    sudo apt install -y nodejs npm
+    sudo snap install node --classic
     sudo snap install go --classic
     # Install AstroNvim (prerequisites)
     sudo apt install -y neovim
