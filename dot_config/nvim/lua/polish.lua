@@ -16,6 +16,7 @@ vim.filetype.add {
   pattern = {
     ["~/%.config/foo/.*"] = "fooscript",
     ["%.?[jJ]ustfile.*"] = "just",
+    [".*%.just"] = "just",
   },
 }
 
