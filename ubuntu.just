@@ -61,7 +61,7 @@ install-shell:
     # Chezmoi
     if [[ ! -f "$HOME/.local/bin/chezmoi" ]]; then \
       pushd "$HOME"; \
-      sh -c "$(curl -fsLS get.chezmoi.io/lb)" --init lucabello; \
+      sh -c "$(curl -fsLS get.chezmoi.io/lb)" -- init lucabello; \
       popd; \
     fi
 
