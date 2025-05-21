@@ -49,7 +49,7 @@ install-shell:
     sudo snap install yq 
     sudo snap install httpie
     sudo snap install pastel
-    uv tool install speedtest-cli
+    uv tool install speedtest-cli --force
     # Development tools
     sudo apt install -y shellcheck
     which argc || curl -fsSL https://raw.githubusercontent.com/sigoden/argc/main/install.sh | sudo sh -s -- --to /usr/local/bin
