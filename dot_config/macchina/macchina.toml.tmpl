@@ -1,5 +1,5 @@
 # Specifies the network interface to use for the LocalIP readout
-interface = "enp5s0"
+interface =
 {{- if eq .metadata.profile "desktop" }} "enp5s0"{{- end }}
 {{- if eq .metadata.profile "server" }} "wlo1"{{- end}}
 
