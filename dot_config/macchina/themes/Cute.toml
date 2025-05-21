@@ -1,0 +1,55 @@
+# Cute
+
+hide_ascii      = false  # disables rendering of ascii art
+prefer_small_ascii = true
+spacing         = 3  # space between the separator and the content
+padding         = 4  # space between the ascii art and the information
+separator       = "⋗"
+key_color       = "Blue"
+separator_color = "Yellow"
+
+[bar]
+glyph           = "o"
+symbol_open     = "("
+symbol_close    = ")"
+hide_delimiters = false
+visible         = false
+
+[box]
+title           = " Cute "
+border          = "rounded"
+visible         = false
+
+[box.inner_margin]
+x               = 2
+y               = 1
+
+[custom_ascii]
+path = "~/.config/macchina/ascii/bunny"
+color           = "Cyan"
+
+[randomize]
+key_color       = false
+separator_color = false
+
+[keys]
+host            = "Host"
+kernel          = "Kernel"
+battery         = "Battery"
+os              = "OS"
+de              = "DE"
+wm              = "WM"
+distro          = "Distro"
+terminal        = "Terminal"
+shell           = "Shell"
+packages        = "Packages"
+uptime          = "Uptime"
+memory          = "Memory"
+machine         = "Machine"
+local_ip        = "IP"
+backlight       = "Brightness"
+resolution      = "Resolution"
+cpu_load        = "CPU Load"
+cpu             = "CPU"
+gpu             = "GPU"
+disk_space      = "Disk Space"
