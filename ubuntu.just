@@ -58,6 +58,7 @@ install-shell:
     curl -fsSL https://tailscale.com/install.sh | sh
     # Other apps
     sudo apt install -y hledger
+    "$HOME"/.cargo/bin/cargo install macchina --locked
     # Chezmoi
     if [[ ! -f "$HOME/.local/bin/chezmoi" ]]; then \
       pushd "$HOME"; \
@@ -184,6 +185,7 @@ update:
     rustup update
     cargo install sheldon --locked
     cargo install starship --locked
+    cargo install macchina --locked
     ## Update argc
     sudo rm -f /usr/local/bin/argc && curl -fsSL https://raw.githubusercontent.com/sigoden/argc/main/install.sh | sudo sh -s -- --to /usr/local/bin
     ## Update gum
