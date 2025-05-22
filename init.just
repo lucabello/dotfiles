@@ -13,13 +13,13 @@ hostname := `hostname`
 
 
 [no-cd, group('profile'), doc('Setup Desktop')]
-desktop: get-keys install-shell install-xmonad install-desktop-apps (configure-chezmoi "desktop")
+desktop: get-keys install-shell install-xmonad install-desktop-apps configure-chezmoi
 
 [no-cd, doc('Setup Laptop')]
-laptop: get-keys install-shell install-xmonad install-desktop-apps (configure-chezmoi "laptop")
+laptop: get-keys install-shell install-xmonad install-desktop-apps configure-chezmoi
 
 [no-cd, doc('Setup Home Server')]
-server: get-keys install-shell install-server-apps (configure-chezmoi "server")
+server: get-keys install-shell install-server-apps configure-chezmoi
 
 
 [private, no-cd]
@@ -32,19 +32,21 @@ get-keys:
   TMP_FOLDER="$(mktemp --directory --tmpdir="$HOME")"
   cd "$TMP_FOLDER"
   # Get device SSH keys
-  ITEM_ID="$(bw get item {{hostname}} | jq -r .id)"
-  bw get attachment --itemid "{item_id}}" "{{hostname}}.pub" && chmod 644 "{{hostname}}.pub"
-  bw get attachment --itemid "{item_id}}" "{{hostname}}" && chmod 600 "{{hostname}}"
+  ITEM_ID="$(bw get item {{hostname}}.machine | jq -r .id)"
+  bw get attachment --itemid "$ITEM_ID" "{{hostname}}.pub" && chmod 644 "{{hostname}}.pub"
+  bw get attachment --itemid "$ITEM_ID" "{{hostname}}" && chmod 600 "{{hostname}}"
   if [[ -f "{{hostname}}" ]]; then mv "{{hostname}}.pub" ~/.ssh/ && mv "{{hostname}}" ~/.ssh/; fi
+  echo "Moved '{{hostname}}' keys into ~/.ssh"
   # Get git SSH keys
   GIT_ITEM_ID="$(bw list items --url='github.com' --search=lucabello | jq -r '.[0].id')"
   bw get attachment --itemid "$GIT_ITEM_ID" "git.pub" && chmod 644 "git.pub"
   bw get attachment --itemid "$GIT_ITEM_ID" "git" && chmod 600 "git"
   if [[ -f "git" ]]; then mv git.pub ~/.ssh/ && mv git ~/.ssh/; fi
+  echo "Moved 'git' keys into ~/.ssh"
   echo "Removing $TMP_FOLDER" && rmdir "$TMP_FOLDER"
 
 [private, no-cd]
-configure-chezmoi profile:
+configure-chezmoi:
   #!/usr/bin/env bash
   CHEZMOI_PATH="$($HOME/.local/bin/chezmoi source-path)"
   if [[ ! -f "$CHEZMOI_PATH/.variables.json" ]]; then
@@ -52,8 +54,8 @@ configure-chezmoi profile:
     cd "$TMP_FOLDER"
     cp "$CHEZMOI_PATH/dot_scripts/executable_chezmoi-extra" chezmoi-extra
     chmod +x chezmoi-extra
-    ./chezmoi-extra complete-colors >/dev/null
-    ./chezmoi-extra generate --profile="{{profile}}" --no-apply
-    rm chezmoi-extra && rmdir "$TMP_FOLDER"
+    # ./chezmoi-extra complete-colors >/dev/null
+    ./chezmoi-extra generate --no-apply
+    rm chezmoi-extra && cd .. && rmdir "$TMP_FOLDER"
   fi
   chezmoi apply

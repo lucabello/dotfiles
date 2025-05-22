@@ -174,7 +174,7 @@ class ChezmoiColors:
 
 @app.command()
 def generate(apply: bool = True):
-    """Generate custom metadata for Chezmo."""
+    """Generate custom metadata for Chezmoi."""
     metadata = ChezmoiMetadata("", "", "")
     metadata.ask_profile()
     metadata.ask_colors()
