@@ -1,6 +1,6 @@
 #!/usr/bin/env -S just -f
-microk8s-channel := '1.30-strict/stable'
-juju-channel := '3.5/stable'
+microk8s-channel := '1.32-strict/stable'
+juju-channel := '3.6/stable'
 rockcraft-channel := 'latest/candidate'
 charmcraft-channel := '3.x/candidate'
 
@@ -16,7 +16,6 @@ charm-dev: setup-microk8s setup-lxd setup-juju setup-dev
 [group('setup'), doc('Setup MicroK8s'), no-cd]
 setup-microk8s:
     sudo snap install microk8s --channel={{microk8s-channel}}
-    sudo snap alias microk8s.kubectl kubectl
     mkdir -p "$HOME"/.kube
     sudo usermod -aG snap_microk8s $USER
     exec sg snap_microk8s "microk8s config > ~/.kube/config && sudo chown -f -R $USER ~/.kube"
