@@ -1,0 +1,33 @@
+#!/usr/bin/env -S just --working-directory . --justfile
+# set positional-arguments
+# set export
+set quiet
+
+[private]
+default:
+  echo "Utility operations for Observability(core) charms\n"
+  just --justfile {{justfile()}} --list
+
+# Close a track
+close-track charm track:
+  charmcraft close {{charm}} {{track}}/edge
+  charmcraft close {{charm}} {{track}}/beta
+  charmcraft close {{charm}} {{track}}/candidate
+  charmcraft close {{charm}} {{track}}/stable
+
+# Set the default track
+set-default-track charm track:
+  #!/usr/bin/env bash
+  # Verify CHARMCRAFT_AUTH is specified
+  if [[ -z "$CHARMCRAFT_AUTH" ]]; then
+    echo "You must set the CHARMCRAFT_AUTH environment variable. Please run:"
+    echo '  charmcraft login --export ~/.charmcraft.auth && export CHARMCRAFT_AUTH="$(cat ~/.charmcraft.auth)"'
+    exit 1
+  fi
+  # Prepare the authentication header
+  CHARMHUB_MACAROON_HEADER="Authorization: Macaroon $(echo "$CHARMCRAFT_AUTH" | base64 -d | jq -r .v)"
+  # Send the request to change the default track
+  curl -X PATCH "https://api.charmhub.io/v1/charm/{{charm}}" \
+    -H "$CHARMHUB_MACAROON_HEADER" \
+    -H "Content-Type: application/json" \
+    -d '{"default-track": "{{track}}"}'
