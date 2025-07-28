@@ -1,0 +1,150 @@
+#!/usr/bin/env -S just --working-directory . --justfile
+set positional-arguments
+set export
+set quiet
+
+[private]
+default:
+  echo "Calculate some GitHub stats for Observability(core) @ Canonical repos\n"
+  just --justfile {{justfile()}} --list
+
+# Fetch issues information in the current folder for the specified repos (default: all)
+[confirm("Do you want to download data to this folder?")]
+fetch *args='':
+  #!/usr/bin/env bash
+  default_repos="canonical/alertmanager-k8s-operator,canonical/alertmanager-rock,canonical/avalanche-k8s-operator,canonical/blackbox-exporter-k8s-operator,canonical/catalogue-k8s-operator,canonical/cos-configuration-k8s-operator,canonical/cos-coordinated-workers,canonical/cos-lib,canonical/cos-lite-bundle,canonical/cos-proxy-operator,canonical/cos-tool,canonical/git-sync-rock,canonical/grafana-agent-k8s-operator,canonical/grafana-agent-operator,canonical/grafana-agent-rock,canonical/grafana-agent-snap,canonical/grafana-cloud-integrator,canonical/grafana-k8s-operator,canonical/grafana-rock,canonical/juju-doctor,canonical/k6-k8s-operator,canonical/karma-alertmanager-proxy-k8s-operator,canonical/karma-k8s-operator,canonical/karma-rock,canonical/loki-coordinator-k8s-operator,canonical/loki-k8s-operator,canonical/loki-worker-k8s-operator,canonical/loki-rock,canonical/mimir-bundle,canonical/mimir-coordinator-k8s-operator,canonical/mimir-rock,canonical/mimir-worker-k8s-operator,canonical/nginx-prometheus-exporter-rock,canonical/node-exporter-rock,canonical/node-exporter-snap,canonical/nrpe_exporter,canonical/o11y-tester-operator,canonical/observability,canonical/observability-docs,canonical/observability-libs,canonical/opentelemetry-collector-k8s-operator,canonical/opentelemetry-collector-rock,canonical/opentelemetry-collector-snap,canonical/prometheus-k8s-operator,canonical/prometheus-pushgateway-k8s-operator,canonical/prometheus-pushgateway-rock,canonical/prometheus-rock,canonical/prometheus-scrape-config-k8s-operator,canonical/prometheus-scrape-target-k8s-operator,canonical/s3proxy-rock,canonical/script-exporter-operator,canonical/script-exporter-snap,canonical/snmp-exporter-operator,canonical/snmp-notifier-snap,canonical/snmp_notifier,canonical/xk6-rock"
+
+  # Check if repositories are provided, otherwise use the default
+  if [ -z "$1" ]; then
+    # Convert the comma-separated list into an array
+    IFS=',' read -r -a repos <<< "$default_repos"
+  else
+    # Convert the comma-separated list into an array
+    IFS=',' read -r -a repos <<< "$1"
+  fi
+
+  # Loop through each repository and save issue data
+  for repo in "${repos[@]}"; do
+    echo "Fetching issues and PRs for repository: $repo"
+    
+    # Fetch open issues
+    gh issue list --repo "$repo" --state open --json="author,body,closed,closedAt,comments,createdAt,id,labels,number,state,title,updatedAt,url" > "${repo//\//_}_open_issues.json"
+    
+    # Fetch closed issues
+    gh issue list --repo "$repo" --state closed --json="author,body,closed,closedAt,comments,createdAt,id,labels,number,state,title,updatedAt,url" > "${repo//\//_}_closed_issues.json"
+
+    # Fetch PRs
+    gh pr list --repo "$repo" --json="author,body,closed,closedAt,closingIssuesReferences,comments,createdAt,headRepository,id,isDraft,labels,mergeStateStatus,mergedAt,state,title,updatedAt,url" > "${repo//\//_}_pull_requests.json"
+    
+    echo "Data saved to ${repo//\//_}_open_issues.json, ${repo//\//_}_closed_issues.json and ${repo//\//_}_pull_requests.json"
+  done
+
+# Analyze the locally-saved issue information (run fetch first)
+[confirm("Do you want to read data from this folder?")]
+analyze filter='':
+  #!/usr/bin/env bash 
+  # Initialize counters and sums
+  total_open_issues_sum=0
+  total_open_issues_no_comment_sum=0
+  total_open_prs_sum=0
+  total_draft_prs_sum=0
+  total_time_closed_last_two_weeks=0
+  total_issues_closed_last_two_weeks=0
+  total_bug_issues_sum=0
+  repo_count=0
+
+  # Loop through all open issues JSON files
+  for open_file in *_open_issues.json; do
+    if [[ "$open_file" != *"$filter"* ]]; then
+      echo "+ ${open_file%_open_issues.json} (skipped)"
+      continue
+    fi
+    # Extract the repository name from the filename
+    repo_name="${open_file%_open_issues.json}"
+    echo "+ $repo_name"
+    
+    # Calculate total number of open issues
+    total_open_issues=$(jq length "$open_file")
+    total_open_issues_sum=$((total_open_issues_sum + total_open_issues))
+    echo "Open Issues: $total_open_issues"
+
+    # Calculate total and average number of issues with "Type: Bug" label
+    total_bug_issues=$(jq '[.[] | select(.labels[]?.name == "Type: Bug")] | length' "$open_file")
+    total_bug_issues_sum=$((total_bug_issues_sum + total_bug_issues))
+    echo "Open Bugs: $total_bug_issues"
+
+    # Calculate total number of open issues without a comment
+    total_open_issues_no_comment=$(jq '[.[] | select(.comments | length == 0)] | length' "$open_file")
+    total_open_issues_no_comment_sum=$((total_open_issues_no_comment_sum + total_open_issues_no_comment))
+    echo "Open Issues Without a Comment: $total_open_issues_no_comment"
+    
+    # Construct the corresponding closed issues filename
+    closed_file="${repo_name}_closed_issues.json"
+    
+    # Check if the closed issues file exists
+    if [[ -f "$closed_file" ]]; then
+      # Calculate average time interval to closure for issues closed in the last two weeks
+      time_closed_last_two_weeks=$(jq -r 'map(select(.closedAt | fromdateiso8601 > (now - 1209600))) | .[] | (.closedAt | fromdateiso8601) - (.createdAt | fromdateiso8601)' "$closed_file")
+      count_closed_last_two_weeks=$(echo "$time_closed_last_two_weeks" | wc -l)
+      
+      if [[ -n "$time_closed_last_two_weeks" ]]; then
+        total_time_closed_last_two_weeks_current_repo=$(echo "$time_closed_last_two_weeks" | awk '{s+=$1} END {print s}')
+        total_issues_closed_last_two_weeks_current_repo=$(echo "$count_closed_last_two_weeks" | awk '{s+=$1} END {print s}')
+        echo "Closed Issues in the last 2 weeks: $total_issues_closed_last_two_weeks_current_repo"
+        echo "Time to Close in the last 2 weeks: $(echo "scale=2; $total_time_closed_last_two_weeks_current_repo / 86400" | bc -l)"
+        total_time_closed_last_two_weeks=$(echo "$total_time_closed_last_two_weeks_current_repo + $total_time_closed_last_two_weeks" | bc -l)
+        total_issues_closed_last_two_weeks=$(echo "$total_issues_closed_last_two_weeks_current_repo + $total_issues_closed_last_two_weeks" | bc -l)
+      # else
+        # echo "Closed Issues in the last 2 weeks: 0"
+        # echo "Time to Close (average) in the last 2 weeks: -"
+        # echo "No issues closed in the last two weeks for $repo_name."
+      fi
+
+      # Count the number of bugs created in the last two weeks
+      bugs_created_last_two_weeks=$(jq '[.[] | select(.labels[]?.name == "Type: Bug" and (.createdAt | type == "string") and (.createdAt | fromdateiso8601 > (now - 1209600)))] | length' "$open_file")
+      total_bugs_created_last_two_weeks=$((total_bugs_created_last_two_weeks + bugs_created_last_two_weeks))
+      echo "Bugs opened in the last 2 weeks: $bugs_created_last_two_weeks"
+
+    else
+      echo "Closed issues file not found for $repo_name."
+    fi
+
+    pr_file="${repo_name}_pull_requests.json"
+    # Check if the pull requests file exists
+    if [[ -f "$pr_file" ]]; then
+      total_draft_prs=$(jq '[.[] | select(.isDraft == true)] | length' "$pr_file")
+      total_draft_prs_sum=$((total_draft_prs_sum + total_draft_prs))
+      total_open_prs=$(jq '[.[] | select(.state == "OPEN")] | length' "$pr_file")
+      total_open_prs_sum=$((total_open_prs_sum + total_open_prs))
+    else
+      echo "Pull requests file not found for $repo_name."
+    fi
+
+    # Increment the repository count
+    repo_count=$((repo_count + 1))
+    echo
+  done
+
+  # Calculate and display overall totals and averages
+  if [[ $repo_count -gt 0 ]]; then
+    echo
+    echo "= Summary ="
+    echo "Repositories: $repo_count"
+    echo
+    echo "Open Issues: $total_open_issues_sum ($(echo "scale=2; $total_open_issues_sum / $repo_count" | bc -l) / repo)"
+    echo "Open Bugs: $total_bug_issues_sum ($(echo "scale=2; $total_bug_issues_sum / $repo_count" | bc -l) / repo)"
+    echo "Open Issues Without a Comment: $total_open_issues_no_comment_sum ($(echo "scale=2; $total_open_issues_no_comment_sum / $repo_count" | bc -l) / repo)"
+    if [[ "$total_issues_closed_last_two_weeks" -gt 0 ]]; then
+      average_time_closed_last_two_weeks=$(echo "scale=2; $total_time_closed_last_two_weeks / $total_issues_closed_last_two_weeks / 86400" | bc -l)
+    else
+      average_time_closed_last_two_weeks="-"
+    fi
+    echo "Time to Close in the last 2 weeks: $average_time_closed_last_two_weeks days / issue (over $total_issues_closed_last_two_weeks issues)"
+    echo "Bugs opened in the last 2 weeks: $total_bugs_created_last_two_weeks ($(echo "scale=2; $total_bugs_created_last_two_weeks / $repo_count" | bc -l) / repo)"
+    echo
+    echo "Open PRs: $total_open_prs_sum ($(echo "scale=2; $total_open_prs_sum / $repo_count" | bc -l) / repo)"
+    echo "Draft PRs: $total_draft_prs_sum ($(echo "scale=2; $total_draft_prs_sum / $repo_count" | bc -l) / repo)"
+  else
+    echo "No repositories found."
+  fi
+
