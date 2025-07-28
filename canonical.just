@@ -1,5 +1,6 @@
 #!/usr/bin/env -S just -f
 microk8s-channel := '1.32-strict/stable'
+canonicalk8s-channel := '1.33-classic/stable'
 juju-channel := '3.6/stable'
 rockcraft-channel := 'latest/candidate'
 charmcraft-channel := '3.x/candidate'
@@ -11,7 +12,7 @@ ipaddr := `ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'`
     just -f {{justfile_directory()}}/canonical.just --list
 
 [group('presets'), doc("Setup a charm development environment"), no-cd]
-charm-dev: setup-microk8s setup-lxd setup-juju setup-dev
+charm-dev: setup-canonicalk8s setup-lxd setup-juju setup-devtools
 
 [group('setup'), doc('Setup MicroK8s'), no-cd]
 setup-microk8s:
@@ -23,6 +24,16 @@ setup-microk8s:
     exec sg snap_microk8s "sudo microk8s enable dns hostpath-storage ingress rbac && microk8s status --wait-ready"
     exec sg snap_microk8s "sudo microk8s enable metallb:{{ipaddr}}-{{ipaddr}} && microk8s status --wait-ready"
     exec sg snap_microk8s "sudo microk8s enable registry --wait-ready"
+
+[group('setup'), doc('Setup Canonical K8s'), no-cd]
+setup-canonicalk8s:
+    sudo snap install k8s --classic --channel={{canonicalk8s-channel}}
+    k8s bootstrap
+    k8s status --wait-ready
+    k8s enable local-storage
+    k8s enable load-balancer
+    k8s set load-balancer.l2-mode=true load-balancer.cidrs="{{ipaddr}}/32"
+    k8s status --wait-ready
 
 [group('setup'), doc('Setup LXD'), no-cd]
 setup-lxd:
@@ -36,7 +47,7 @@ setup-juju:
     sudo snap install charmcraft --classic --channel={{charmcraft-channel}}
 
 [group('setup'), doc('Setup developer tools'), no-cd]
-setup-dev:
+setup-devtools:
     if ! which uv; then sudo snap install astral-uv --classic; fi
     if ! which tox; then uv tool install tox; fi
     sudo snap install jhack && sudo snap connect jhack:dot-local-share-juju snapd 
