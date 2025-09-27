@@ -28,12 +28,15 @@ setup-microk8s:
 [group('setup'), doc('Setup Canonical K8s'), no-cd]
 setup-canonicalk8s:
     sudo snap install k8s --classic --channel={{canonicalk8s-channel}}
-    k8s bootstrap
-    k8s status --wait-ready
-    k8s enable local-storage
-    k8s enable load-balancer
-    k8s set load-balancer.l2-mode=true load-balancer.cidrs="{{ipaddr}}/32"
-    k8s status --wait-ready
+    sudo k8s bootstrap  # TODO: grep the cluster status from 'sudo k8s status' and ignore if already ready
+    sudo k8s status --wait-ready
+    sudo k8s enable local-storage
+    sudo k8s enable load-balancer
+    sudo k8s set load-balancer.l2-mode=true load-balancer.cidrs="{{ipaddr}}/32"
+    sudo k8s status --wait-ready
+    sudo k8s kubectl config view --raw | sudo -u $USER /snap/juju/current/bin/juju add-k8s canonicalk8s --client
+    mkdir -p ~/.kube
+    sudo k8s kubectl config view --raw | sudo tee ~/.kube/config >/dev/null && sudo chown -f -R $USER ~/.kube
 
 [group('setup'), doc('Setup LXD'), no-cd]
 setup-lxd:
@@ -50,6 +53,7 @@ setup-juju:
 setup-devtools:
     if ! which uv; then sudo snap install astral-uv --classic; fi
     if ! which tox; then uv tool install tox; fi
+    sudo snap install kubectl --classic
     sudo snap install jhack && sudo snap connect jhack:dot-local-share-juju snapd 
     cargo install --git https://github.com/sed-i/juju-graph
     # go install github.com/snapcore/spread/cmd/spread@latest
@@ -64,3 +68,5 @@ setup-devtools:
         sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null; \
         sudo apt update && sudo apt install gh -y; \
     fi
+    # Install GRPC TUI client
+    go install github.com/felangga/chiko/cmd/chiko@latest

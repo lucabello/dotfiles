@@ -2,8 +2,6 @@
 set allow-duplicate-recipes
 import 'ubuntu.just'
 
-hostname := `hostname`
-
 [private, no-cd]
 @default:
   echo "Available presets:"
@@ -32,11 +30,11 @@ get-keys:
   TMP_FOLDER="$(mktemp --directory --tmpdir="$HOME")"
   cd "$TMP_FOLDER"
   # Get device SSH keys
-  ITEM_ID="$(bw get item {{hostname}}.machine | jq -r .id)"
-  bw get attachment --itemid "$ITEM_ID" "{{hostname}}.pub" && chmod 644 "{{hostname}}.pub"
-  bw get attachment --itemid "$ITEM_ID" "{{hostname}}" && chmod 600 "{{hostname}}"
-  if [[ -f "{{hostname}}" ]]; then mv "{{hostname}}.pub" ~/.ssh/ && mv "{{hostname}}" ~/.ssh/; fi
-  echo "Moved '{{hostname}}' keys into ~/.ssh"
+  ITEM_ID="$(bw get item zeus.machine | jq -r .id)"
+  bw get attachment --itemid "$ITEM_ID" "id_ed25519.pub" && chmod 644 "id_ed25519.pub"
+  bw get attachment --itemid "$ITEM_ID" "id_ed25519" && chmod 600 "id_ed25519"
+  if [[ -f "id_ed25519" ]]; then mv "id_ed25519.pub" ~/.ssh/zeus.pub && mv "id_ed25519" ~/.ssh/zeus; fi
+  echo "Moved 'zeus' keys into ~/.ssh"
   # Get git SSH keys
   GIT_ITEM_ID="$(bw list items --url='github.com' --search=lucabello | jq -r '.[0].id')"
   bw get attachment --itemid "$GIT_ITEM_ID" "git.pub" && chmod 644 "git.pub"
@@ -58,4 +56,4 @@ configure-chezmoi:
     ./chezmoi-extra generate --no-apply
     rm chezmoi-extra && cd .. && rmdir "$TMP_FOLDER"
   fi
-  chezmoi apply
+  $HOME/.local/bin/chezmoi apply

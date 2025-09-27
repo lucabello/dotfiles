@@ -10,7 +10,7 @@ install-shell:
     # Install Python and related utilities
     sudo apt install -y python3 python-is-python3 pip
     # Install uv
-    sudo snap install astral-uv --channel=latest/candidate
+    sudo snap install astral-uv --channel=latest/candidate --classic
     mkdir -p "$HOME/VirtualEnvs"
     # Install shell and terminal
     sudo apt install -y zsh alacritty
@@ -23,14 +23,17 @@ install-shell:
         sudo apt-add-repository ppa:git-core/ppa; \
         sudo apt-get update && sudo apt-get install -y git; \
     fi
+    # Install Network and SSH utilities
+    sudo apt install -y curl wget net-tools keychain
     # Install common build tools
-    sudo apt install -y make
+    sudo apt install -y make pkg-config libssl-dev
     which cargo || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     "$HOME"/.cargo/bin/rustup default stable
-    sudo snap install node --classic
+    sudo apt install -y node npm
     sudo snap install go --classic
-    # Install AstroNvim (prerequisites)
-    sudo apt install -y neovim
+    # Install nvim and its plugin prerequisites
+    sudo apt install -y python3.13-venv # Required by nvim Mason plugin
+    sudo snap install nvim --classic
     "$HOME"/.cargo/bin/cargo install tree-sitter-cli --locked
     go install github.com/jesseduffield/lazygit@latest
     # Install Sheldon plugin manager for ZSH
@@ -38,18 +41,18 @@ install-shell:
     "$HOME"/.cargo/bin/cargo install sheldon --locked
     # Install the Starship prompt for ZSH
     "$HOME"/.cargo/bin/cargo install starship --locked
-    # Install Network and SSH utilities
-    sudo apt install -y curl wget net-tools keychain
     # Install Desktop-interface utilities
     sudo apt install -y xclip xdotool
     # Install CLI utilities
     sudo apt install -y bat tree fd-find fzf ripgrep sshuttle jq eza unzip
     sudo apt install -y btop ranger
-    sudo snap install json-tui
+    go install github.com/antonmedv/fx@latest  # Terminal JSON viewer & processor
+    curl -sS https://raw.githubusercontent.com/Lifailon/lazyjournal/main/install.sh | bash  # TUI for journald
     sudo snap install yq 
     sudo snap install httpie
     sudo snap install pastel
     uv tool install speedtest-cli --force
+    sudo apt install -y delta
     # Development tools
     sudo apt install -y shellcheck
     which argc || curl -fsSL https://raw.githubusercontent.com/sigoden/argc/main/install.sh | sudo sh -s -- --to /usr/local/bin
@@ -194,9 +197,8 @@ update:
     go install github.com/charmbracelet/gum@latest
     # Update Tailscale
     sudo tailscale update
-    # Update AstroNvim
+    # Update vim plugins
     cargo install tree-sitter-cli --locked
     go install github.com/jesseduffield/lazygit@latest
-    vim +AstroUpdate +qa
     # Update uv-installed tools
     uv tool upgrade --all

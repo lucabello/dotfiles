@@ -1,11 +1,26 @@
 alias rgrep='rgrep --color=auto'
 alias vim='nvim'
-alias bat='batcat --paging=never'
 alias bess='batcat --paging=always'
 alias brave='brave-browser'
 alias venv='uv-venv'
 alias fetch='macchina'
 alias fetch-more='macchina --config ~/.config/macchina/more.toml'
+
+function ranger {
+    local IFS=$'\t\n'
+    local tempfile="$(mktemp -t tmp.XXXXXX)"
+    local ranger_cmd=(
+        command
+        ranger
+        --cmd="map Q chain shell echo %d > "$tempfile"; quitall"
+    )
+
+    ${ranger_cmd[@]} "$@"
+    if [[ -f "$tempfile" ]] && [[ "$(cat -- "$tempfile")" != "$(echo -n `pwd`)" ]]; then
+        cd -- "$(cat "$tempfile")" || return
+    fi
+    command rm -f -- "$tempfile" 2>/dev/null
+}
 
 # ls aliases (eza)
 alias l='eza --all --long --group-directories-first --icons --git'
