@@ -29,7 +29,7 @@ install-shell:
     sudo apt install -y make pkg-config libssl-dev
     which cargo || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     "$HOME"/.cargo/bin/rustup default stable
-    sudo apt install -y node npm
+    sudo apt install -y nodejs npm
     sudo snap install go --classic
     # Install nvim and its plugin prerequisites
     sudo apt install -y python3.13-venv # Required by nvim Mason plugin
@@ -52,7 +52,7 @@ install-shell:
     sudo snap install httpie
     sudo snap install pastel
     uv tool install speedtest-cli --force
-    sudo apt install -y delta
+    sudo apt install -y git-delta
     # Development tools
     sudo apt install -y shellcheck
     which argc || curl -fsSL https://raw.githubusercontent.com/sigoden/argc/main/install.sh | sudo sh -s -- --to /usr/local/bin
@@ -135,19 +135,19 @@ install-desktop-apps:
         sudo tee /etc/apt/sources.list.d/brave-browser-release.list; \
         sudo apt update && sudo apt install -y brave-browser; \
     fi
-    # Install Spotify
-    if ! which spotify; then \
-        curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | \
-        sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg; \
-        echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list; \
-        sudo apt update && sudo apt install -y spotify-client; \
-    fi
-    # Install ueberzugpp (requirement for something, I don't remember what)
-    echo 'deb http://download.opensuse.org/repositories/home:/justkidding/xUbuntu_24.04/ /' \
-        sudo tee /etc/apt/sources.list.d/home:justkidding.list; \
-        curl -fsSL https://download.opensuse.org/repositories/home:justkidding/xUbuntu_24.04/Release.key \
-        | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_justkidding.gpg > /dev/null; \
-        sudo systemctl daemon-reload; sudo apt update; sudo apt install ueberzugpp
+    # # Install Spotify
+    # if ! which spotify; then \
+    #     curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | \
+    #     sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg; \
+    #     echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list; \
+    #     sudo apt update && sudo apt install -y spotify-client; \
+    # fi
+    # # Install ueberzugpp (requirement for something, I don't remember what)
+    # echo 'deb http://download.opensuse.org/repositories/home:/justkidding/xUbuntu_24.04/ /' \
+    #     sudo tee /etc/apt/sources.list.d/home:justkidding.list; \
+    #     curl -fsSL https://download.opensuse.org/repositories/home:justkidding/xUbuntu_24.04/Release.key \
+    #     | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_justkidding.gpg > /dev/null; \
+    #     sudo systemctl daemon-reload; sudo apt update; sudo apt install ueberzugpp
     sudo apt install -y mplayer
 
 [group('install'), doc('Install Server Applications')]
