@@ -181,7 +181,7 @@ def generate(apply: bool = True):
     metadata.ask_style()
     metadata.write()
     if apply:
-        sh.chezmoi.apply(_fg=True)  # type: ignore
+        sh.chezmoi.apply(mode="symlink", _fg=True)  # type: ignore
 
 
 @app.command()
@@ -191,7 +191,7 @@ def theme(apply: bool = True):
     metadata.ask_colors()
     metadata.write()
     if apply:
-        sh.chezmoi.apply(_fg=True)  # type: ignore
+        sh.chezmoi.apply(mode="symlink", _fg=True)  # type: ignore
 
 
 @app.command()
