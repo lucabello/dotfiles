@@ -1,6 +1,6 @@
 #!/usr/bin/env -S just -f
 microk8s-channel := '1.32-strict/stable'
-canonicalk8s-channel := '1.33-classic/stable'
+canonicalk8s-channel := '1.34-classic/stable'
 juju-channel := '3.6/stable'
 rockcraft-channel := 'latest/candidate'
 charmcraft-channel := '3.x/candidate'
@@ -34,7 +34,6 @@ setup-canonicalk8s:
     sudo k8s enable load-balancer
     sudo k8s set load-balancer.l2-mode=true load-balancer.cidrs="{{ipaddr}}/32"
     sudo k8s status --wait-ready
-    sudo k8s kubectl config view --raw | sudo -u $USER /snap/juju/current/bin/juju add-k8s canonicalk8s --client
     mkdir -p ~/.kube
     sudo k8s kubectl config view --raw | sudo tee ~/.kube/config >/dev/null && sudo chown -f -R $USER ~/.kube
 
@@ -46,6 +45,7 @@ setup-lxd:
 [group('setup'), doc('Setup Juju and Craft-tools'), no-cd]
 setup-juju:
     sudo snap install juju --channel={{juju-channel}}
+    sudo k8s kubectl config view --raw | sudo -u $USER /snap/juju/current/bin/juju add-k8s canonicalk8s --client
     sudo snap install rockcraft --classic --channel={{rockcraft-channel}}
     sudo snap install charmcraft --classic --channel={{charmcraft-channel}}
 
