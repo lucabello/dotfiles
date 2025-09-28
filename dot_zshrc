@@ -40,3 +40,4 @@ eval $(keychain --eval --quiet --noask)
 eval "$(sheldon source)"
 eval "$(starship init zsh)"
 
+export PATH=$PATH:$HOME/.local/bin
