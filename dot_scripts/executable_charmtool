@@ -3,19 +3,21 @@
 # set export
 set quiet
 
+set shell := ["bash", "-uc"]
+
 [private]
 default:
   echo "Utility operations for Observability(core) charms\n"
   just --justfile {{justfile()}} --list
 
-# Close a track
+[group('charm'), doc('Close a track')]
 close-track charm track:
   charmcraft close {{charm}} {{track}}/edge
   charmcraft close {{charm}} {{track}}/beta
   charmcraft close {{charm}} {{track}}/candidate
   charmcraft close {{charm}} {{track}}/stable
 
-# Set the default track
+[group('charm'), doc('Set the default track')]
 set-default-track charm track:
   #!/usr/bin/env bash
   # Verify CHARMCRAFT_AUTH is specified
@@ -31,3 +33,23 @@ set-default-track charm track:
     -H "$CHARMHUB_MACAROON_HEADER" \
     -H "Content-Type: application/json" \
     -d '{"default-track": "{{track}}"}'
+
+[group("dev"), doc("Delete all the LXC instances that charmcraft creates to pack charms")]
+lxc-purge project="charmcraft" last-used="-7 days":
+  #!/usr/bin/env bash
+  target_date="$(date -d '{{last-used}}' +'%F')"
+  jq_selection_expr=""
+  lxc_instances="$(lxc list --project={{project}} --format=json | jq --arg cutoff "$target_date" '[.[] | select(.last_used_at | . < $cutoff)]')"
+  lxc_instances_count="$(echo "$lxc_instances" | jq -r '[ .[] | select(.name | startswith("{{project}}-")) | .name ] | length')"
+  echo "${lxc_instances_count} lxc containers will be removed (not used since {{last-used}})"
+  read -p "Confirm the deletion? (y/n): " confirmation
+  if [[ ! "$confirmation" =~ ^[Yy]$ ]]; then echo "Operation cancelled." && exit 0; fi
+  for instance in $(echo $lxc_instances | jq -r '.[] | select(.name | startswith("{{project}}-")) | .name'); do
+    echo "Deleting ${instance}"
+    lxc --project={{project}} delete "$instance"
+  done
+
+[group("dev"), doc("Get the charm resources as flags from the charmcraft.yaml file")]
+charm-resources:
+  if [[ ! -f charmcraft.yaml ]]; then echo "charmcraft.yaml not found" && exit 1; fi
+  echo -n $(yq eval ".resources | to_entries | map(select(.value.upstream-source != null) | \"--resource \" + .key + \"=\" + .value.upstream-source) | join (\" \")" charmcraft.yaml)'

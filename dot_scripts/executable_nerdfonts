@@ -1,6 +1,6 @@
 #!/bin/bash
 # nerdfonts
-# @author from the Internet + Luca Bello
+# from the Internet + Luca Bello
 # @meta version 0.4
 # @meta require-tools curl,wget,unzip,tar,fc-cache,jq
 
