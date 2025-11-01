@@ -25,6 +25,8 @@ install-shell:
     fi
     # Install Network and SSH utilities
     sudo apt install -y curl wget net-tools keychain
+    # Install eget utility to install from GitHub releases
+    go install github.com/zyedidia/eget@latest
     # Install common build tools
     sudo apt install -y make pkg-config libssl-dev
     which cargo || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -60,14 +62,11 @@ install-shell:
     # Tailscale
     curl -fsSL https://tailscale.com/install.sh | sh
     # Other apps
-    sudo apt install -y hledger
+    eget simonmichael/hledger --upgrade-only --to "$HOME/.local/bin"
     "$HOME"/.cargo/bin/cargo install macchina --locked
     # Chezmoi
-    if [[ ! -f "$HOME/.local/bin/chezmoi" ]]; then \
-      pushd "$HOME"; \
-      sh -c "$(curl -fsLS get.chezmoi.io/lb)" -- init lucabello; \
-      popd; \
-    fi
+    eget twpayne/chezmoi --upgrade-only --asset=chezmoi-linux --asset="^musl" --to "$HOME/.local/bin"
+    chezmoi init lucabello --mode=symlink
 
 [group('install'), doc('Install XMonad')]
 install-xmonad:
