@@ -57,3 +57,11 @@ configure-chezmoi:
     rm chezmoi-extra && cd .. && rmdir "$TMP_FOLDER"
   fi
   $HOME/.local/bin/chezmoi apply
+
+[private, no-cd]
+server-mounts:
+  #!/usr/bin/env bash
+  # Run this only once after chezmoi apply has been run and we have the scripts
+  mount-utils add --uuid="A82222242221F7C8" --path="/pandora"
+  mount-utils add --uuid="460079F80079EEF5" --path="/mnemosyne"
+  mount-utils mount
