@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+# mount-utils
+# @describe Helpers to manage /etc/fstab mounts
+# @author Luca Bello
+# @meta version 0.1
+# @meta require-tools lsblk
+
+## @option --last-used Delete instances that were last use before this date (format: anything parsed by 'date') (default: one month ago)
+## @flag --dry-run Perform a dry run (don't delete instances)
+
+# @cmd Show the devices connected to the system
+show-devices() {
+  lsblk -o NAME,UUID,FSTYPE,SIZE,MOUNTPOINT | grep -v loop
+}
+
+# @cmd Show the devices mounted in /etc/fstab
+show-fstab() {
+  cat /etc/fstab | grep "^UUID"
+}
+
+# @cmd Add a device to /etc/fstab
+# @option --uuid! UUID of the device as shown by show-devices
+# @option --path! Target path to mount the device to
+add() {
+  read target_uuid target_fstype target_mountpoint <<< "$(lsblk -o NAME,UUID,FSTYPE,MOUNTPOINT --noheadings --list | awk -v uuid="$argc_uuid" '$2==uuid {print $2, $3, $4}')"
+  # Input checks
+  if [ -z "$target_uuid" ]; then
+    echo "ERROR: The chosen device has no UUID.">&2
+    echo "Aborting.">&2
+    exit 1
+  fi
+  if [ -n "$target_mountpoint" ]; then
+    echo "Target mountpoint '$target_mountpoint' is not empty: The device is already mounted."
+    read -p "Continue anyway? [y/N] " ans
+    case "$ans" in
+      [Yy]|[Yy][Ee][Ss]) ;;
+      *) echo "Aborting."; exit 0;;
+    esac
+  fi
+  # Check whether the device is already in /etc/fstab
+  existing_mount="$(grep -E "^UUID=\"${target_uuid}\"" /etc/fstab)"
+  if [ -n "$existing_mount" ]; then
+    echo "Target is already in /etc/fstab.">&2
+    echo "Aborting.">&2
+    exit 2
+  fi
+  # Add the device to /etc/fstab
+  mount_template='UUID="%s" %s %s defaults 0 1'  # Fields are UUID PATH FSTYPE
+  mount_line="$(printf "$mount_template" "$target_uuid" "$argc_path" "$target_fstype")"
+  echo "Appending the following to /etc/fstab:"
+  echo "  $mount_line"
+  read -p "Continue? [y/N] " ans
+  case "$ans" in
+    [Yy]|[Yy][Ee][Ss]) ;;
+    *) echo "Aborting."; exit 0;;
+  esac
+  echo "$mount_line" | sudo tee --append /etc/fstab >/dev/null
+  echo "Mount added."
+}
+
+# @cmd Remove a device from /etc/fstab
+# @option --uuid! UUID of the device as shown by show-fstab
+remove() {
+  # Check whether the device is already in /etc/fstab
+  existing_mount="$(grep -E "^UUID=\"${argc_uuid}\"" /etc/fstab)"
+  if [ -z "$existing_mount" ]; then
+    echo "ERROR: Target is not in /etc/fstab.">&2
+    echo "Aborting.">&2
+    exit 3
+  fi
+  echo "The following mount will be deleted:"
+  echo "  $existing_mount"
+  read -p "Continue? [y/N] " ans
+  case "$ans" in
+    [Yy]|[Yy][Ee][Ss]) ;;
+    *) echo "Aborting."; exit 0;;
+  esac
+  sudo sed -i "/${argc_uuid}/d" /etc/fstab
+  echo "Mount removed."
+}
+
+# @cmd Mount all devices in /etc/fstab
+mount() {
+  grep -E '^UUID=".+\"' /etc/fstab | awk '{print $2}' | while IFS= read -r mnt; do
+    if [ ! -d "$mnt" ]; then
+      sudo mkdir -p -- "$mnt"
+      echo "$mnt has been created"
+    else
+      echo "$mnt already exists"
+    fi
+  done
+  echo "Restarting the systemctl daemon..."
+  systemctl daemon-reload
+  echo "Mounting the devices..."
+  sudo mount -a
+  echo "Done."
+}
+
+
+eval "$(argc --argc-eval "$0" "$@")"
+
