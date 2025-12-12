@@ -174,8 +174,8 @@ install-server-apps:
     sudo wget https://github.com/bcicen/ctop/releases/download/v0.7.7/ctop-0.7.7-linux-amd64 -O /usr/local/bin/ctop && sudo chmod +x /usr/local/bin/ctop
     # Benchmarking
     sudo apt -y install sysbench
-    # AI things
-    sudo snap install ollama
+    # Tools for Home Server
+    npm install -g @immich/cli
 
 
 [group('update'), doc('Update all packages')]
