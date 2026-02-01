@@ -59,6 +59,7 @@ install-shell:
     sudo apt install -y shellcheck
     which argc || curl -fsSL https://raw.githubusercontent.com/sigoden/argc/main/install.sh | sudo sh -s -- --to /usr/local/bin
     mkdir -p ~/.local/go && export GOPATH=~/.local/go && go install github.com/charmbracelet/gum@latest
+    sudo apt install -y gh  # GitHub CLI
     # Tailscale
     curl -fsSL https://tailscale.com/install.sh | sh
     # Other apps
