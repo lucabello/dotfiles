@@ -4,22 +4,6 @@
 -- things like custom filetypes. This is just pure lua so anything that doesn't
 -- fit in the normal config locations above can go here
 
--- Set up custom filetypes
-vim.filetype.add {
-  extension = {
-    foo = "fooscript",
-    justfile = "just",
-  },
-  filename = {
-    ["Foofile"] = "fooscript",
-  },
-  pattern = {
-    ["~/%.config/foo/.*"] = "fooscript",
-    ["%.?[jJ]ustfile.*"] = "just",
-    [".*%.just"] = "just",
-  },
-}
-
 -- My custom additions!
 vim.opt.scrolloff = 12 -- scroll when close to the screen edges
 vim.opt.shiftwidth = 2 -- convert typed Tab to n spaces
@@ -30,3 +14,20 @@ vim.cmd "setglobal expandtab"
 vim.cmd "setglobal smartindent"
 -- vim.cmd "set smarttab"
 -- End of my custom additions
+
+-- Set up custom filetypes
+vim.filetype.add {
+  extension = {
+    -- foo = "fooscript",
+  },
+  filename = {
+    -- ["Foofile"] = "fooscript",
+    ["justfile"] = "just",
+    ["Justfile"] = "just",
+  },
+  pattern = {
+    -- ["~/%.config/foo/.*"] = "fooscript",
+    [".?[jJ]ustfile.*"] = "just",
+    [".*%.just"] = "just",
+  },
+}
