@@ -35,18 +35,24 @@ set-default-track charm track:
     -d '{"default-track": "{{track}}"}'
 
 [group("dev"), doc("Delete all the LXC instances that charmcraft creates to pack charms")]
-lxc-purge project="charmcraft" last-used="-7 days":
+[arg("project", long="project", pattern="^(charmcraft|rockcraft)$", help="The LXC project that owns the instances")]
+[arg("last_used", long="last-used", help="Delete instances that haven't been used since the given time")]
+[arg("dry_run", long="dry-run", value="true", help="Perform a dry run (don't delete instances)")]
+lxc-purge project="charmcraft" last_used="-7 days" dry_run="false":
   #!/usr/bin/env bash
-  target_date="$(date -d '{{last-used}}' +'%F')"
+  target_date="$(date -d '{{last_used}}' +'%F')"
   jq_selection_expr=""
   lxc_instances="$(lxc list --project={{project}} --format=json | jq --arg cutoff "$target_date" '[.[] | select(.last_used_at | . < $cutoff)]')"
   lxc_instances_count="$(echo "$lxc_instances" | jq -r '[ .[] | select(.name | startswith("{{project}}-")) | .name ] | length')"
-  echo "${lxc_instances_count} lxc containers will be removed (not used since {{last-used}})"
+  echo "${lxc_instances_count} lxc containers will be removed (not used since {{last_used}})"
+  if [[ "{{dry_run}}" == "true" ]]; then echo "This is a dry run. No container will actually be removed."; fi
   read -p "Confirm the deletion? (y/n): " confirmation
   if [[ ! "$confirmation" =~ ^[Yy]$ ]]; then echo "Operation cancelled." && exit 0; fi
   for instance in $(echo $lxc_instances | jq -r '.[] | select(.name | startswith("{{project}}-")) | .name'); do
     echo "Deleting ${instance}"
-    lxc --project={{project}} delete "$instance"
+    if [[ "{{dry_run}}" == "false" ]]; then
+      lxc --project={{project}} delete "$instance"
+    fi
   done
 
 [group("dev"), doc("Get the charm resources as flags from the charmcraft.yaml file")]

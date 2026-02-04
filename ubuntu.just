@@ -66,7 +66,7 @@ install-shell:
     eget simonmichael/hledger --upgrade-only --to "$HOME/.local/bin"
     "$HOME"/.cargo/bin/cargo install macchina --locked
     # Chezmoi
-    eget twpayne/chezmoi --upgrade-only --asset=chezmoi-linux --asset="^musl" --to "$HOME/.local/bin"
+    sudo snap install chezmoi --classic
     chezmoi init lucabello --mode=symlink
 
 [group('install'), doc('Install XMonad')]
