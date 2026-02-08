@@ -87,6 +87,7 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.rightMargin: 12
+            wheelEnabled: false
             
             from: 0
             to: 100

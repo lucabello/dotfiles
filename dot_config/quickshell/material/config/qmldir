@@ -2,6 +2,6 @@ module qs.config
 singleton Config Config.qml
 singleton Appearance Appearance.qml
 AppearanceConfig 1.0 AppearanceConfig.qml
-BarComponentsConfig 1.0 overrides/BarComponentsConfig.qml
-Colors 1.0 overrides/Colors.qml
+BarComponentsConfig 1.0 ../overrides/BarComponentsConfig.qml
+Colors 1.0 ../overrides/Colors.qml
 BarConfig 1.0 BarConfig.qml

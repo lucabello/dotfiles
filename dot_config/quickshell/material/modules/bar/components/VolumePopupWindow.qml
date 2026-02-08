@@ -218,6 +218,7 @@ PanelWindow {
             Slider {
                 id: volumeSlider
                 Layout.fillWidth: true
+                wheelEnabled: false
                 from: 0
                 to: 150
                 value: volumeMonitor.percentage

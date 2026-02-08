@@ -106,15 +106,7 @@ Item {
         anchors.margins: -4
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        
-        onWheel: wheel => {
-            if (wheel.angleDelta.y > 0) {
-                audio.increaseVolume()
-            } else {
-                audio.decreaseVolume()
-            }
-        }
-        
+
         onClicked: audio.toggleMute()
     }
     
