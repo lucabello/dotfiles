@@ -46,7 +46,7 @@ get-keys:
 [private, no-cd]
 configure-chezmoi:
   #!/usr/bin/env bash
-  CHEZMOI_PATH="$($HOME/.local/bin/chezmoi source-path)"
+  CHEZMOI_PATH="$(chezmoi source-path)"
   if [[ ! -f "$CHEZMOI_PATH/.variables.json" ]]; then
     TMP_FOLDER="$(mktemp --directory)"
     cd "$TMP_FOLDER"
@@ -56,7 +56,7 @@ configure-chezmoi:
     ./chezmoi-extra generate --no-apply
     rm chezmoi-extra && cd .. && rmdir "$TMP_FOLDER"
   fi
-  $HOME/.local/bin/chezmoi apply
+  chezmoi apply
 
 [private, no-cd]
 server-mounts:

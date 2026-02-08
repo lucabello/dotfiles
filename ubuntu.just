@@ -25,8 +25,6 @@ install-shell:
     fi
     # Install Network and SSH utilities
     sudo apt install -y curl wget net-tools keychain
-    # Install eget utility to install from GitHub releases
-    go install github.com/zyedidia/eget@latest
     # Install common build tools
     sudo apt install -y make pkg-config libssl-dev
     which cargo || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -36,6 +34,7 @@ install-shell:
     # Install nvim and its plugin prerequisites
     sudo apt install -y python3.13-venv # Required by nvim Mason plugin
     sudo snap install nvim --classic
+    sudo apt install -y build-essential clang libc6-dev  # Requirements for tree-sitter-cli
     "$HOME"/.cargo/bin/cargo install tree-sitter-cli --locked
     go install github.com/jesseduffield/lazygit@latest
     # Install Sheldon plugin manager for ZSH
@@ -55,6 +54,8 @@ install-shell:
     sudo snap install pastel
     uv tool install speedtest-cli --force
     sudo apt install -y git-delta
+    # Install eget utility to install from GitHub releases
+    go install github.com/zyedidia/eget@latest
     # Development tools
     sudo apt install -y shellcheck
     which argc || curl -fsSL https://raw.githubusercontent.com/sigoden/argc/main/install.sh | sudo sh -s -- --to /usr/local/bin
@@ -63,7 +64,7 @@ install-shell:
     # Tailscale
     curl -fsSL https://tailscale.com/install.sh | sh
     # Other apps
-    eget simonmichael/hledger --upgrade-only --to "$HOME/.local/bin"
+    "$HOME"/go/bin/eget simonmichael/hledger --upgrade-only --to "$HOME/.local/bin"
     "$HOME"/.cargo/bin/cargo install macchina --locked
     # Chezmoi
     sudo snap install chezmoi --classic
@@ -100,6 +101,43 @@ install-xmonad:
     fi
     ## Enable the service
     systemctl --user is-enabled plasma-custom-wm.service || systemctl --user enable plasma-custom-wm.service
+
+[group('install'), doc('Install Hyprland')]
+install-hyprland:
+    #!/usr/bin/env bash
+    # Install Hyprland
+    sudo apt install -y hyprland
+    sudo snap install grim
+
+
+
+    # Install Quickshell
+    # # Add DankLinux PPA
+    # sudo add-apt-repository ppa:avengemedia/danklinux
+    # sudo apt update
+    # sudo apt install quickshell
+    # ## If no 26.04 yet: nix profile install 'git+https://git.outfoxxed.me/outfoxxed/quickshell#quickshell'
+    # # Install Kvantum (theme manager for Qt components, for quickshell (?))
+    # sudo add-apt-repository ppa:papirus/papirus  # Maybe not needed
+    # sudo apt update
+    # sudo apt install -y qt6-style-kvantum qt6-style-kvantum-themes
+    # # Install Fuzzel (rofi replacement)
+    # sudo apt install -y fuzzel
+    # Graphical manager for Screens (moving monitors around)
+    # ## sudo apt install -y nwg-displays
+    # # Install deps
+    # sudo apt install -y coreutils cliphist
+    # sudo apt install -y hypridle # lockscreen
+    # sudo apt install -y hyprland-qtutils  # should be -guiutils, but it doesn' t exist
+    # ## Disable dim screen after delay (don' t for laptop maybe)
+    # gsettings set org.gnome.settings-daemon.plugins.power idle-dim false
+    # ## Disable screen turn off after delay 
+    # gsettings set org.gnome.desktop.session idle-delay 0
+    # # Maybe fix icons in qs
+    # gsettings set org.gnome.desktop.interface icon-theme 'Papirus'
+    # # For new materil theme:
+    # sudo apt install -y pamixer
+
 
 [group('install'), doc('Install Desktop apps')]
 install-desktop-apps:
