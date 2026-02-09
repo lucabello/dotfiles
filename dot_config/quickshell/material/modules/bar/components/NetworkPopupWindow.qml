@@ -1,11 +1,12 @@
-import QtQuick 6.10
-import QtQuick.Layouts 6.10
-import QtQuick.Controls 6.10 as QQC
+import QtQuick 6.9
+import QtQuick.Layouts 6.9
+import QtQuick.Controls 6.9 as QQC
 import QtQuick.Effects
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
 import "../../../services" as QsServices
+import "../../../config" as QsConfig
 
 // Solid Network Popup - Matching Control Center style
 PanelWindow {
@@ -14,6 +15,7 @@ PanelWindow {
     property bool shouldShow: false
     readonly property var pywal: QsServices.Pywal
     readonly property var network: QsServices.Network
+    readonly property var config: QsConfig.Config
     readonly property var sortedNetworks: [...network.networks].sort((a, b) => {
         if (a.active !== b.active) return b.active - a.active
         return b.strength - a.strength
@@ -35,7 +37,9 @@ PanelWindow {
         onStarted: popupWindow.shouldShow = false
     }
     
-    screen: Quickshell.screens[0]
+    screen: Quickshell.screens.length > 0
+        ? Quickshell.screens[Math.min(Math.max(0, config.barComponents.popupScreenIndex), Quickshell.screens.length - 1)]
+        : null
     
     anchors {
         top: true

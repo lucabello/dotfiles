@@ -2,7 +2,7 @@
 // Provides consistent shadow effects across the UI
 // Based on Material Design 3 elevation tokens
 
-import QtQuick 6.10
+import QtQuick 6.9
 import QtQuick.Effects
 
 Item {

@@ -1,5 +1,5 @@
-import QtQuick 6.10
-import QtQuick.Layouts 6.10
+import QtQuick 6.9
+import QtQuick.Layouts 6.9
 import QtQuick.Effects
 import Quickshell
 import Quickshell.Wayland
@@ -43,7 +43,9 @@ PanelWindow {
     // Get popups that should be shown (configurable max, newest first)
     readonly property var activePopups: notifs.activeNotifications.slice(0, config.notifications.maxVisible)
     
-    screen: Quickshell.screens[0]
+    screen: Quickshell.screens.length > 0
+        ? Quickshell.screens[Math.min(Math.max(0, config.barComponents.popupScreenIndex), Quickshell.screens.length - 1)]
+        : null
     
     anchors {
         top: true

@@ -1,5 +1,5 @@
 import Quickshell
-import QtQuick 6.10
+import QtQuick 6.9
 import "../../../config" as QsConfig
 import "../../../services" as QsServices
 import "../../../components/effects"

@@ -1,5 +1,5 @@
-import QtQuick 6.10
-import QtQuick.Layouts 6.10
+import QtQuick 6.9
+import QtQuick.Layouts 6.9
 import Quickshell
 import Quickshell.Bluetooth
 import "../../../services" as QsServices
@@ -110,9 +110,9 @@ Item {
                 
                 // Position popup below the bar
                 // Bar anchors to screen top, so margins.top = bar_height + gap
-                const barHeight = barWindow.implicitHeight || 36
+                // Use the small, centralized popup margin so vertical gap matches Control Center
                 bluetoothPopup.margins.right = Math.round(screenWidth - rightEdge - 8)
-                bluetoothPopup.margins.top = barHeight + 6  // Just below bar with small gap
+                bluetoothPopup.margins.top = (barWindow?.config?.barComponents?.popupMargin) || 12
                 bluetoothPopup.shouldShow = true
             }
         }

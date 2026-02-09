@@ -1,6 +1,10 @@
-import QtQuick 6.10
+import QtQuick 6.9
 
 QtObject {
+    // Which screen index popups should use (0-based).
+    // If out of range, it clamps to the nearest valid screen.
+    property int popupScreenIndex: 1412
+
     // Centralized bar component scaling
     readonly property var scale: QtObject {
         property real bar: 1.5

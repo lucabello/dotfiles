@@ -1,5 +1,5 @@
-import QtQuick 6.10
-import QtQuick.Layouts 6.10
+import QtQuick 6.9
+import QtQuick.Layouts 6.9
 import qs.services
 import "../../../config" as QsConfig
 import "../../../components/effects"

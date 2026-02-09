@@ -1,5 +1,5 @@
 import qs.config
-import QtQuick 6.10
+import QtQuick 6.9
 
 NumberAnimation {
     duration: Appearance.anim.durations.normal

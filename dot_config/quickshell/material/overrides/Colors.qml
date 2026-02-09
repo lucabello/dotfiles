@@ -1,4 +1,4 @@
-import QtQuick 6.10
+import QtQuick 6.9
 
 QtObject {
     // Base palette (hardcoded)

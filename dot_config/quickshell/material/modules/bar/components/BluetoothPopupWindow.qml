@@ -1,11 +1,12 @@
-import QtQuick 6.10
-import QtQuick.Layouts 6.10
+import QtQuick 6.9
+import QtQuick.Layouts 6.9
 import QtQuick.Effects
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Bluetooth
 import Quickshell.Io
 import "../../../services" as QsServices
+import "../../../config" as QsConfig
 
 // Solid Bluetooth Popup - Matching Control Center style
 PanelWindow {
@@ -14,6 +15,7 @@ PanelWindow {
     property bool shouldShow: false
     readonly property var adapter: Bluetooth.defaultAdapter
     readonly property var pywal: QsServices.Pywal
+    readonly property var config: QsConfig.Config
     readonly property var devices: [...Bluetooth.devices.values].sort((a, b) => {
         if (a.connected !== b.connected) return b.connected - a.connected
         if (a.bonded !== b.bonded) return b.bonded - a.bonded
@@ -36,7 +38,9 @@ PanelWindow {
         onStarted: popupWindow.shouldShow = false
     }
     
-    screen: Quickshell.screens[0]
+    screen: Quickshell.screens.length > 0
+        ? Quickshell.screens[Math.min(Math.max(0, config.barComponents.popupScreenIndex), Quickshell.screens.length - 1)]
+        : null
     
     anchors {
         top: true
@@ -54,6 +58,9 @@ PanelWindow {
     visible: shouldShow || container.opacity > 0
     
     WlrLayershell.keyboardFocus: shouldShow ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+
+    // Prevent immediate interaction so initial click can pass through
+    property int initialInteractionDelay: 150
     
     FocusScope {
         id: container
@@ -76,6 +83,8 @@ PanelWindow {
                 if (popupWindow.shouldShow) {
                     container.mouseHasEntered = false
                     closeTimer.stop()
+                    popupWindow.enabled = false
+                    interactionEnableTimer.restart()
                 }
             }
         }
@@ -102,6 +111,13 @@ PanelWindow {
                     closeTimer.restart()
                 }
             }
+        }
+
+        Timer {
+            id: interactionEnableTimer
+            interval: popupWindow.initialInteractionDelay
+            repeat: false
+            onTriggered: popupWindow.enabled = true
         }
         
         states: State {

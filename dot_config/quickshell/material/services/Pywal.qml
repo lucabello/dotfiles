@@ -2,7 +2,7 @@ pragma Singleton
 
 import Quickshell
 import Quickshell.Io
-import QtQuick 6.10
+import QtQuick 6.9
 
 Singleton {
     id: root

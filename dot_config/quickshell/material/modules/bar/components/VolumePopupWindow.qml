@@ -1,10 +1,11 @@
-import QtQuick 6.10
-import QtQuick.Layouts 6.10
-import QtQuick.Controls 6.10
+import QtQuick 6.9
+import QtQuick.Layouts 6.9
+import QtQuick.Controls 6.9
 import QtQuick.Effects
 import Quickshell
 import Quickshell.Wayland
 import "../../../services" as QsServices
+import "../../../config" as QsConfig
 
 // Material 3 Expressive Volume Popup
 PanelWindow {
@@ -15,6 +16,7 @@ PanelWindow {
     readonly property var pywal: QsServices.Pywal
     readonly property var audio: QsServices.Audio
     readonly property var volumeMonitor: QsServices.VolumeMonitor
+    readonly property var config: QsConfig.Config
     
     // Material 3 colors
     readonly property color m3Surface: Qt.rgba(
@@ -26,7 +28,9 @@ PanelWindow {
     readonly property color m3Primary: pywal.color4 ?? "#a6e3a1"
     readonly property color m3OnSurface: pywal.foreground
     
-    screen: Quickshell.screens[0]
+    screen: Quickshell.screens.length > 0
+        ? Quickshell.screens[Math.min(Math.max(0, config.barComponents.popupScreenIndex), Quickshell.screens.length - 1)]
+        : null
     
     anchors {
         top: true

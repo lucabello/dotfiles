@@ -1,6 +1,6 @@
 pragma Singleton
 
-import QtQuick 6.10
+import QtQuick 6.9
 import Quickshell
 import Quickshell.Io
 

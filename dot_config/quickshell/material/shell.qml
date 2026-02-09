@@ -4,7 +4,7 @@
 
 import Quickshell
 import Quickshell.Services.Notifications
-import QtQuick 6.10
+import QtQuick 6.9
 import "services" as QsServices
 import "modules/osd"
 

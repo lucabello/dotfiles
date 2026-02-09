@@ -1,5 +1,5 @@
-import QtQuick 6.10
-import QtQuick.Layouts 6.10
+import QtQuick 6.9
+import QtQuick.Layouts 6.9
 import Quickshell
 import "../../../services" as QsServices
 import "../../../config" as QsConfig
@@ -110,9 +110,9 @@ Item {
                 
                 // Position popup below the bar
                 // Bar anchors to screen top, so margins.top = bar_height + gap
-                const barHeight = barWindow.implicitHeight || 36
+                // Use the small, centralized popup margin so vertical gap matches Control Center
                 networkPopup.margins.right = Math.round(screenWidth - rightEdge - 8)
-                networkPopup.margins.top = barHeight + 6  // Just below bar with small gap
+                networkPopup.margins.top = (barWindow?.config?.barComponents?.popupMargin) || 12
                 networkPopup.shouldShow = true
             }
         }

@@ -1,4 +1,4 @@
-import QtQuick 6.10
+import QtQuick 6.9
 
 QtObject {
     readonly property var workspaces: QtObject {

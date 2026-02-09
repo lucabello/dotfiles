@@ -1,6 +1,6 @@
-import QtQuick 6.10
-import QtQuick.Layouts 6.10
-import QtQuick.Controls 6.10
+import QtQuick 6.9
+import QtQuick.Layouts 6.9
+import QtQuick.Controls 6.9
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
@@ -57,7 +57,9 @@ PanelWindow {
     readonly property color cOnSurfaceVariant: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.7)
     readonly property color cOnSurfaceDim: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.5)
     
-    screen: Quickshell.screens[0]
+    screen: Quickshell.screens.length > 0
+        ? Quickshell.screens[Math.min(Math.max(0, config.barComponents.popupScreenIndex), Quickshell.screens.length - 1)]
+        : null
     
     anchors {
         top: true
@@ -75,6 +77,8 @@ PanelWindow {
     visible: shouldShow || panelContent.opacity > 0
     
     property bool shouldShow: false
+    // Brief delay before the panel accepts mouse input to allow clicks to pass through
+    property int initialInteractionDelay: 150
     
     WlrLayershell.keyboardFocus: shouldShow ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
     
@@ -133,6 +137,18 @@ PanelWindow {
         onVisibleChanged: {
             if (visible) forceActiveFocus()
         }
+
+        // When the panel opens, briefly disable input so a click that opened it
+        // can also toggle it closed without moving the mouse (click-through).
+        onVisibleChanged: {
+            if (root.shouldShow) {
+                root.enabled = false
+                interactionEnableTimer.restart()
+            } else {
+                interactionEnableTimer.stop()
+                root.enabled = true
+            }
+        }
         
         MouseArea {
             anchors.fill: parent
@@ -161,6 +177,13 @@ PanelWindow {
                     easing.bezierCurve: Material3Anim.standard
                 }
             }
+        }
+
+        Timer {
+            id: interactionEnableTimer
+            interval: root.initialInteractionDelay
+            repeat: false
+            onTriggered: root.enabled = true
         }
         
         // Hide Animation - Material 3 emphasized accelerate

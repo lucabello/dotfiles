@@ -1,6 +1,6 @@
 // Reusable bar button component with popup support
-import QtQuick 6.10
-import QtQuick.Layouts 6.10
+import QtQuick 6.9
+import QtQuick.Layouts 6.9
 import "../services" as QsServices
 import "../config" as QsConfig
 import "effects"
@@ -44,7 +44,8 @@ Item {
                 const rightEdge = pos.x + root.width
                 const screenWidth = barWindow.screen.width
                 popup.margins.right = Math.round(screenWidth - rightEdge)
-                popup.margins.top = Math.round(barWindow.height + 6)
+                // Use the centralized small popup margin so vertical gaps match Control Center
+                popup.margins.top = (barWindow?.config?.barComponents?.popupMargin) || Math.round(barWindow.height + 6)
                 popup.shouldShow = true
             }
         }

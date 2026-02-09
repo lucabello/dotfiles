@@ -1,14 +1,16 @@
 import Quickshell
 import Quickshell.Wayland
-import QtQuick 6.10
-import QtQuick.Layouts 6.10
+import QtQuick 6.9
+import QtQuick.Layouts 6.9
 import qs.services
+import "../../../config" as QsConfig
 
 PanelWindow {
     id: popupWindow
     
     property bool shouldShow: false
     property bool isHovered: false
+    readonly property var config: QsConfig.Config
     
     readonly property var player: Players.active
     
@@ -17,7 +19,9 @@ PanelWindow {
     readonly property real targetHeight: shouldShow ? (player ? contentColumn.implicitHeight + 32 : 0) : 0
     
     visible: shouldShow && player !== null
-    screen: Quickshell.screens[0]  // Use first screen by default
+    screen: Quickshell.screens.length > 0
+        ? Quickshell.screens[Math.min(Math.max(0, config.barComponents.popupScreenIndex), Quickshell.screens.length - 1)]
+        : null
     
     anchors {
         top: true

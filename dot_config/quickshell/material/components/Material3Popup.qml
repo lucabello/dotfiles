@@ -1,7 +1,7 @@
 // Material 3 Expressive Popup Component
 // Reusable bouncy animated popup with modern Material 3 styling
 
-import QtQuick 6.10
+import QtQuick 6.9
 import QtQuick.Effects
 import "effects"
 import "../services" as QsServices

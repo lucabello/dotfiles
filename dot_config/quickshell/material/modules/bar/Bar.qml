@@ -1,6 +1,6 @@
 import Quickshell
-import QtQuick 6.10
-import QtQuick.Layouts 6.10
+import QtQuick 6.9
+import QtQuick.Layouts 6.9
 import QtQuick.Effects
 import "components" as BarComponents
 import "../../components/effects"
@@ -199,7 +199,7 @@ Item {
                 Row {
                     id: connectivityContent
                     anchors.centerIn: parent
-                    spacing: s(4)
+                    spacing: s(16)
                     
                     Loader {
                         id: networkLoader
@@ -296,7 +296,7 @@ Item {
                 Row {
                     id: audioContent
                     anchors.centerIn: parent
-                    spacing: s(6)
+                    spacing: s(8)
                     
                     Loader {
                         id: brightnessLoader
@@ -393,7 +393,7 @@ Item {
                 Row {
                     id: powerContent
                     anchors.centerIn: parent
-                    spacing: s(6)
+                    spacing: s(8)
                     
                     // Status Indicators (Caffeine, DND)
                     Loader {
