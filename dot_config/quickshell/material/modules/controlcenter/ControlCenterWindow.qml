@@ -77,8 +77,6 @@ PanelWindow {
     visible: shouldShow || panelContent.opacity > 0
     
     property bool shouldShow: false
-    // Brief delay before the panel accepts mouse input to allow clicks to pass through
-    property int initialInteractionDelay: 150
     
     WlrLayershell.keyboardFocus: shouldShow ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
     
@@ -137,18 +135,6 @@ PanelWindow {
         onVisibleChanged: {
             if (visible) forceActiveFocus()
         }
-
-        // When the panel opens, briefly disable input so a click that opened it
-        // can also toggle it closed without moving the mouse (click-through).
-        onVisibleChanged: {
-            if (root.shouldShow) {
-                root.enabled = false
-                interactionEnableTimer.restart()
-            } else {
-                interactionEnableTimer.stop()
-                root.enabled = true
-            }
-        }
         
         MouseArea {
             anchors.fill: parent
@@ -177,13 +163,6 @@ PanelWindow {
                     easing.bezierCurve: Material3Anim.standard
                 }
             }
-        }
-
-        Timer {
-            id: interactionEnableTimer
-            interval: root.initialInteractionDelay
-            repeat: false
-            onTriggered: root.enabled = true
         }
         
         // Hide Animation - Material 3 emphasized accelerate

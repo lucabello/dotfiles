@@ -58,9 +58,6 @@ PanelWindow {
     visible: shouldShow || container.opacity > 0
     
     WlrLayershell.keyboardFocus: shouldShow ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
-
-    // Prevent immediate interaction so initial click can pass through
-    property int initialInteractionDelay: 150
     
     FocusScope {
         id: container
@@ -83,8 +80,6 @@ PanelWindow {
                 if (popupWindow.shouldShow) {
                     container.mouseHasEntered = false
                     closeTimer.stop()
-                    popupWindow.enabled = false
-                    interactionEnableTimer.restart()
                 }
             }
         }
@@ -111,13 +106,6 @@ PanelWindow {
                     closeTimer.restart()
                 }
             }
-        }
-
-        Timer {
-            id: interactionEnableTimer
-            interval: popupWindow.initialInteractionDelay
-            repeat: false
-            onTriggered: popupWindow.enabled = true
         }
         
         states: State {
