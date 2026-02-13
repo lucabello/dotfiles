@@ -1,6 +1,6 @@
 [colors.primary]
 background = "{{ .colors.generic.background }}"
-foreground = "{{ .colors.generic.text }}"
+foreground = "{{ .colors.generic.foreground }}"
 
 [colors.normal]
 black = "{{ .colors.terminal.black }}"
@@ -42,19 +42,19 @@ background = "{{ .colors.terminal.black }}"
 
 [colors.hints.start]
 foreground = "{{ .colors.terminal.bright_white }}"
-background = "{{ .colors.generic.background_selection }}"
+background = "{{ .colors.terminal.color_17 }}"
 
 [colors.hints.end]
 foreground = "{{ .colors.terminal.white }}"
-background = "{{ .colors.generic.background_selection }}"
+background = "{{ .colors.terminal.color_17 }}"
 
 [colors.footer_bar]
 foreground = "{{ .colors.terminal.white }}"
-background = "{{ .colors.generic.background_secondary }}"
+background = "{{ .colors.generic.overlay }}"
 
 [colors.selection]
 text = "{{ .colors.terminal.white }}"
-background = "{{ .colors.generic.background_selection }}"
+background = "{{ .colors.terminal.color_17 }}"
 
 [[colors.indexed_colors]]
 index = 16

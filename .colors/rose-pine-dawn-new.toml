@@ -1,0 +1,43 @@
+[colors.metadata]
+name = " Rosé Pine Dawn (new)"
+series = "Rosé Pine"
+mode = "Light"
+
+[colors.generic]
+background = "#faf4ed"
+surface = "#fffaf3"
+overlay = "#f2e9e1"
+foreground = "#575279"
+subtle = "#797593"
+muted = "#9893a5"
+primary = "#b4637a"
+secondary = "#286983"
+
+[colors.terminal]
+black = "#f2e9e1"
+red = "#b4637a"
+green = "#286983"
+yellow = "#ea9d34"
+blue = "#56949f"
+magenta = "#907aa9"
+cyan = "#d7827e"
+white = "#575279"
+orange = "#d1805c"
+bright_black = "#d2c2b5"
+bright_red = "#d7738f"
+bright_green = "#1e92c0"
+bright_yellow = "#ffb752"
+bright_blue = "#5fb9c9"
+bright_magenta = "#a988ce"
+bright_cyan = "#ef9e99"
+bright_white = "#6f64b3"
+color_16 = "#dbd2d2"
+color_17 = "#c4bbc2"
+color_18 = "#aea5b3"
+color_19 = "#988fa5"
+color_20 = "#827a96"
+color_21 = "#6c6687"
+bright_orange = "#ec9874"
+
+[colors.apps.vim]
+background = "light"

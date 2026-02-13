@@ -21,8 +21,9 @@ install-shell:
     # Add Git PPA for latest version
     if ! grep -q git-core /etc/apt/sources.list.d/*; then \
         sudo apt-add-repository ppa:git-core/ppa; \
-        sudo apt-get update && sudo apt-get install -y git; \
+        sudo apt update && sudo apt install -y git; \
     fi
+    sudo apt install -y git-lfs
     # Install Network and SSH utilities
     sudo apt install -y curl wget net-tools keychain
     # Install common build tools
@@ -68,111 +69,108 @@ install-shell:
     "$HOME"/.cargo/bin/cargo install macchina --locked
     # Chezmoi
     sudo snap install chezmoi --classic
-    chezmoi init lucabello --mode=symlink
-
-[group('install'), doc('Install XMonad')]
-install-xmonad:
-    #!/usr/bin/env bash
-    # Install KDE
-    sudo apt install -y kde-plasma-desktop
-    ## Install XMonad
-    sudo apt install -y xmonad libghc-xmonad-dev libghc-xmonad-contrib-dev xmobar
-    ## Install the compositor
-    sudo apt install -y picom
-    ## Create the service
-    SYSTEMD_FOLDER="$HOME/.config/systemd/user"
-    mkdir -p "$SYSTEMD_FOLDER"
-    PLASMA_CUSTOM_WM='[Install]
-    WantedBy=plasma-workspace.target
-
-    [Unit]
-    Description=Plasma Custom Window Manager
-    Before=plasma-workspace.target
-
-    [Service]
-    ExecStart=/usr/bin/xmonad
-    Slice=session.slice
-    Restart=on-failure'
-    if test -f $SYSTEMD_FOLDER/plasma-custom-wm.service; then
-        echo "XMonad (on KDE) session file already exists.";
-    else
-        echo "Writing session file for XMonad (on KDE)"
-        echo "$PLASMA_CUSTOM_WM" > $SYSTEMD_FOLDER/plasma-custom-wm.service;
-    fi
-    ## Enable the service
-    systemctl --user is-enabled plasma-custom-wm.service || systemctl --user enable plasma-custom-wm.service
+    chezmoi init lucabello
 
 [group('install'), doc('Install Hyprland')]
 install-hyprland:
     #!/usr/bin/env bash
     # Install Hyprland
     sudo apt install -y hyprland
-    sudo snap install grim
-
-
-
+    # Install nwg-displays
+    sudo apt install -y nwg-displays
     # Install Quickshell
-    # # Add DankLinux PPA
-    # sudo add-apt-repository ppa:avengemedia/danklinux
-    # sudo apt update
-    # sudo apt install quickshell
-    # ## If no 26.04 yet: nix profile install 'git+https://git.outfoxxed.me/outfoxxed/quickshell#quickshell'
-    # # Install Kvantum (theme manager for Qt components, for quickshell (?))
-    # sudo add-apt-repository ppa:papirus/papirus  # Maybe not needed
-    # sudo apt update
-    # sudo apt install -y qt6-style-kvantum qt6-style-kvantum-themes
-    # # Install Fuzzel (rofi replacement)
-    # sudo apt install -y fuzzel
-    # Graphical manager for Screens (moving monitors around)
-    # ## sudo apt install -y nwg-displays
-    # # Install deps
-    # sudo apt install -y coreutils cliphist
-    # sudo apt install -y hypridle # lockscreen
-    # sudo apt install -y hyprland-qtutils  # should be -guiutils, but it doesn' t exist
-    # ## Disable dim screen after delay (don' t for laptop maybe)
-    # gsettings set org.gnome.settings-daemon.plugins.power idle-dim false
-    # ## Disable screen turn off after delay 
-    # gsettings set org.gnome.desktop.session idle-delay 0
-    # # Maybe fix icons in qs
-    # gsettings set org.gnome.desktop.interface icon-theme 'Papirus'
-    # # For new materil theme:
-    # sudo apt install -y pamixer
+    ## Quickshell: deps
+    sudo apt install -y qt6-base-dev qt6-declarative-dev qt6-shadertools-dev spirv-tools-dev pkg-config libcli11-dev libcli11-doc qt6-svg-dev qt6-wayland-dev
+    sudo apt install -y libjemalloc-dev libwayland-dev wayland-protocols libdrm-dev libgbm-dev libxcb1-dev libpam0g-dev libpolkit-gobject-1-dev libglib2.0-dev
+    sudo apt install -y ninja-build build-essential
+    sudo apt install -y libxkbcommon-dev qtchooser libegl1-mesa-dev apt info libpipewire-0.3-dev
+    sudo apt install -y "qt6-*dev"
+    ### Quickshell deps: google-breakpad
+    export GOOGLE_BREAKPAD_VERSION="v2024.02.16"
+    if [ -d "/usr/local/include/breakpad/processor" ]; then
+        echo "google-breakpad already exists"; 
+    else
+        test -d /tmp/google-breakpad || git clone https://github.com/google/breakpad.git --branch=$GOOGLE_BREAKPAD_VERSION /tmp/google-breakpad
+        test -d /tmp/google-breakpad/src/third_party/lss || git clone https://chromium.googlesource.com/linux-syscall-support /tmp/google-breakpad/src/third_party/lss
+        pushd /tmp/google-breakpad
+        ./configure && make && sudo make install
+        test -d /usr/local/include/breakpad/processor && echo "google-breakpad installed succesfully" && rm -rf /tmp/google-breakpad/
+        popd
+    fi
+    ### Actually build Quickshell
+    export QUICKSHELL_VERSION="v0.2.1"
+    if which quickshell; then
+        echo "quickshell is already installed"
+    else
+        test -d /tmp/quickshell || git clone https://git.outfoxxed.me/quickshell/quickshell.git --branch=$QUICKSHELL_VERSION /tmp/quickshell
+        pushd /tmp/quickshell
+        # Fix the qt6 path thingy
+        for component in "/usr/include/x86_64-linux-gnu/qt6"/*; do
+            if [ -d "$component" ]; then
+                VERSIONED_DIR="$component/6.9.2"
+                sudo mkdir -p "$VERSIONED_DIR"
+                for file in "$component"/*; do
+                    sudo ln -s "$file" "$VERSIONED_DIR/"
+                done
+                echo "Created symlink in $VERSIONED_DIR for component: $(basename "$component")"
+            fi
+        done
+        cmake -GNinja -B build \
+            # -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+            -DCMAKE_PREFIX_PATH=/usr/include/x86_64-linux-gnu/qt6 \
+            -DCMAKE_INSTALL_PREFIX="/usr/local" \
+            -DINSTALL_QMLDIR="/usr/local/qml" \
+            -DINSTALL_QML_PREFIX="qml"
+        cmake --build build
+        sudo cmake --install build
+        # Remove the qt6 symlinks
+        sudo find /usr/include/x86_64-linux-gnu/qt6/ -type l -name '*6.9.2*' -exec rm {} +
+        popd
+    fi
+    # TODO: Build and install hyprland-guiutils
+    # Install utilities for hyprland
+    sudo apt install -y slurp
+    sudo snap install grim
+    # Install hyprpaper for wallpapers
+    sudo apt install -y hyprpaper
+    system --user enable --now hyprpaper
+    sudo apt install -y wl-clipboard
+    sudo apt install -y hyprland-qtutils
+    sudo apt install -y hypridle  # Lockscreen # TODO: needs something else probably, doesn't work alone
 
 
 [group('install'), doc('Install Desktop apps')]
 install-desktop-apps:
     # Install UI components
-    ## Install Polybar
-    sudo apt install -y mpd polybar
     ## Install Rofi
-    sudo apt install -y rofi rofi-dev
+    # sudo apt install -y rofi rofi-dev
     ## Install Rofi Emoji
-    uv tool install rofimoji
-    ## Install Dunst
-    sudo apt install -y dunst
+    # uv tool install rofimoji
     ## Install Redshift
-    sudo apt install -y redshift
+    # sudo apt install -y redshift
     ## Install Spectactle (screenshots)
-    sudo apt install -y kde-spectacle
+    # sudo apt install -y kde-spectacle
     ## Install Flameshot (screenshots)
-    sudo apt install -y flameshot
-    ## Install fonts
-    cp "$(chezmoi source-path)/dot_scripts/executable_nerdfonts" /tmp/nerdfonts; chmod +x /tmp/nerdfonts; /tmp/nerdfonts install --font Monofur --font SpaceMono; rm /tmp/nerdfonts
+    # sudo apt install -y flameshot
+    # ## Install fonts
+    # TODO: Actually install fonts in a different step
+    # cp "$(chezmoi source-path)/dot_scripts/executable_nerdfonts" /tmp/nerdfonts; chmod +x /tmp/nerdfonts; /tmp/nerdfonts install --font Monofur --font SpaceMono; rm /tmp/nerdfonts
     # Install Desktop applications
-    sudo snap install vivaldi
+
+    # sudo snap install vivaldi
     sudo snap install obsidian --classic
     sudo apt install -y syncthing && sudo systemctl enable syncthing@aegis.service --now
-    # Activate Bluetooth
-    systemctl is-enabled bluetooth.service || sudo systemctl enable bluetooth.service --now
+    # # Activate Bluetooth
+    # systemctl is-enabled bluetooth.service || sudo systemctl enable bluetooth.service --now
     # Install Brave Browser
-    if ! which brave-browser; then \
-        sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
-        https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg; \
-        echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] \
-        https://brave-browser-apt-release.s3.brave.com/ stable main" | \
-        sudo tee /etc/apt/sources.list.d/brave-browser-release.list; \
-        sudo apt update && sudo apt install -y brave-browser; \
-    fi
+    # if ! which brave-browser; then \
+    #     sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
+    #     https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg; \
+    #     echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] \
+    #     https://brave-browser-apt-release.s3.brave.com/ stable main" | \
+    #     sudo tee /etc/apt/sources.list.d/brave-browser-release.list; \
+    #     sudo apt update && sudo apt install -y brave-browser; \
+    # fi
     # # Install Spotify
     # if ! which spotify; then \
     #     curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | \
@@ -186,7 +184,7 @@ install-desktop-apps:
     #     curl -fsSL https://download.opensuse.org/repositories/home:justkidding/xUbuntu_24.04/Release.key \
     #     | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_justkidding.gpg > /dev/null; \
     #     sudo systemctl daemon-reload; sudo apt update; sudo apt install ueberzugpp
-    sudo apt install -y mplayer
+    # sudo apt install -y mplayer
 
 [group('install'), doc('Install Server Applications')]
 install-server-apps:
