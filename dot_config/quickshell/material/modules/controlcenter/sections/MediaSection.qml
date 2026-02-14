@@ -7,7 +7,7 @@ import "../../../services" as QsServices
 Item {
     id: root
     
-    readonly property var pywal: QsServices.Pywal
+    readonly property var colors: QsServices.Colors
     readonly property var players: QsServices.Players
     
     // Selected player - automatically update when active player changes
@@ -38,7 +38,7 @@ Item {
                 font.family: "Inter"
                 font.pixelSize: 16
                 font.weight: Font.Bold
-                color: pywal.foreground
+                color: colors.foreground
                 Layout.fillWidth: true
             }
             
@@ -47,7 +47,7 @@ Item {
                 Layout.preferredHeight: 32
                 Layout.preferredWidth: 160
                 radius: 8
-                color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.08)
+                color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.08)
                 visible: players.list.length > 1
                 z: 200  // Ensure dropdown appears above other content
                 
@@ -56,19 +56,19 @@ Item {
                     anchors.margins: 8
                     spacing: 6
                     
-                    Text {
-                        text: "󰓃"
-                        font.family: "Material Design Icons"
-                        font.pixelSize: 16
-                        color: pywal.color2
-                    }
-                    
-                    Text {
+                        Rectangle {
+                            anchors.centerIn: parent
+                            width: parent.width - 20
+                            height: parent.height - 20
+                            radius: 16
+                            color: colors.color2
+                            opacity: selectedPlayer?.trackArtUrl ? 0.15 : 0
+                        }
                         Layout.fillWidth: true
                         text: selectedPlayer?.identity ?? "Select Player"
                         font.family: "Inter"
                         font.pixelSize: 11
-                        color: pywal.foreground
+                        color: colors.foreground
                         elide: Text.ElideRight
                     }
                     
@@ -76,7 +76,7 @@ Item {
                         text: playerSelectorMenu.visible ? "󰅃" : "󰅀"
                         font.family: "Material Design Icons"
                         font.pixelSize: 14
-                        color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.6)
+                        color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.6)
                     }
                 }
                 
@@ -96,9 +96,9 @@ Item {
                     width: parent.width
                     height: Math.min(playerMenuColumn.implicitHeight + 8, 200)  // Max height to prevent overflow
                     radius: 8
-                    color: pywal.background
+                    color: colors.background
                     border.width: 1
-                    border.color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.15)
+                    border.color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.15)
                     z: 300  // Higher z-index for dropdown
                     
                     // Shadow effect
@@ -109,7 +109,7 @@ Item {
                             color: "transparent"
                             border.color: Qt.rgba(0, 0, 0, 0.2)
                             border.width: 1
-                            radius: 8
+                        color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.6)
                         }
                     }
                     
@@ -122,24 +122,24 @@ Item {
                         Repeater {
                             model: players.list
                             
-                            Rectangle {
+                                Rectangle {
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: 32
                                 radius: 6
                                 color: playerMouseArea.containsMouse ? 
-                                       Qt.rgba(pywal.color2.r, pywal.color2.g, pywal.color2.b, 0.2) : 
-                                       "transparent"
+                                    Qt.rgba(colors.color2.r, colors.color2.g, colors.color2.b, 0.2) : 
+                                    "transparent"
                                 
                                 RowLayout {
                                     anchors.fill: parent
                                     anchors.margins: 6
                                     spacing: 8
                                     
-                                    Text {
+                                        Text {
                                         text: modelData.isPlaying ? "󰐊" : "󰏤"
                                         font.family: "Material Design Icons"
                                         font.pixelSize: 14
-                                        color: modelData.isPlaying ? pywal.color2 : Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.5)
+                                        color: modelData.isPlaying ? colors.color2 : Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.5)
                                     }
                                     
                                     Text {
@@ -147,17 +147,17 @@ Item {
                                         text: modelData.identity ?? "Unknown"
                                         font.family: "Inter"
                                         font.pixelSize: 11
-                                        color: pywal.foreground
+                                        color: colors.foreground
                                         elide: Text.ElideRight
                                     }
                                     
-                                    Text {
-                                        text: "󰄬"
-                                        font.family: "Material Design Icons"
-                                        font.pixelSize: 12
-                                        color: pywal.color2
-                                        visible: selectedPlayer === modelData
-                                    }
+                                        Text {
+                                            text: "󰄬"
+                                            font.family: "Material Design Icons"
+                                            font.pixelSize: 12
+                                            color: colors.color2
+                                            visible: selectedPlayer === modelData
+                                        }
                                 }
                                 
                                 MouseArea {
@@ -184,36 +184,36 @@ Item {
             Layout.fillHeight: true
             
             // No player active
-            ColumnLayout {
-                anchors.centerIn: parent
-                spacing: 16
-                visible: !selectedPlayer
-                
-                Text {
-                    Layout.alignment: Qt.AlignHCenter
-                    text: "󰝚"
-                    font.family: "Material Design Icons"
-                    font.pixelSize: 56
-                    color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.2)
-                }
-                
-                Text {
-                    Layout.alignment: Qt.AlignHCenter
-                    text: "No media playing"
-                    font.family: "Inter"
-                    font.pixelSize: 15
-                    font.weight: Font.Medium
-                    color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.5)
-                }
-                
-                Text {
-                    Layout.alignment: Qt.AlignHCenter
-                    text: "Start playing media to control it here"
-                    font.family: "Inter"
-                    font.pixelSize: 12
-                    color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.35)
-                }
-            }
+                    ColumnLayout {
+                        anchors.centerIn: parent
+                        spacing: 16
+                        visible: !selectedPlayer
+
+                        Text {
+                            Layout.alignment: Qt.AlignHCenter
+                            text: "󰝚"
+                            font.family: "Material Design Icons"
+                            font.pixelSize: 56
+                            color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.2)
+                        }
+
+                        Text {
+                            Layout.alignment: Qt.AlignHCenter
+                            text: "No media playing"
+                            font.family: "Inter"
+                            font.pixelSize: 15
+                            font.weight: Font.Medium
+                            color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.5)
+                        }
+
+                        Text {
+                            Layout.alignment: Qt.AlignHCenter
+                            text: "Start playing media to control it here"
+                            font.family: "Inter"
+                            font.pixelSize: 12
+                            color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.35)
+                        }
+                    }
             
             // Active player
             ColumnLayout {
@@ -227,26 +227,26 @@ Item {
                     Layout.preferredHeight: 220  // Reduced from 300px to fit all controls
                     
                     // Glow/shadow effect
-                    Rectangle {
+                        Rectangle {
                         anchors.centerIn: parent
                         width: parent.width - 20
                         height: parent.height - 20
                         radius: 16
-                        color: pywal.color2
+                        color: colors.color2
                         opacity: selectedPlayer?.trackArtUrl ? 0.15 : 0
-                        
+
                         Behavior on opacity {
                             NumberAnimation { duration: 300; easing.type: Easing.OutCubic }
                         }
                     }
                     
-                    Rectangle {
+                        Rectangle {
                         id: albumArtRect
                         anchors.centerIn: parent
                         width: parent.width - 24
                         height: parent.height - 24
                         radius: 14
-                        color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.05)
+                        color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.05)
                         clip: true
                         
                         scale: albumMouseArea.containsMouse ? 1.02 : 1.0
@@ -271,12 +271,12 @@ Item {
                         }
                         
                         // Fallback icon with animation
-                        Text {
+                            Text {
                             anchors.centerIn: parent
                             text: "󰝚"
                             font.family: "Material Design Icons"
                             font.pixelSize: 72
-                            color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.15)
+                            color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.15)
                             visible: albumArtImage.status !== Image.Ready
                             
                             SequentialAnimation on opacity {
@@ -298,14 +298,14 @@ Item {
                         }
                         
                         // Playing indicator
-                        Rectangle {
+                            Rectangle {
                             anchors.bottom: parent.bottom
                             anchors.right: parent.right
                             anchors.margins: 12
                             width: 36
                             height: 36
                             radius: 18
-                            color: selectedPlayer?.isPlaying ? pywal.color2 : Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.3)
+                            color: selectedPlayer?.isPlaying ? colors.color2 : Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.3)
                             
                             Behavior on color {
                                 ColorAnimation { duration: 200 }
@@ -316,7 +316,7 @@ Item {
                                 text: selectedPlayer?.isPlaying ? "󰐊" : "󰏤"
                                 font.family: "Material Design Icons"
                                 font.pixelSize: 18
-                                color: selectedPlayer?.isPlaying ? pywal.background : pywal.foreground
+                                color: selectedPlayer?.isPlaying ? colors.background : colors.foreground
                             }
                         }
                         
@@ -334,13 +334,13 @@ Item {
                     spacing: 1
                     Layout.topMargin: 4
                     
-                    Text {
+                        Text {
                         Layout.fillWidth: true
                         text: selectedPlayer?.trackTitle ?? "Unknown Track"
                         font.family: "Inter"
                         font.pixelSize: 16
                         font.weight: Font.Bold
-                        color: pywal.foreground
+                        color: colors.foreground
                         elide: Text.ElideRight
                         maximumLineCount: 1
                         horizontalAlignment: Text.AlignHCenter
@@ -351,7 +351,7 @@ Item {
                         text: selectedPlayer?.trackArtist ?? "Unknown Artist"
                         font.family: "Inter"
                         font.pixelSize: 13
-                        color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.7)
+                        color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.7)
                         elide: Text.ElideRight
                         maximumLineCount: 1
                         horizontalAlignment: Text.AlignHCenter
@@ -362,7 +362,7 @@ Item {
                         text: selectedPlayer?.trackAlbum ?? ""
                         font.family: "Inter"
                         font.pixelSize: 11
-                        color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.5)
+                        color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.5)
                         elide: Text.ElideRight
                         maximumLineCount: 1
                         horizontalAlignment: Text.AlignHCenter
@@ -394,12 +394,12 @@ Item {
                             width: seekSlider.availableWidth
                             height: 6
                             radius: 3
-                            color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.1)
+                            color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.1)
                             
-                            Rectangle {
+                                Rectangle {
                                 width: seekSlider.visualPosition * parent.width
                                 height: parent.height
-                                color: pywal.color2
+                                color: colors.color2
                                 radius: 3
                                 
                                 Behavior on width {
@@ -414,8 +414,8 @@ Item {
                             width: 18
                             height: 18
                             radius: 9
-                            color: pywal.background
-                            border.color: pywal.color2
+                            color: colors.background
+                            border.color: colors.color2
                             border.width: 2
                             
                             scale: seekSlider.pressed ? 1.2 : 1.0
@@ -435,7 +435,7 @@ Item {
                             font.family: "Inter"
                             font.pixelSize: 11
                             font.weight: Font.Medium
-                            color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.6)
+                            color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.6)
                         }
                         
                         Item { Layout.fillWidth: true }
@@ -445,7 +445,7 @@ Item {
                             font.family: "Inter"
                             font.pixelSize: 11
                             font.weight: Font.Medium
-                            color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.6)
+                            color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.6)
                         }
                     }
                 }
@@ -462,9 +462,9 @@ Item {
                         width: 48
                         height: 48
                         radius: 24
-                        color: prevHover.containsMouse ? 
-                               Qt.rgba(pywal.color1.r, pywal.color1.g, pywal.color1.b, 0.15) : 
-                               Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.05)
+                                     color: prevHover.containsMouse ? 
+                                         Qt.rgba(colors.color1.r, colors.color1.g, colors.color1.b, 0.15) : 
+                                         Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.05)
                         
                         scale: prevHover.pressed ? 0.92 : 1.0
                         
@@ -476,12 +476,12 @@ Item {
                             NumberAnimation { duration: 100; easing.type: Easing.OutCubic }
                         }
                         
-                        Text {
+                            Text {
                             anchors.centerIn: parent
                             text: "󰒮"
                             font.family: "Material Design Icons"
                             font.pixelSize: 26
-                            color: pywal.foreground
+                            color: colors.foreground
                         }
                         
                         MouseArea {
@@ -499,11 +499,11 @@ Item {
                     }
                     
                     // Play/Pause button (larger, prominent)
-                    Rectangle {
+                        Rectangle {
                         width: 60
                         height: 60
                         radius: 30
-                        color: pywal.color2
+                        color: colors.color2
                         
                         scale: playHover.pressed ? 0.92 : (playHover.containsMouse ? 1.05 : 1.0)
                         
@@ -515,7 +515,7 @@ Item {
                         Rectangle {
                             anchors.fill: parent
                             radius: parent.radius
-                            color: pywal.color2
+                            color: colors.color2
                             opacity: 0
                             
                             SequentialAnimation on opacity {
@@ -533,12 +533,12 @@ Item {
                             }
                         }
                         
-                        Text {
+                            Text {
                             anchors.centerIn: parent
                             text: (selectedPlayer?.isPlaying ?? false) ? "󰏤" : "󰐊"
                             font.family: "Material Design Icons"
                             font.pixelSize: 36
-                            color: pywal.background
+                            color: colors.background
                         }
                         
                         MouseArea {
@@ -556,13 +556,13 @@ Item {
                     }
                     
                     // Next button
-                    Rectangle {
-                        width: 48
-                        height: 48
-                        radius: 24
-                        color: nextHover.containsMouse ? 
-                               Qt.rgba(pywal.color1.r, pywal.color1.g, pywal.color1.b, 0.15) : 
-                               Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.05)
+                       Rectangle {
+                       width: 48
+                       height: 48
+                       radius: 24
+                       color: nextHover.containsMouse ? 
+                           Qt.rgba(colors.color1.r, colors.color1.g, colors.color1.b, 0.15) : 
+                           Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.05)
                         
                         scale: nextHover.pressed ? 0.92 : 1.0
                         
@@ -574,12 +574,12 @@ Item {
                             NumberAnimation { duration: 100; easing.type: Easing.OutCubic }
                         }
                         
-                        Text {
+                            Text {
                             anchors.centerIn: parent
                             text: "󰒭"
                             font.family: "Material Design Icons"
                             font.pixelSize: 26
-                            color: pywal.foreground
+                            color: colors.foreground
                         }
                         
                         MouseArea {

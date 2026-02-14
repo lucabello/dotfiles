@@ -2,7 +2,7 @@
 export EDITOR="nvim"
 export BROWSER="brave-browser"
 export PAGER="batcat"
-{{ if eq .metadata.profile "server" -}}
+{{ if eq .metadata.profile "Server" -}}
 export LEDGER_FILE="$HOME/.data/syncthing/Sync/Finance/2025.journal"
 export COMPOSE_HOME="$HOME/Deployments"
 {{- else -}}

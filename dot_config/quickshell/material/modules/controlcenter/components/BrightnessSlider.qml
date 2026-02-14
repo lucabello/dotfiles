@@ -8,15 +8,15 @@ Rectangle {
     id: root
     
     required property var brightness
-    property var pywal
+    property var colors
     
     // Current brightness value
     readonly property int currentBrightness: brightness ? Math.round((brightness.percentage ?? 0)) : 0
     
     // Solid color tokens
-    readonly property color surfaceColor: pywal ? Qt.lighter(pywal.background, 1.25) : "#2a2a3a"
-    readonly property color textColor: pywal ? pywal.foreground : "#e6e6e6"
-    readonly property color accentColor: pywal ? pywal.warning : "#fab387"  // Warm color for brightness
+    readonly property color surfaceColor: colors ? Qt.lighter(colors.background, 1.25) : "#2a2a3a"
+    readonly property color textColor: colors ? colors.foreground : "#e6e6e6"
+    readonly property color accentColor: colors ? colors.warning : "#fab387"  // Warm color for brightness
     
     Layout.fillWidth: true
     Layout.preferredHeight: 48

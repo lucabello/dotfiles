@@ -8,6 +8,11 @@ import coloraide
 import tomli_w
 
 
+# =======
+# Colors
+# =======
+
+
 def _clamp(value: float, min_value: float = 0, max_value: float = 100) -> float:
     return max(min_value, min(max_value, value))
 
@@ -71,6 +76,11 @@ class Color:
 class ThemeMode(Enum):
     LIGHT = "Light"
     DARK = "Dark"
+
+
+class ThemeModeIcon(Enum):
+    LIGHT = ""
+    DARK = ""
 
 
 @dataclass
@@ -198,6 +208,10 @@ class Theme:
     def metadata(self) -> dict[str, str]:
         return {"name": self.name or "Example", "mode": self.terminal_colors.mode.value}
 
+    @property
+    def mode(self) -> ThemeMode:
+        return self.terminal_colors.mode
+
     def validate(self) -> None:
         self.terminal_colors.validate()
         self.generic_colors.validate()
@@ -218,26 +232,29 @@ class Theme:
     def from_toml(filename: Path) -> "Theme":
         with open(filename, "rb") as f:
             data = tomllib.load(f)
-        name: Optional[str] = data["colors"].get("metadata", {}).get("name")
-        terminal_data = data["colors"]["terminal"]
-        terminal_data = {
-            k: Color(v)
-            for k, v in terminal_data.items()
-            if k in TerminalColors.__dataclass_fields__.keys()
-        }
-        generic_data = data["colors"].get("generic", {})
-        generic_data = {
-            k: Color(v)
-            for k, v in generic_data.items()
-            if k in GenericColors.__dataclass_fields__.keys()
-        }
+        try:
+            name: Optional[str] = data["colors"].get("metadata", {}).get("name")
+            terminal_data = data["colors"]["terminal"]
+            terminal_data = {
+                k: Color(v)
+                for k, v in terminal_data.items()
+                if k in TerminalColors.__dataclass_fields__.keys()
+            }
+            generic_data = data["colors"].get("generic", {})
+            generic_data = {
+                k: Color(v)
+                for k, v in generic_data.items()
+                if k in GenericColors.__dataclass_fields__.keys()
+            }
 
-        terminal_colors = TerminalColors(**terminal_data)
-        generic_colors = (
-            GenericColors(**generic_data)
-            if generic_data
-            else GenericColors.from_terminal(terminal_colors)
-        )
+            terminal_colors = TerminalColors(**terminal_data)
+            generic_colors = (
+                GenericColors(**generic_data)
+                if generic_data
+                else GenericColors.from_terminal(terminal_colors)
+            )
+        except TypeError as e:
+            raise TypeError(f"Failed to parse {filename}: {e}")
 
         theme = Theme(
             terminal_colors=terminal_colors,

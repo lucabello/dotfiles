@@ -9,15 +9,15 @@ import "../services" as QsServices
 Item {
     id: root
     
-    // Pywal colors for theming
-    readonly property var pywal: QsServices.Pywal
+    // Colors singleton for theming
+    readonly property var colors: QsServices.Colors
     
     // Public properties
     property bool show: false
     property int animDuration: Material3Anim.medium4
     property real overshoot: 1.7
-    property color surfaceColor: pywal.surfaceContainer
-    property color primaryColor: pywal.primary
+    property color surfaceColor: colors.surfaceContainer
+    property color primaryColor: colors.primary
     property real cornerRadius: 16
     property bool enableShadow: true
     property int elevationLevel: 3  // Uses Elevation component
@@ -98,7 +98,7 @@ Item {
             level: root.enableShadow ? root.elevationLevel : 0
             target: surface
             radius: surface.radius
-            shadowColor: pywal.shadow
+            shadowColor: colors.shadow
         }
         
         // Surface

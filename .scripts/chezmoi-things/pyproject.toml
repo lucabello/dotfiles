@@ -37,6 +37,7 @@ Changelog = "https://github.com/lucabello/{{project_name}}/releases"
 
 [project.scripts]
 chezmoi-theme = "chezmoi_theme.cli:app"
+chezmoi-data = "chezmoi_data.cli:app"
 
 # Building and publishing
 [build-system]

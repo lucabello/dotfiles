@@ -9,7 +9,7 @@ Rectangle {
     id: root
     
     required property var audio
-    property var pywal
+    property var colors
     
     // Use VolumeMonitor for reliable volume reading (same as bar)
     readonly property var volumeMonitor: QsServices.VolumeMonitor
@@ -19,9 +19,9 @@ Rectangle {
     readonly property bool isMuted: volumeMonitor.muted
     
     // Solid color tokens
-    readonly property color surfaceColor: pywal ? Qt.lighter(pywal.background, 1.25) : "#2a2a3a"
-    readonly property color textColor: pywal ? pywal.foreground : "#e6e6e6"
-    readonly property color accentColor: pywal ? pywal.primary : "#a6e3a1"
+    readonly property color surfaceColor: colors ? Qt.lighter(colors.background, 1.25) : "#2a2a3a"
+    readonly property color textColor: colors ? colors.foreground : "#e6e6e6"
+    readonly property color accentColor: colors ? colors.primary : "#a6e3a1"
     
     Layout.fillWidth: true
     Layout.preferredHeight: 48

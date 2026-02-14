@@ -1,5 +1,5 @@
 [colors.metadata]
-name = " Test"
+name = "Rosé Pine Dawn"
 mode = "Light"
 
 [colors.terminal]
@@ -27,14 +27,14 @@ color_20 = "#817a96"
 color_21 = "#6c6687"
 
 [colors.generic]
-surface = "#fffaf8"
-background = "#faf6f3"
+surface = "#fffaf3"
+background = "#faf4ed"
 overlay = "#f2e9e1"
-muted = "#928fa2"
-subtle = "#767197"
+muted = "#9893a5"
+subtle = "#797593"
 foreground = "#575279"
 success = "#286983"
 warning = "#ea9d34"
 failure = "#b4637a"
-primary = "#d7827e"
-secondary = "#ffb75a"
+primary = "#b4637a"
+secondary = "#286983"

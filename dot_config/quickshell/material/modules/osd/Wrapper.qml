@@ -4,13 +4,13 @@ import QtQuick
 Scope {
     id: root
     
-    required property var pywal
-    
+    required property var colors
+
     VolumeOSD {
-        pywal: root.pywal
+        colors: root.colors
     }
-    
+
     BrightnessOSD {
-        pywal: root.pywal
+        colors: root.colors
     }
 }

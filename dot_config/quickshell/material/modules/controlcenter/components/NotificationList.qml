@@ -8,15 +8,15 @@ Rectangle {
     id: root
     
     required property var notifs
-    property var pywal
-    
-    // Solid color tokens from pywal
-    readonly property color surfaceColor: pywal ? pywal.surfaceContainerLow : "#1e1e2e"
-    readonly property color surfaceVariant: pywal ? pywal.surfaceContainerHigh : "#2a2a3a"
-    readonly property color textColor: pywal ? pywal.foreground : "#e6e6e6"
-    readonly property color textVariant: pywal ? Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.72) : "#a0a0a0"
-    readonly property color accentColor: pywal ? pywal.primary : "#a6e3a1"
-    readonly property color borderColor: pywal ? Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.08) : "#333333"
+    property var colors
+
+    // Solid color tokens
+    readonly property color surfaceColor: colors ? colors.surfaceContainerLow : "#1e1e2e"
+    readonly property color surfaceVariant: colors ? colors.surfaceContainerHigh : "#2a2a3a"
+    readonly property color textColor: colors ? colors.foreground : "#e6e6e6"
+    readonly property color textVariant: colors ? Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.72) : "#a0a0a0"
+    readonly property color accentColor: colors ? colors.primary : "#a6e3a1"
+    readonly property color borderColor: colors ? Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.08) : "#333333"
     
     Layout.fillWidth: true
     Layout.fillHeight: true

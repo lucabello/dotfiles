@@ -15,7 +15,7 @@ Rectangle {
     signal clicked()
     
     readonly property var config: QsConfig.Config
-    readonly property var pywal: QsServices.Pywal
+    
     readonly property var barColors: config.barColors
     
     // Dynamic sizing with fluid animation

@@ -19,7 +19,7 @@ Item {
     
     readonly property var battery: UPower.displayDevice
     readonly property var powerProfiles: QsServices.PowerProfiles
-    readonly property var pywal: QsServices.Pywal
+    
     readonly property var barColors: QsConfig.Config.barColors
     readonly property real percentage: battery?.percentage ?? 0
     readonly property int batteryLevel: Math.round(percentage * 100)

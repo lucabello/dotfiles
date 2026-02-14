@@ -13,20 +13,20 @@ PanelWindow {
     
     property bool shouldShow: false
     property bool isHovered: false
-    readonly property var pywal: QsServices.Pywal
+    readonly property var colors: QsServices.Colors
     readonly property var audio: QsServices.Audio
     readonly property var volumeMonitor: QsServices.VolumeMonitor
     readonly property var config: QsConfig.Config
     
     // Material 3 colors
     readonly property color m3Surface: Qt.rgba(
-        pywal.background.r,
-        pywal.background.g,
-        pywal.background.b,
+        colors.background.r,
+        colors.background.g,
+        colors.background.b,
         1.0
     )
-    readonly property color m3Primary: pywal.color4 ?? "#a6e3a1"
-    readonly property color m3OnSurface: pywal.foreground
+    readonly property color m3Primary: colors.color4 ?? "#a6e3a1"
+    readonly property color m3OnSurface: colors.foreground
     
     screen: Quickshell.screens.length > 0
         ? Quickshell.screens[Math.min(Math.max(0, config.barComponents.popupScreenIndex), Quickshell.screens.length - 1)]
@@ -155,7 +155,7 @@ PanelWindow {
             font.family: "Inter"
             font.pixelSize: 14
             font.weight: Font.DemiBold
-            color: pywal.foreground
+            color: colors.foreground
         }
         
         // Output volume
@@ -167,47 +167,47 @@ PanelWindow {
                 Layout.fillWidth: true
                 spacing: 8
                 
-                Text {
+                    Text {
                     text: volumeMonitor.muted ? "󰖁" : "󰕾"
                     font.family: "Material Design Icons"
                     font.pixelSize: 20
-                    color: pywal.foreground
+                    color: colors.foreground
                 }
                 
-                Text {
+                    Text {
                     text: "Output"
                     font.family: "Inter"
                     font.pixelSize: 12
-                    color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.7)
+                    color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.7)
                 }
                 
                 Item { Layout.fillWidth: true }
                 
-                Text {
+                    Text {
                     text: volumeMonitor.percentage + "%"
                     font.family: "Inter"
                     font.pixelSize: 12
                     font.weight: Font.Medium
-                    color: pywal.foreground
+                    color: colors.foreground
                 }
                 
                 // Mute toggle
-                Rectangle {
+                    Rectangle {
                     width: 28
                     height: 28
                     radius: 6
-                    color: volumeMonitor.muted ? pywal.color1 : Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.1)
+                    color: volumeMonitor.muted ? colors.color1 : Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.1)
                     
                     Behavior on color {
                         ColorAnimation { duration: 200; easing.type: Easing.OutCubic }
                     }
                     
-                    Text {
+                        Text {
                         anchors.centerIn: parent
                         text: volumeMonitor.muted ? "󰝟" : "󰝚"
                         font.family: "Material Design Icons"
                         font.pixelSize: 14
-                        color: pywal.foreground
+                        color: colors.foreground
                     }
                     
                     MouseArea {
@@ -239,12 +239,12 @@ PanelWindow {
                     width: volumeSlider.availableWidth
                     height: implicitHeight
                     radius: 3
-                    color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.1)
+                    color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.1)
                     
                     Rectangle {
                         width: volumeSlider.visualPosition * parent.width
                         height: parent.height
-                        color: pywal.color2
+                        color: colors.color2
                         radius: 3
                         
                         Behavior on width {
@@ -259,8 +259,8 @@ PanelWindow {
                     implicitWidth: 18
                     implicitHeight: 18
                     radius: 9
-                    color: pywal.foreground
-                    border.color: pywal.color2
+                    color: colors.foreground
+                    border.color: colors.color2
                     border.width: 2
                     
                     Behavior on x {
@@ -283,14 +283,14 @@ PanelWindow {
                     text: audio.sourceMuted ? "󰍭" : "󰍬"
                     font.family: "Material Design Icons"
                     font.pixelSize: 20
-                    color: pywal.foreground
+                    color: colors.foreground
                 }
                 
-                Text {
+                    Text {
                     text: "Input"
                     font.family: "Inter"
                     font.pixelSize: 12
-                    color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.7)
+                    color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.7)
                 }
                 
                 Item { Layout.fillWidth: true }
@@ -300,7 +300,7 @@ PanelWindow {
                     font.family: "Inter"
                     font.pixelSize: 12
                     font.weight: Font.Medium
-                    color: pywal.foreground
+                    color: colors.foreground
                 }
                 
                 // Mute toggle
@@ -308,7 +308,7 @@ PanelWindow {
                     width: 28
                     height: 28
                     radius: 6
-                    color: audio.sourceMuted ? pywal.color1 : Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.1)
+                    color: audio.sourceMuted ? colors.color1 : Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.1)
                     
                     Behavior on color {
                         ColorAnimation { duration: 200; easing.type: Easing.OutCubic }
@@ -319,7 +319,7 @@ PanelWindow {
                         text: audio.sourceMuted ? "󰝟" : "󰝚"
                         font.family: "Material Design Icons"
                         font.pixelSize: 14
-                        color: pywal.foreground
+                        color: colors.foreground
                     }
                     
                     MouseArea {
@@ -350,12 +350,12 @@ PanelWindow {
                     width: inputSlider.availableWidth
                     height: implicitHeight
                     radius: 3
-                    color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.1)
+                    color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.1)
                     
                     Rectangle {
                         width: inputSlider.visualPosition * parent.width
                         height: parent.height
-                        color: pywal.color3
+                        color: colors.color3
                         radius: 3
                         
                         Behavior on width {
@@ -370,8 +370,8 @@ PanelWindow {
                     implicitWidth: 18
                     implicitHeight: 18
                     radius: 9
-                    color: pywal.foreground
-                    border.color: pywal.color3
+                    color: colors.foreground
+                    border.color: colors.color3
                     border.width: 2
                     
                     Behavior on x {

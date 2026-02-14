@@ -11,7 +11,7 @@ Item {
     property var barWindow
     property var networkPopup
     
-    readonly property var pywal: QsServices.Pywal
+    readonly property var colors: QsServices.Colors
     readonly property var network: QsServices.Network
     readonly property var barColors: QsConfig.Config.barColors
     readonly property real componentScale: QsConfig.Config.barComponents.scale.network

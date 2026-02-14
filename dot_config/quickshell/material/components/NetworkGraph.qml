@@ -9,11 +9,11 @@ Canvas {
     property var dataPoints: []  // Array of {download, upload} values
     property int maxPoints: 30   // 30 points = 60 seconds at 2s interval
     
-    // Use Pywal semantic colors by default
-    readonly property var pywal: QsServices.Pywal
-    property color downloadColor: pywal.success
-    property color uploadColor: pywal.info
-    property color gridColor: Qt.rgba(pywal.outline.r, pywal.outline.g, pywal.outline.b, 0.2)
+    // Use Colors singleton for semantic colors
+    readonly property var colors: QsServices.Colors
+    property color downloadColor: colors.success
+    property color uploadColor: colors.info
+    property color gridColor: Qt.rgba(colors.outline.r, colors.outline.g, colors.outline.b, 0.2)
     property color backgroundColor: "transparent"
     
     property real maxValue: 1024 * 1024  // 1 MB/s default max

@@ -38,12 +38,12 @@ Item {
         anchors.leftMargin: targetX
         anchors.rightMargin: parent.width - targetX - 360
         
-        color: Pywal.background || "#1e1e2e"
+        color: Colors.background || "#1e1e2e"
         opacity: 0.98
         radius: 12
         
         border.width: 1
-        border.color: Pywal.color2 || "#89b4fa"
+        border.color: Colors.color2 || "#89b4fa"
         
         Behavior on opacity {
             NumberAnimation { duration: 200 }

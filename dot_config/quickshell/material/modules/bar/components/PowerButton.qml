@@ -17,13 +17,13 @@ Item {
         radius: 14
         
         color: {
-            if (mouseArea.pressed) return Qt.alpha(Pywal.colors.color1, 0.3)
-            if (mouseArea.containsMouse) return Qt.alpha(Pywal.colors.color1, 0.2)
-            return Qt.alpha(Pywal.colors.color1, 0.12)
+            if (mouseArea.pressed) return Qt.alpha(Colors.color1, 0.3)
+            if (mouseArea.containsMouse) return Qt.alpha(Colors.color1, 0.2)
+            return Qt.alpha(Colors.color1, 0.12)
         }
         
         border.width: 1
-        border.color: Qt.alpha(Pywal.colors.color1, mouseArea.containsMouse ? 0.4 : 0.2)
+        border.color: Qt.alpha(Colors.color1, mouseArea.containsMouse ? 0.4 : 0.2)
         
         scale: mouseArea.pressed ? 0.92 : (mouseArea.containsMouse ? 1.05 : 1.0)
         
@@ -54,7 +54,7 @@ Item {
     Text {
         anchors.centerIn: parent
         text: "⏻"
-        color: Pywal.colors.color1
+        color: Colors.color1
         font.pixelSize: 16
         font.bold: true
     }

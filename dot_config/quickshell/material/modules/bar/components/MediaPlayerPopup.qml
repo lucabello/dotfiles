@@ -1,5 +1,6 @@
 import QtQuick 6.9
 import QtQuick.Layouts 6.9
+import "../../../services" as QsServices
 import qs.services
 
 Item {
@@ -57,11 +58,11 @@ Item {
         id: popupBg
         anchors.fill: parent
         radius: 16
-        color: Pywal.background
+        color: QsServices.Colors.background
         opacity: 0.98
         
         border.width: 1
-        border.color: Qt.alpha(Pywal.colors.color1, 0.3)
+        border.color: Qt.alpha(QsServices.Colors.color1, 0.3)
         
         layer.enabled: true
         
@@ -72,7 +73,7 @@ Item {
             radius: parent.radius + 2
             color: "transparent"
             border.width: 2
-            border.color: Qt.alpha(Pywal.background, 0.5)
+            border.color: Qt.alpha(QsServices.Colors.background, 0.5)
             z: -1
         }
         
@@ -92,7 +93,7 @@ Item {
                     width: 200
                     height: 200
                     radius: 12
-                    color: Qt.alpha(Pywal.colors.color2, 0.15)
+                    color: Qt.alpha(QsServices.Colors.color2, 0.15)
                     clip: true
                     
                     Image {
@@ -117,7 +118,7 @@ Item {
                         color: "transparent"
                         radius: parent.radius
                         border.width: 1
-                        border.color: Qt.alpha(Pywal.foreground, 0.1)
+                        border.color: Qt.alpha(QsServices.Colors.foreground, 0.1)
                     }
                     
                     // Placeholder icon
@@ -125,7 +126,7 @@ Item {
                         anchors.centerIn: parent
                         text: "♫"
                         font.pixelSize: 64
-                        color: Pywal.foreground
+                        color: QsServices.Colors.foreground
                         opacity: 0.2
                         visible: !popup.player?.trackArtUrl || parent.children[0].status !== Image.Ready
                     }
@@ -150,7 +151,7 @@ Item {
                 Text {
                     width: parent.width
                     text: popup.player?.trackTitle ?? "No media"
-                    color: Pywal.foreground
+                    color: QsServices.Colors.foreground
                     font.pixelSize: 18
                     font.weight: Font.Bold
                     elide: Text.ElideRight
@@ -162,7 +163,7 @@ Item {
                 Text {
                     width: parent.width
                     text: popup.player?.trackArtist ?? ""
-                    color: Pywal.foreground
+                    color: QsServices.Colors.foreground
                     font.pixelSize: 14
                     elide: Text.ElideRight
                     opacity: 0.7
@@ -172,7 +173,7 @@ Item {
                 Text {
                     width: parent.width
                     text: popup.player?.trackAlbum ?? ""
-                    color: Pywal.foreground
+                    color: QsServices.Colors.foreground
                     font.pixelSize: 12
                     elide: Text.ElideRight
                     opacity: 0.5
@@ -194,7 +195,7 @@ Item {
                         width: parent.width
                         height: 6
                         radius: 3
-                        color: Qt.alpha(Pywal.foreground, 0.1)
+                        color: Qt.alpha(QsServices.Colors.foreground, 0.1)
                         
                         Rectangle {
                             height: parent.height
@@ -204,7 +205,7 @@ Item {
                                 return len > 0 ? parent.width * (pos / len) : 0
                             }
                             radius: parent.radius
-                            color: Pywal.colors.color1
+                            color: QsServices.Colors.color1
                             
                             Behavior on width {
                                 NumberAnimation {
@@ -220,7 +221,7 @@ Item {
                         
                         Text {
                             text: formatTime(popup.player?.position ?? 0)
-                            color: Pywal.foreground
+                            color: QsServices.Colors.foreground
                             font.pixelSize: 10
                             opacity: 0.5
                         }
@@ -229,7 +230,7 @@ Item {
                         
                         Text {
                             text: formatTime(popup.player?.length ?? 0)
-                            color: Pywal.foreground
+                            color: QsServices.Colors.foreground
                             font.pixelSize: 10
                             opacity: 0.5
                         }
@@ -247,9 +248,9 @@ Item {
                     width: 44
                     height: 44
                     radius: 22
-                    color: prevArea.pressed ? Qt.alpha(Pywal.colors.color2, 0.35) :
-                           prevArea.containsMouse ? Qt.alpha(Pywal.colors.color2, 0.25) :
-                           Qt.alpha(Pywal.foreground, 0.08)
+                          color: prevArea.pressed ? Qt.alpha(QsServices.Colors.color2, 0.35) :
+                              prevArea.containsMouse ? Qt.alpha(QsServices.Colors.color2, 0.25) :
+                              Qt.alpha(QsServices.Colors.foreground, 0.08)
                     
                     scale: prevArea.pressed ? 0.95 : 1
                     
@@ -264,8 +265,7 @@ Item {
                     Text {
                         anchors.centerIn: parent
                         text: "⏮"
-                        font.pixelSize: 18
-                        color: Pywal.foreground
+                        color: QsServices.Colors.foreground
                         opacity: 0.9
                     }
                     
@@ -283,9 +283,9 @@ Item {
                     width: 56
                     height: 56
                     radius: 28
-                    color: playArea.pressed ? Qt.alpha(Pywal.colors.color1, 0.5) :
-                           playArea.containsMouse ? Qt.alpha(Pywal.colors.color1, 0.4) :
-                           Qt.alpha(Pywal.colors.color1, 0.3)
+                          color: playArea.pressed ? Qt.alpha(QsServices.Colors.color1, 0.5) :
+                              playArea.containsMouse ? Qt.alpha(QsServices.Colors.color1, 0.4) :
+                              Qt.alpha(QsServices.Colors.color1, 0.3)
                     
                     scale: playArea.pressed ? 0.95 : playArea.containsMouse ? 1.05 : 1
                     
@@ -299,9 +299,8 @@ Item {
                     
                     Text {
                         anchors.centerIn: parent
-                        text: popup.player?.isPlaying ? "⏸" : "▶"
+                        color: QsServices.Colors.color1
                         font.pixelSize: 24
-                        color: Pywal.colors.color1
                     }
                     
                     MouseArea {
@@ -318,9 +317,9 @@ Item {
                     width: 44
                     height: 44
                     radius: 22
-                    color: nextArea.pressed ? Qt.alpha(Pywal.colors.color2, 0.35) :
-                           nextArea.containsMouse ? Qt.alpha(Pywal.colors.color2, 0.25) :
-                           Qt.alpha(Pywal.foreground, 0.08)
+                          color: nextArea.pressed ? Qt.alpha(QsServices.Colors.color2, 0.35) :
+                              nextArea.containsMouse ? Qt.alpha(QsServices.Colors.color2, 0.25) :
+                              Qt.alpha(QsServices.Colors.foreground, 0.08)
                     
                     scale: nextArea.pressed ? 0.95 : 1
                     
@@ -333,10 +332,9 @@ Item {
                     }
                     
                     Text {
-                        anchors.centerIn: parent
+                        color: QsServices.Colors.foreground
                         text: "⏭"
                         font.pixelSize: 18
-                        color: Pywal.foreground
                         opacity: 0.9
                     }
                     
@@ -355,13 +353,13 @@ Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 36
                 radius: 10
-                color: Qt.alpha(Pywal.foreground, 0.05)
+                color: Qt.alpha(QsServices.Colors.foreground, 0.05)
                 visible: Players.list.length > 1
-                
+
                 Text {
                     anchors.centerIn: parent
                     text: Players.getIdentity(popup.player) + " • " + Players.list.length + " players"
-                    color: Pywal.foreground
+                    color: QsServices.Colors.foreground
                     font.pixelSize: 11
                     opacity: 0.6
                 }

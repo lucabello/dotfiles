@@ -1,23 +1,19 @@
 [colors.metadata]
-name = " Rosé Pine"
-series = "Rosé Pine"
+name = "Rosé Pine"
 mode = "Dark"
 
 [colors.generic]
-background = "#191724"
-background_secondary = "#1f1d2e" # Status bars, modals and notifications
-background_tertiary = "#26233a" # Selection, active editor line
-# background_other = "" # UI elements like indentation
-background_selection = "#2a2740"
-background_quaternary = "#2e2b47"
-text = "#e0def4"
-text_secondary = "#908caa" # Subtle text
-# text_elevated = ""
-text_disabled = "#6e6a86"
-accent = "#eb6f92"
-# accent_alt = ""
-accent_secondary = "#31748f"
-# accent_tertiary = "" # ???
+surface = "#191724"
+background = "#1f1d2e"
+overlay = "#26233a"
+foreground = "#e0def4"
+subtle = "#908caa"
+muted = "#6e6a86"
+primary = "#eb6f92"
+secondary = "#31748f"
+success = "#31748f"
+warning = "#f6c177"
+failure = "#eb6f92"
 
 [colors.terminal]
 black = "#26233a"
@@ -28,7 +24,6 @@ blue = "#9ccfd8"
 magenta = "#c4a7e7"
 cyan = "#ebbcba"
 white = "#e0def4"
-orange = "#f29a86"
 bright_black = "#3c3376"
 bright_red = "#fd90af"
 bright_green = "#269ecd"
@@ -43,7 +38,3 @@ color_18 = "#706c84"
 color_19 = "#8b879f"
 color_20 = "#a6a3bb"
 color_21 = "#c3c0d7"
-bright_orange = "#ffbbac"
-
-[colors.apps.vim]
-background = "dark"

@@ -6,7 +6,7 @@ from typing import Optional
 import typer
 from rich.console import Console
 
-from chezmoi_theme.models import Theme
+from models.colors import Theme
 from chezmoi_theme.prompts import ask_missing
 
 app = typer.Typer(no_args_is_help=True)

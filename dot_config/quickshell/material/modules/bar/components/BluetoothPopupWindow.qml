@@ -14,7 +14,7 @@ PanelWindow {
     
     property bool shouldShow: false
     readonly property var adapter: Bluetooth.defaultAdapter
-    readonly property var pywal: QsServices.Pywal
+    readonly property var colors: QsServices.Colors
     readonly property var config: QsConfig.Config
     readonly property var devices: [...Bluetooth.devices.values].sort((a, b) => {
         if (a.connected !== b.connected) return b.connected - a.connected
@@ -23,10 +23,10 @@ PanelWindow {
     })
     
     // Solid colors like Control Center
-    readonly property color cSurface: pywal.background
-    readonly property color cSurfaceContainer: Qt.lighter(pywal.background, 1.15)
-    readonly property color cPrimary: pywal.primary
-    readonly property color cText: pywal.foreground
+    readonly property color cSurface: colors.background
+    readonly property color cSurfaceContainer: Qt.lighter(colors.background, 1.15)
+    readonly property color cPrimary: colors.primary
+    readonly property color cText: colors.foreground
     readonly property color cSubText: Qt.rgba(cText.r, cText.g, cText.b, 0.6)
     readonly property color cBorder: Qt.rgba(cText.r, cText.g, cText.b, 0.08)
     readonly property color cHover: Qt.rgba(cText.r, cText.g, cText.b, 0.06)

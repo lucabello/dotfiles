@@ -10,7 +10,7 @@ Item {
     
     property var controlCenter
     
-    readonly property var pywal: QsServices.Pywal
+    
     readonly property var barColors: QsConfig.Config.barColors
     readonly property bool isActive: controlCenter?.shouldShow ?? false
     readonly property bool isHovered: toggleMouse.containsMouse

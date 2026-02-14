@@ -6,7 +6,7 @@ import "../../../services" as QsServices
 Item {
     id: root
     
-    readonly property var pywal: QsServices.Pywal
+    readonly property var colors: QsServices.Colors
     readonly property var system: QsServices.SystemUsage
     readonly property bool isHovered: mouseArea.containsMouse
     
@@ -28,12 +28,12 @@ Item {
         RowLayout {
             spacing: 4
             
-            Text {
+                Text {
                 text: "󰘚"
                 font.family: "Material Design Icons"
                 font.pixelSize: 14
-                color: pywal.foreground
-                
+                color: colors.foreground
+
                 Behavior on color {
                     ColorAnimation { duration: 300; easing.type: Easing.OutCubic }
                 }
@@ -44,27 +44,27 @@ Item {
                 font.family: "Inter"
                 font.pixelSize: 11
                 font.weight: Font.Medium
-                color: pywal.foreground
+                color: colors.foreground
             }
         }
         
         // Separator
-        Rectangle {
+            Rectangle {
             width: 1
             height: 12
-            color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.2)
+            color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.2)
         }
         
         // Memory
         RowLayout {
             spacing: 4
             
-            Text {
+                Text {
                 text: "󰍛"
                 font.family: "Material Design Icons"
                 font.pixelSize: 14
-                color: pywal.foreground
-                
+                color: colors.foreground
+
                 Behavior on color {
                     ColorAnimation { duration: 300; easing.type: Easing.OutCubic }
                 }
@@ -75,27 +75,27 @@ Item {
                 font.family: "Inter"
                 font.pixelSize: 11
                 font.weight: Font.Medium
-                color: pywal.foreground
+                color: colors.foreground
             }
         }
         
         // Separator
-        Rectangle {
+            Rectangle {
             width: 1
             height: 12
-            color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.2)
+            color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.2)
         }
         
         // Disk
         RowLayout {
             spacing: 4
             
-            Text {
+                Text {
                 text: "󰋊"
                 font.family: "Material Design Icons"
                 font.pixelSize: 14
-                color: pywal.foreground
-                
+                color: colors.foreground
+
                 Behavior on color {
                     ColorAnimation { duration: 300; easing.type: Easing.OutCubic }
                 }
@@ -106,7 +106,7 @@ Item {
                 font.family: "Inter"
                 font.pixelSize: 11
                 font.weight: Font.Medium
-                color: pywal.foreground
+                color: colors.foreground
             }
         }
     }

@@ -7,16 +7,16 @@ Item {
     id: root
     
     readonly property var notifs: QsServices.Notifs
-    readonly property var pywal: QsServices.Pywal
-    
-    // Wait for pywal to load before showing content
-    readonly property bool pywalLoaded: pywal && pywal.foreground !== undefined
-    
+    readonly property var colors: QsServices.Colors
+
+    // Wait for colors to load before showing content
+    readonly property bool colorsLoaded: colors && colors.foreground !== undefined
+
     // Safe color accessors with fallbacks
-    readonly property color textColor: pywalLoaded ? pywal.foreground : "#ffffff"
-    readonly property color accentColor: pywalLoaded ? pywal.color4 : "#a6e3a1"
-    readonly property color urgentColor: pywalLoaded ? pywal.color1 : "#f38ba8"
-    readonly property color surfaceColor: pywalLoaded ? pywal.background : "#1e1e2e"
+    readonly property color textColor: colorsLoaded ? colors.foreground : "#ffffff"
+    readonly property color accentColor: colorsLoaded ? colors.color4 : "#a6e3a1"
+    readonly property color urgentColor: colorsLoaded ? colors.color1 : "#f38ba8"
+    readonly property color surfaceColor: colorsLoaded ? colors.background : "#1e1e2e"
     
     ColumnLayout {
         anchors.fill: parent

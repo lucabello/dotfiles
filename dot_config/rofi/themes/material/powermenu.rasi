@@ -13,8 +13,8 @@ configuration {
 }
 
 /*****----- Global Properties -----*****/
-@import                          "~/.config/rofi/themes/round-wine/colors.rasi"
-@import                          "~/.config/rofi/themes/round-wine/fonts.rasi"
+@import                          "./colors.rasi"
+@import                          "./fonts.rasi"
 
 /*
 USE_ICON=YES

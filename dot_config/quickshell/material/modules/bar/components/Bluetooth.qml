@@ -12,7 +12,7 @@ Item {
     property var barWindow
     property var bluetoothPopup
     
-    readonly property var pywal: QsServices.Pywal
+    
     readonly property var barColors: QsConfig.Config.barColors
     readonly property bool isHovered: mouseArea.containsMouse
     readonly property real componentScale: QsConfig.Config.barComponents.scale.bluetooth

@@ -15,7 +15,7 @@ PanelWindow {
     // Services
     readonly property var logger: QsServices.Logger
     readonly property var config: QsConfig.Config
-    readonly property var pywal: QsServices.Pywal
+    readonly property var colors: QsServices.Colors
     readonly property var network: QsServices.Network
     readonly property var bluetooth: QsServices.Bluetooth
     readonly property var audio: QsServices.Audio
@@ -47,15 +47,15 @@ PanelWindow {
     }
     
     // Solid UI Color Tokens - Professional dark theme
-    readonly property color cSurface: pywal.background
-    readonly property color cSurfaceContainer: Qt.lighter(pywal.background, 1.15)
-    readonly property color cSurfaceContainerHigh: Qt.lighter(pywal.background, 1.25)
-    readonly property color cBorder: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.08)
-    readonly property color cPrimary: pywal.primary
-    readonly property color cSecondary: pywal.secondary
-    readonly property color cOnSurface: pywal.foreground
-    readonly property color cOnSurfaceVariant: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.7)
-    readonly property color cOnSurfaceDim: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.5)
+    readonly property color cSurface: colors.background
+    readonly property color cSurfaceContainer: Qt.lighter(colors.background, 1.15)
+    readonly property color cSurfaceContainerHigh: Qt.lighter(colors.background, 1.25)
+    readonly property color cBorder: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.08)
+    readonly property color cPrimary: colors.primary
+    readonly property color cSecondary: colors.secondary
+    readonly property color cOnSurface: colors.foreground
+    readonly property color cOnSurfaceVariant: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.7)
+    readonly property color cOnSurfaceDim: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.5)
     
     screen: Quickshell.screens.length > 0
         ? Quickshell.screens[Math.min(Math.max(0, config.barComponents.popupScreenIndex), Quickshell.screens.length - 1)]
@@ -336,7 +336,7 @@ PanelWindow {
                                 label: "Do Not Disturb"
                                 subLabel: root.notifs.dnd ? "On" : "Off"
                                 active: root.notifs.dnd
-                                activeColor: pywal.warning
+                                activeColor: root.colors.warning
                                 surfaceColor: root.cSurfaceContainerHigh
                                 textColor: root.cOnSurface
                                 onClicked: root.notifs.toggleDnd()
@@ -348,7 +348,7 @@ PanelWindow {
                                 label: "Caffeine"
                                 subLabel: root.idleInhibitor.inhibited ? "Active" : "Off"
                                 active: root.idleInhibitor.inhibited
-                                activeColor: pywal.info
+                                activeColor: root.colors.info
                                 surfaceColor: root.cSurfaceContainerHigh
                                 textColor: root.cOnSurface
                                 onClicked: root.idleInhibitor.inhibited = !root.idleInhibitor.inhibited
@@ -383,13 +383,13 @@ PanelWindow {
                             VolumeSlider {
                                 Layout.fillWidth: true
                                 audio: root.audio
-                                pywal: root.pywal
+                                colors: root.colors
                             }
                             
                             BrightnessSlider {
                                 Layout.fillWidth: true
                                 brightness: root.brightness
-                                pywal: root.pywal
+                                colors: root.colors
                                 visible: root.config.barComponents.enabled.brightness
                             }
                         }
@@ -405,14 +405,14 @@ PanelWindow {
                         SystemStats {
                             Layout.fillWidth: true
                             systemUsage: root.systemUsage
-                            pywal: root.pywal
+                            colors: root.colors
                         }
                         
                         // Media Card
                         MediaCard {
                             Layout.fillWidth: true
                             mpris: root.mpris
-                            pywal: root.pywal
+                            colors: root.colors
                         }
                         
                         // Notifications
@@ -420,7 +420,7 @@ PanelWindow {
                             Layout.fillWidth: true
                             Layout.preferredHeight: Math.min(260, Math.max(80, root.height - 600))
                             notifs: root.notifs
-                            pywal: root.pywal
+                            colors: root.colors
                         }
                         
                         // Bottom padding

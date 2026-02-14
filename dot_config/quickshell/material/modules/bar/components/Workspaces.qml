@@ -11,7 +11,7 @@ Item {
     property var screen
     
     readonly property var config: QsConfig.Config
-    readonly property var pywal: QsServices.Pywal
+    
     readonly property var hypr: QsServices.Hypr
     readonly property real componentScale: config.barComponents.scale.workspaces
     readonly property int activeWsId: hypr.activeWsId

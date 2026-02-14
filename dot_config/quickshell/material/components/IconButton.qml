@@ -22,11 +22,11 @@ Item {
     property bool animateIconFill: true
     
     // Colors
-    property color iconColor: pywal.foreground
+    property color iconColor: colors.foreground
     property color backgroundColor: "transparent"
-    property color hoverColor: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, Material3Anim.hoverOpacity)
-    property color pressedColor: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, Material3Anim.pressedOpacity)
-    property color focusColor: pywal.primary
+    property color hoverColor: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, Material3Anim.hoverOpacity)
+    property color pressedColor: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, Material3Anim.pressedOpacity)
+    property color focusColor: colors.primary
     
     // State
     property bool disabled: false
@@ -40,8 +40,8 @@ Item {
     signal clicked()
     signal pressAndHold()
     
-    // Pywal colors
-    readonly property var pywal: QsServices.Pywal
+    // Colors singleton
+    readonly property var colors: QsServices.Colors
     
     // Internal state
     readonly property bool isHovered: mouseArea.containsMouse

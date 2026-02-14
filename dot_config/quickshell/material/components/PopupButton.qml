@@ -24,7 +24,7 @@ Item {
     signal clicked()
     
     // Appearance
-    readonly property var pywal: QsServices.Pywal
+    readonly property var colors: QsServices.Colors
     readonly property var logger: QsServices.Logger
     readonly property var appearance: QsConfig.Appearance
     readonly property bool isHovered: mouseArea.containsMouse
@@ -117,7 +117,7 @@ Item {
             font.family: appearance.ui.family
             font.pixelSize: appearance.ui.textSm
             font.weight: appearance.ui.weightMedium
-            color: root.disabled ? Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, Material3Anim.disabledOpacity) : pywal.foreground
+            color: root.disabled ? Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, Material3Anim.disabledOpacity) : colors.foreground
             
             Behavior on opacity {
                 NumberAnimation { 
@@ -134,9 +134,9 @@ Item {
         anchors.margins: -4
         radius: 6
         color: Qt.rgba(
-            pywal.color4.r, 
-            pywal.color4.g, 
-            pywal.color4.b, 
+            colors.color4.r,
+            colors.color4.g,
+            colors.color4.b,
             root.disabled ? 0 :
                 root.isPressed ? Material3Anim.pressedOpacity :
                 root.isHovered ? Material3Anim.hoverOpacity : 0

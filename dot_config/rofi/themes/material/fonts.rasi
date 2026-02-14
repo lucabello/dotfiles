@@ -1,4 +1,5 @@
 * {
+    // Available fonts shown with 'fc-list'
     font: "Monofur Nerd Font Mono 16";
     fontlauncher: "Monofur Nerd Font Mono 18";
     fonticons: "Monofur Nerd Font Mono 40";

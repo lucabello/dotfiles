@@ -13,7 +13,7 @@ ShellRoot {
     
     // Initialize services immediately
     readonly property var notifs: QsServices.Notifs
-    readonly property var pywal: QsServices.Pywal
+    readonly property var colors: QsServices.Colors
     readonly property var audio: QsServices.Audio
     readonly property var brightness: QsServices.Brightness
     
@@ -52,7 +52,7 @@ ShellRoot {
     
     // OSD overlays (volume and brightness)
     Wrapper {
-        pywal: root.pywal
+        colors: root.colors
     }
 
     Component.onCompleted: {

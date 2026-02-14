@@ -7,12 +7,12 @@ Rectangle {
     id: root
     
     required property var systemUsage
-    property var pywal
-    
+    property var colors
+
     // Color tokens
-    readonly property color surfaceColor: pywal ? Qt.lighter(pywal.background, 1.15) : "#1e1e2e"
-    readonly property color textColor: pywal ? pywal.foreground : "#e6e6e6"
-    readonly property color textDim: pywal ? Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.5) : "#808080"
+    readonly property color surfaceColor: colors ? Qt.lighter(colors.background, 1.15) : "#1e1e2e"
+    readonly property color textColor: colors ? colors.foreground : "#e6e6e6"
+    readonly property color textDim: colors ? Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.5) : "#808080"
     
     Layout.fillWidth: true
     Layout.preferredHeight: 72
@@ -41,7 +41,7 @@ Rectangle {
             icon: "󰘚"
             label: "CPU"
             value: (root.systemUsage.cpuPerc ?? 0) * 100
-            accentColor: root.pywal?.error ?? "#f38ba8"
+            accentColor: root.colors?.error ?? "#f38ba8"
         }
         
         Item { Layout.fillWidth: true }
@@ -59,7 +59,7 @@ Rectangle {
             icon: "󰍛"
             label: "RAM"
             value: (root.systemUsage.memPerc ?? 0) * 100
-            accentColor: root.pywal?.warning ?? "#fab387"
+            accentColor: root.colors?.warning ?? "#fab387"
         }
         
         Item { Layout.fillWidth: true }
@@ -76,7 +76,7 @@ Rectangle {
             icon: "󰋊"
             label: "Disk"
             value: (root.systemUsage.diskPerc ?? 0) * 100
-            accentColor: root.pywal?.info ?? "#89b4fa"
+            accentColor: root.colors?.info ?? "#89b4fa"
         }
         
         Item { Layout.fillWidth: true }
@@ -99,7 +99,7 @@ Rectangle {
             icon: "󰢮"
             label: "GPU"
             value: root.systemUsage.gpuUsage ?? 0
-            accentColor: root.pywal?.success ?? "#a6e3a1"
+            accentColor: root.colors?.success ?? "#a6e3a1"
         }
         
         Item { 

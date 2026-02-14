@@ -10,7 +10,7 @@ import "../../components/effects"
 PanelWindow {
     id: root
     
-    required property var pywal
+    required property var colors
     property bool showing: false
     
     // Use VolumeMonitor for reliable OSD triggering (reads from /tmp/volume_osd)
@@ -76,9 +76,9 @@ PanelWindow {
         radius: 16
         
         color: Qt.rgba(
-            pywal?.background?.r ?? 0.1, 
-            pywal?.background?.g ?? 0.1, 
-            pywal?.background?.b ?? 0.1, 
+            colors?.background?.r ?? 0.1,
+            colors?.background?.g ?? 0.1,
+            colors?.background?.b ?? 0.1,
             0.95
         )
         border.width: 1
@@ -112,7 +112,7 @@ PanelWindow {
             Text {
                 text: root.currentMuted ? "󰖁" : (root.currentVolume > 66 ? "󰕾" : (root.currentVolume > 33 ? "󰖀" : "󰕿"))
                 font.family: appearance.icons.family
-                color: root.currentMuted ? Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.5) : pywal.primary
+                color: root.currentMuted ? Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.5) : colors.primary
                 font.pixelSize: appearance.icons.m
             }
             
@@ -121,13 +121,13 @@ PanelWindow {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 6
                 radius: 3
-                color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.15)
+                color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.15)
                 
                 Rectangle {
                     width: parent.width * (root.currentVolume / 100)
                     height: parent.height
                     radius: 3
-                    color: root.currentMuted ? Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.4) : pywal.primary
+                    color: root.currentMuted ? Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.4) : colors.primary
                     
                     Behavior on width {
                         NumberAnimation { 
@@ -145,7 +145,7 @@ PanelWindow {
             // Text
             Text {
                 text: root.currentVolume + "%"
-                color: pywal.foreground
+                color: colors.foreground
                 font.family: appearance.ui.family
                 font.pixelSize: appearance.ui.textMd
                 font.weight: appearance.ui.weightDemiBold

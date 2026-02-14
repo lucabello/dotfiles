@@ -28,7 +28,7 @@ Item {
             Layout.preferredWidth: 280
             Layout.preferredHeight: 280
             
-            color: Pywal.color1 || "#89b4fa"
+            color: Colors.color1 || "#89b4fa"
             radius: 12
             clip: true
             
@@ -59,7 +59,7 @@ Item {
             Text {
                 Layout.fillWidth: true
                 text: player?.trackTitle ?? "No track playing"
-                color: Pywal.foreground || "#cdd6f4"
+                color: Colors.foreground || "#cdd6f4"
                 font.pixelSize: 16
                 font.bold: true
                 horizontalAlignment: Text.AlignHCenter
@@ -69,7 +69,7 @@ Item {
             Text {
                 Layout.fillWidth: true
                 text: player?.trackArtist ?? ""
-                color: Pywal.foreground || "#cdd6f4"
+                color: Colors.foreground || "#cdd6f4"
                 opacity: 0.8
                 font.pixelSize: 13
                 horizontalAlignment: Text.AlignHCenter
@@ -79,7 +79,7 @@ Item {
             Text {
                 Layout.fillWidth: true
                 text: player?.trackAlbum ?? ""
-                color: Pywal.foreground || "#cdd6f4"
+                color: Colors.foreground || "#cdd6f4"
                 opacity: 0.6
                 font.pixelSize: 11
                 horizontalAlignment: Text.AlignHCenter
@@ -93,14 +93,14 @@ Item {
             Layout.preferredHeight: 6
             Layout.topMargin: 8
             
-            color: Pywal.color1 || "#89b4fa"
+            color: Colors.color1 || "#89b4fa"
             opacity: 0.3
             radius: 3
             
             Rectangle {
                 width: player ? (parent.width * (player.position / player.length)) : 0
                 height: parent.height
-                color: Pywal.color2 || "#cba6f7"
+                color: Colors.color2 || "#cba6f7"
                 radius: 3
                 
                 Behavior on width {
@@ -115,7 +115,7 @@ Item {
             
             Text {
                 text: formatTime(player?.position ?? 0)
-                color: Pywal.foreground || "#cdd6f4"
+                color: Colors.foreground || "#cdd6f4"
                 opacity: 0.6
                 font.pixelSize: 10
             }
@@ -124,7 +124,7 @@ Item {
             
             Text {
                 text: formatTime(player?.length ?? 0)
-                color: Pywal.foreground || "#cdd6f4"
+                color: Colors.foreground || "#cdd6f4"
                 opacity: 0.6
                 font.pixelSize: 10
             }
@@ -143,7 +143,7 @@ Item {
                 Layout.preferredWidth: 44
                 Layout.preferredHeight: 44
                 
-                color: prevHover.containsMouse ? Pywal.color1 || "#89b4fa" : "transparent"
+                color: prevHover.containsMouse ? Colors.color1 || "#89b4fa" : "transparent"
                 opacity: prevHover.containsMouse ? 0.3 : 0.1
                 radius: 22
                 
@@ -155,7 +155,7 @@ Item {
                     anchors.centerIn: parent
                     text: "⏮"
                     font.pixelSize: 20
-                    color: Pywal.foreground || "#cdd6f4"
+                    color: Colors.foreground || "#cdd6f4"
                 }
                 
                 MouseArea {
@@ -175,18 +175,18 @@ Item {
                 Layout.preferredWidth: 56
                 Layout.preferredHeight: 56
                 
-                color: playHover.containsMouse ? Pywal.color2 || "#cba6f7" : Pywal.color1 || "#89b4fa"
+                color: playHover.containsMouse ? Colors.color2 || "#cba6f7" : Colors.color1 || "#89b4fa"
                 radius: 28
                 
                 Behavior on color {
                     ColorAnimation { duration: 150 }
                 }
                 
-                Text {
+                    Text {
                     anchors.centerIn: parent
                     text: (player?.isPlaying ?? false) ? "⏸" : "▶"
                     font.pixelSize: 24
-                    color: Pywal.background || "#1e1e2e"
+                    color: Colors.background || "#1e1e2e"
                 }
                 
                 MouseArea {
@@ -206,7 +206,7 @@ Item {
                 Layout.preferredWidth: 44
                 Layout.preferredHeight: 44
                 
-                color: nextHover.containsMouse ? Pywal.color1 || "#89b4fa" : "transparent"
+                color: nextHover.containsMouse ? Colors.color1 || "#89b4fa" : "transparent"
                 opacity: nextHover.containsMouse ? 0.3 : 0.1
                 radius: 22
                 
@@ -214,11 +214,11 @@ Item {
                     NumberAnimation { duration: 150 }
                 }
                 
-                Text {
+                    Text {
                     anchors.centerIn: parent
                     text: "⏭"
                     font.pixelSize: 20
-                    color: Pywal.foreground || "#cdd6f4"
+                    color: Colors.foreground || "#cdd6f4"
                 }
                 
                 MouseArea {

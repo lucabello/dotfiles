@@ -9,7 +9,7 @@ Rectangle {
     id: root
     
     required property var mpris
-    property var pywal
+    property var colors
     
     // Get active player safely
     readonly property var activePlayer: mpris?.active ?? null
@@ -48,10 +48,10 @@ Rectangle {
     }
     
     // Color tokens
-    readonly property color surfaceColor: pywal ? Qt.lighter(pywal.background, 1.12) : "#1e1e2e"
+    readonly property color surfaceColor: colors ? Qt.lighter(colors.background, 1.12) : "#1e1e2e"
     readonly property color textColor: "#ffffff"
     readonly property color textDim: Qt.rgba(1, 1, 1, 0.7)
-    readonly property color accentColor: pywal ? pywal.primary : "#a6e3a1"
+    readonly property color accentColor: colors ? colors.primary : "#a6e3a1"
     
     Layout.fillWidth: true
     Layout.preferredHeight: hasPlayer ? 100 : 0

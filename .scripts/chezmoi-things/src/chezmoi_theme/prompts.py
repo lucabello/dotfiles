@@ -3,7 +3,7 @@ from typing import Optional
 import questionary
 from rich.console import Console
 
-from chezmoi_theme.models import Color, GenericColors, TerminalColors, Theme
+from models.colors import Color, GenericColors, TerminalColors, Theme
 
 console = Console()
 

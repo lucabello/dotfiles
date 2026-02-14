@@ -4,6 +4,7 @@ import QtQuick 6.9
 import QtQuick.Layouts 6.9
 import qs.services
 import "../../../config" as QsConfig
+import "../../../services" as QsServices
 
 PanelWindow {
     id: popupWindow
@@ -57,11 +58,11 @@ PanelWindow {
     Rectangle {
         anchors.fill: parent
         radius: 12
-        color: Pywal.background || "#1e1e2e"
+        color: QsServices.Colors.background || "#1e1e2e"
         opacity: shouldShow ? 0.98 : 0
         
         border.width: 1
-        border.color: Pywal.color2 || "#89b4fa"
+        border.color: QsServices.Colors.color2 || "#89b4fa"
         
         Behavior on opacity {
             NumberAnimation { duration: 200 }
@@ -86,7 +87,7 @@ PanelWindow {
             Layout.preferredWidth: 280
             Layout.preferredHeight: 280
             radius: 12
-            color: Pywal.color1 || "#89b4fa"
+            color: QsServices.Colors.color1 || "#89b4fa"
             clip: true
             
             Image {
@@ -117,7 +118,7 @@ PanelWindow {
             Text {
                 Layout.fillWidth: true
                 text: player?.trackTitle ?? "Unknown"
-                color: Pywal.foreground || "#cdd6f4"
+                color: QsServices.Colors.foreground || "#cdd6f4"
                 font.pixelSize: 16
                 font.weight: Font.Bold
                 elide: Text.ElideRight
@@ -127,7 +128,7 @@ PanelWindow {
             Text {
                 Layout.fillWidth: true
                 text: player?.trackArtist ?? ""
-                color: Pywal.foreground || "#cdd6f4"
+                color: QsServices.Colors.foreground || "#cdd6f4"
                 font.pixelSize: 13
                 opacity: 0.8
                 elide: Text.ElideRight
@@ -137,7 +138,7 @@ PanelWindow {
             Text {
                 Layout.fillWidth: true
                 text: player?.trackAlbum ?? ""
-                color: Pywal.foreground || "#cdd6f4"
+                color: QsServices.Colors.foreground || "#cdd6f4"
                 font.pixelSize: 11
                 opacity: 0.6
                 elide: Text.ElideRight
@@ -151,14 +152,14 @@ PanelWindow {
             Layout.preferredHeight: 6
             Layout.topMargin: 8
             
-            color: Pywal.color1 || "#89b4fa"
+            color: QsServices.Colors.color1 || "#89b4fa"
             opacity: 0.3
             radius: 3
             
             Rectangle {
                 width: player ? (parent.width * (player.position / player.length)) : 0
                 height: parent.height
-                color: Pywal.color2 || "#cba6f7"
+                color: QsServices.Colors.color2 || "#cba6f7"
                 radius: 3
                 
                 Behavior on width {
@@ -173,7 +174,7 @@ PanelWindow {
             
             Text {
                 text: formatTime(player?.position ?? 0)
-                color: Pywal.foreground || "#cdd6f4"
+                color: QsServices.Colors.foreground || "#cdd6f4"
                 opacity: 0.6
                 font.pixelSize: 10
             }
@@ -182,7 +183,7 @@ PanelWindow {
             
             Text {
                 text: formatTime(player?.length ?? 0)
-                color: Pywal.foreground || "#cdd6f4"
+                color: QsServices.Colors.foreground || "#cdd6f4"
                 opacity: 0.6
                 font.pixelSize: 10
             }
@@ -201,7 +202,7 @@ PanelWindow {
                 Layout.preferredWidth: 44
                 Layout.preferredHeight: 44
                 
-                color: prevHover.containsMouse ? Pywal.color1 || "#89b4fa" : "transparent"
+                color: prevHover.containsMouse ? QsServices.Colors.color1 || "#89b4fa" : "transparent"
                 opacity: prevHover.containsMouse ? 0.3 : 0.1
                 radius: 22
                 
@@ -213,7 +214,7 @@ PanelWindow {
                     anchors.centerIn: parent
                     text: "⏮"
                     font.pixelSize: 20
-                    color: Pywal.foreground || "#cdd6f4"
+                    color: QsServices.Colors.foreground || "#cdd6f4"
                 }
                 
                 MouseArea {
@@ -233,7 +234,7 @@ PanelWindow {
                 Layout.preferredWidth: 56
                 Layout.preferredHeight: 56
                 
-                color: playHover.containsMouse ? Pywal.color2 || "#cba6f7" : Pywal.color1 || "#89b4fa"
+                color: playHover.containsMouse ? QsServices.Colors.color2 || "#cba6f7" : QsServices.Colors.color1 || "#89b4fa"
                 radius: 28
                 
                 Behavior on color {
@@ -244,7 +245,7 @@ PanelWindow {
                     anchors.centerIn: parent
                     text: (player?.isPlaying ?? false) ? "⏸" : "▶"
                     font.pixelSize: 24
-                    color: Pywal.background || "#1e1e2e"
+                    color: QsServices.Colors.background || "#1e1e2e"
                 }
                 
                 MouseArea {
@@ -264,7 +265,7 @@ PanelWindow {
                 Layout.preferredWidth: 44
                 Layout.preferredHeight: 44
                 
-                color: nextHover.containsMouse ? Pywal.color1 || "#89b4fa" : "transparent"
+                color: nextHover.containsMouse ? QsServices.Colors.color1 || "#89b4fa" : "transparent"
                 opacity: nextHover.containsMouse ? 0.3 : 0.1
                 radius: 22
                 
@@ -276,7 +277,7 @@ PanelWindow {
                     anchors.centerIn: parent
                     text: "⏭"
                     font.pixelSize: 20
-                    color: Pywal.foreground || "#cdd6f4"
+                    color: QsServices.Colors.foreground || "#cdd6f4"
                 }
                 
                 MouseArea {

@@ -21,7 +21,7 @@ Item {
     
     readonly property var config: QsConfig.Config
     readonly property var appearance: QsConfig.AppearanceConfig
-    readonly property var pywal: QsServices.Pywal
+    readonly property var colors: QsServices.Colors
     readonly property var barComponents: config.barComponents
     readonly property var barColors: config.barColors
     readonly property real barScale: barComponents.scale.bar

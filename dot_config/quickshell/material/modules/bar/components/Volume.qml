@@ -12,7 +12,7 @@ Item {
     property var barWindow
     property var volumePopup  // Kept for compatibility but not used
     
-    readonly property var pywal: QsServices.Pywal
+    
     readonly property var audio: QsServices.Audio
     readonly property var volumeMonitor: QsServices.VolumeMonitor
         readonly property var barColors: QsConfig.Config.barColors

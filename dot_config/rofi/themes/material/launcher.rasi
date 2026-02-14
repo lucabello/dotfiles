@@ -20,12 +20,12 @@ configuration {
 }
 
 /*****----- Global Properties -----*****/
-@import                          "~/.config/rofi/themes/material/colors.rasi"
-@import                          "~/.config/rofi/themes/material/fonts.rasi"
+@import                          "./colors.rasi"
+@import                          "./fonts.rasi"
 
 * {
-    border-colour:               var(selected);
-    handle-colour:               var(selected);
+    border-colour:               var(border);
+    handle-colour:               var(border);
     background-colour:           var(background-alt);
     foreground-colour:           var(foreground);
     alternate-background:        var(background-alt);
@@ -35,8 +35,8 @@ configuration {
     urgent-foreground:           var(background);
     active-background:           var(active);
     active-foreground:           var(background);
-    selected-normal-background:  var(selected);
-    selected-normal-foreground:  var(background);
+    selected-normal-background:  var(selected-background);
+    selected-normal-foreground:  var(selected-foreground);
     selected-urgent-background:  var(active);
     selected-urgent-foreground:  var(background);
     selected-active-background:  var(urgent);

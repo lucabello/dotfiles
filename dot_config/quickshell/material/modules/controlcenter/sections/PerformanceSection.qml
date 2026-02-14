@@ -3,7 +3,7 @@ import QtQuick.Layouts 6.9
 import "../../../services" as QsServices
 
 Item {
-    readonly property var pywal: QsServices.Pywal
+    readonly property var colors: QsServices.Colors
     readonly property var sysUsage: QsServices.SystemUsage
     
     ColumnLayout {
@@ -16,14 +16,14 @@ Item {
             font.family: "Inter"
             font.pixelSize: 16
             font.weight: Font.Bold
-            color: pywal.foreground
+            color: colors.foreground
         }
         
         GridLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
             columns: 3
-            rowSpacing: 12
+                    color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.05)
             columnSpacing: 12
             
             // CPU Usage
@@ -32,19 +32,19 @@ Item {
                 Layout.fillHeight: true
                 Layout.minimumHeight: 100
                 radius: 10
-                color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.05)
+                color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.05)
                 
                 ColumnLayout {
-                    anchors.fill: parent
+                            color: colors.foreground
                     anchors.margins: 12
                     spacing: 6
                     
-                    Text {
+                        Text {
                         text: "CPU"
                         font.family: "Inter"
                         font.pixelSize: 11
                         font.weight: Font.DemiBold
-                        color: pywal.foreground
+                        color: colors.foreground
                     }
                     
                     Item {
@@ -78,7 +78,7 @@ Item {
                                 // Background circle
                                 ctx.beginPath()
                                 ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI)
-                                ctx.fillStyle = Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.1)
+                                    ctx.fillStyle = Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.1)
                                 ctx.fill()
                                 
                                 // Usage arc
@@ -90,18 +90,18 @@ Item {
                                 
                                 // Color based on usage
                                 if (animatedPercentage < 50) {
-                                    ctx.fillStyle = Qt.rgba(pywal.color2.r, pywal.color2.g, pywal.color2.b, 0.8)
+                                    ctx.fillStyle = Qt.rgba(colors.color2.r, colors.color2.g, colors.color2.b, 0.8)
                                 } else if (animatedPercentage < 80) {
-                                    ctx.fillStyle = Qt.rgba(pywal.color3.r, pywal.color3.g, pywal.color3.b, 0.8)
+                                    ctx.fillStyle = Qt.rgba(colors.color3.r, colors.color3.g, colors.color3.b, 0.8)
                                 } else {
-                                    ctx.fillStyle = Qt.rgba(pywal.color1.r, pywal.color1.g, pywal.color1.b, 0.8)
+                                    ctx.fillStyle = Qt.rgba(colors.color1.r, colors.color1.g, colors.color1.b, 0.8)
                                 }
                                 ctx.fill()
                                 
                                 // Inner circle (donut)
                                 ctx.beginPath()
                                 ctx.arc(centerX, centerY, radius * 0.6, 0, 2 * Math.PI)
-                                ctx.fillStyle = Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.05)
+                                ctx.fillStyle = Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.05)
                                 ctx.fill()
                             }
                             
@@ -113,8 +113,8 @@ Item {
                             text: Math.round(sysUsage.cpuPerc * 100) + "%"
                             font.family: "Inter"
                             font.pixelSize: 16
-                            font.weight: Font.Bold
-                            color: pywal.foreground
+                    color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.05)
+                            color: colors.foreground
                         }
                     }
                 }
@@ -125,8 +125,8 @@ Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Layout.minimumHeight: 100
-                radius: 10
-                color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.05)
+                            color: colors.foreground
+                color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.05)
                 
                 ColumnLayout {
                     anchors.fill: parent
@@ -134,12 +134,12 @@ Item {
                     spacing: 6
                     
                     Text {
-                        text: "Memory"
-                        font.family: "Inter"
-                        font.pixelSize: 11
-                        font.weight: Font.DemiBold
-                        color: pywal.foreground
-                    }
+                            text: "Memory"
+                            font.family: "Inter"
+                            font.pixelSize: 11
+                            font.weight: Font.DemiBold
+                            color: colors.foreground
+                        }
                     
                     Item {
                         Layout.fillWidth: true
@@ -171,7 +171,7 @@ Item {
                                 
                                 ctx.beginPath()
                                 ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI)
-                                ctx.fillStyle = Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.1)
+                                ctx.fillStyle = Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.1)
                                 ctx.fill()
                                 
                                 var angle = (animatedPercentage / 100) * 2 * Math.PI
@@ -181,17 +181,17 @@ Item {
                                 ctx.closePath()
                                 
                                 if (animatedPercentage < 50) {
-                                    ctx.fillStyle = Qt.rgba(pywal.color2.r, pywal.color2.g, pywal.color2.b, 0.8)
+                                    ctx.fillStyle = Qt.rgba(colors.color2.r, colors.color2.g, colors.color2.b, 0.8)
                                 } else if (animatedPercentage < 80) {
-                                    ctx.fillStyle = Qt.rgba(pywal.color3.r, pywal.color3.g, pywal.color3.b, 0.8)
+                                    ctx.fillStyle = Qt.rgba(colors.color3.r, colors.color3.g, colors.color3.b, 0.8)
                                 } else {
-                                    ctx.fillStyle = Qt.rgba(pywal.color1.r, pywal.color1.g, pywal.color1.b, 0.8)
+                                    ctx.fillStyle = Qt.rgba(colors.color1.r, colors.color1.g, colors.color1.b, 0.8)
                                 }
                                 ctx.fill()
                                 
                                 ctx.beginPath()
                                 ctx.arc(centerX, centerY, radius * 0.6, 0, 2 * Math.PI)
-                                ctx.fillStyle = Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.05)
+                                ctx.fillStyle = Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.05)
                                 ctx.fill()
                             }
                             
@@ -204,19 +204,19 @@ Item {
                             font.family: "Inter"
                             font.pixelSize: 16
                             font.weight: Font.Bold
-                            color: pywal.foreground
+                            color: colors.foreground
                         }
                     }
                 }
             }
             
             // Disk Usage
-            Rectangle {
+                Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Layout.minimumHeight: 100
                 radius: 10
-                color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.05)
+                color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.05)
                 
                 ColumnLayout {
                     anchors.fill: parent
@@ -228,7 +228,7 @@ Item {
                         font.family: "Inter"
                         font.pixelSize: 11
                         font.weight: Font.DemiBold
-                        color: pywal.foreground
+                        color: colors.foreground
                     }
                     
                     Item {
@@ -261,7 +261,7 @@ Item {
                                 
                                 ctx.beginPath()
                                 ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI)
-                                ctx.fillStyle = Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.1)
+                                ctx.fillStyle = Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.1)
                                 ctx.fill()
                                 
                                 var angle = (animatedPercentage / 100) * 2 * Math.PI
@@ -271,17 +271,17 @@ Item {
                                 ctx.closePath()
                                 
                                 if (animatedPercentage < 50) {
-                                    ctx.fillStyle = Qt.rgba(pywal.color2.r, pywal.color2.g, pywal.color2.b, 0.8)
+                                    ctx.fillStyle = Qt.rgba(colors.color2.r, colors.color2.g, colors.color2.b, 0.8)
                                 } else if (animatedPercentage < 80) {
-                                    ctx.fillStyle = Qt.rgba(pywal.color3.r, pywal.color3.g, pywal.color3.b, 0.8)
+                                    ctx.fillStyle = Qt.rgba(colors.color3.r, colors.color3.g, colors.color3.b, 0.8)
                                 } else {
-                                    ctx.fillStyle = Qt.rgba(pywal.color1.r, pywal.color1.g, pywal.color1.b, 0.8)
+                                    ctx.fillStyle = Qt.rgba(colors.color1.r, colors.color1.g, colors.color1.b, 0.8)
                                 }
                                 ctx.fill()
                                 
                                 ctx.beginPath()
                                 ctx.arc(centerX, centerY, radius * 0.6, 0, 2 * Math.PI)
-                                ctx.fillStyle = Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.05)
+                                ctx.fillStyle = Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.05)
                                 ctx.fill()
                             }
                             
@@ -294,7 +294,7 @@ Item {
                             font.family: "Inter"
                             font.pixelSize: 16
                             font.weight: Font.Bold
-                            color: pywal.foreground
+                            color: colors.foreground
                         }
                     }
                 }
@@ -306,7 +306,7 @@ Item {
                 Layout.columnSpan: 3
                 Layout.preferredHeight: 60
                 radius: 10
-                color: Qt.rgba(pywal.foreground.r, pywal.foreground.g, pywal.foreground.b, 0.05)
+                color: Qt.rgba(colors.foreground.r, colors.foreground.g, colors.foreground.b, 0.05)
                 
                 RowLayout {
                     anchors.centerIn: parent
@@ -318,13 +318,13 @@ Item {
                             width: 10
                             height: 10
                             radius: 2
-                            color: pywal.color2
+                            color: colors.color2
                         }
                         Text {
                             text: "Good (< 50%)"
                             font.family: "Inter"
                             font.pixelSize: 10
-                            color: pywal.foreground
+                            color: colors.foreground
                         }
                     }
                     
@@ -334,13 +334,13 @@ Item {
                             width: 10
                             height: 10
                             radius: 2
-                            color: pywal.color3
+                            color: colors.color3
                         }
                         Text {
                             text: "Moderate (50-80%)"
                             font.family: "Inter"
                             font.pixelSize: 10
-                            color: pywal.foreground
+                            color: colors.foreground
                         }
                     }
                     
@@ -350,13 +350,13 @@ Item {
                             width: 10
                             height: 10
                             radius: 2
-                            color: pywal.color1
+                            color: colors.color1
                         }
                         Text {
                             text: "High (> 80%)"
                             font.family: "Inter"
                             font.pixelSize: 10
-                            color: pywal.foreground
+                            color: colors.foreground
                         }
                     }
                 }

@@ -8,7 +8,7 @@ import "../../../config" as QsConfig
 Item {
     id: root
     
-    readonly property var pywal: QsServices.Pywal
+    readonly property var colors: QsServices.Colors
     readonly property var idleInhibitor: QsServices.IdleInhibitor
     readonly property var notifs: QsServices.Notifs
     
@@ -40,19 +40,19 @@ Item {
             width: caffeineActive ? 22 : 0
             height: 22
             radius: 11
-            color: Qt.rgba(pywal.primary.r, pywal.primary.g, pywal.primary.b, 0.2)
+            color: Qt.rgba(colors.primary.r, colors.primary.g, colors.primary.b, 0.2)
             visible: caffeineActive
             
             Behavior on width {
                 NumberAnimation { duration: 200; easing.bezierCurve: [0.34, 1.56, 0.64, 1] }
             }
             
-            Text {
+                Text {
                 anchors.centerIn: parent
                 text: "󰛊"  // Coffee icon
                 font.family: "Material Design Icons"
                 font.pixelSize: 12
-                color: pywal.primary
+                color: colors.primary
             }
             
             // Subtle pulse animation when active

@@ -1,11 +1,12 @@
 * {
   background: {{ .colors.generic.background }};
-  background-alt: {{ .colors.generic.background_secondary }};
-  border: {{ .colors.generic.text }};
-  foreground: {{ .colors.generic.text }};
+  background-alt: {{ .colors.generic.surface }};
+  border: {{ .colors.generic.foreground }};
+  foreground: {{ .colors.generic.foreground }};
   hint: {{ .colors.terminal.yellow }};
-  selected: {{ .colors.generic.text }};
-  highlight: {{ .colors.generic.text }};
+  selected-background: {{ .colors.generic.overlay }};
+  selected-foreground: {{ .colors.generic.subtle }};
+  highlight: {{ .colors.generic.foreground }};
   urgent: {{ .colors.terminal.red }};
   on: {{ .colors.terminal.green }};
   off: {{ .colors.terminal.red }};
