@@ -227,6 +227,7 @@ install-server-apps:
 update:
     # Update and upgrade apt packages
     sudo apt update && sudo apt upgrade -y
+    sudo apt autoremove -y
     # Refresh snaps
     sudo snap refresh
     # Upgrade go packages
