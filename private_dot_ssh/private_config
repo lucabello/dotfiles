@@ -1,0 +1,9 @@
+Host github.com
+  User git
+  IdentityFile ~/.ssh/git
+
+Host hades
+  IdentityFile ~/.ssh/zeus
+
+Host hestia
+  IdentityFile ~/.ssh/zeus

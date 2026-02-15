@@ -1,0 +1,39 @@
+import QtQuick 6.9
+
+QtObject {
+    // Base palette
+    readonly property color surface: "{{ .colors.generic.surface }}"
+    readonly property color background: "{{ .colors.generic.surface }}"
+    readonly property color foreground: "{{ .colors.generic.foreground }}"
+    readonly property color primary: "{{ .colors.generic.primary }}"
+    readonly property color secondary: "{{ .colors.generic.secondary }}"
+    readonly property color warning: "{{ .colors.generic.warning }}"
+    readonly property color error: "{{ .colors.generic.failure }}"
+    readonly property color failure: "{{ .colors.generic.failure }}"
+    readonly property color success: "{{ .colors.generic.success }}"
+    readonly property color info: "{{ .colors.terminal.bright_white }}"
+
+    // Quick-mapped colors used by some components
+    readonly property color color1: "{{ .colors.generic.primary }}"
+    readonly property color color2: "{{ .colors.generic.secondary }}"
+    readonly property color color3: "{{ .colors.terminal.bright_white }}"
+    readonly property color color4: "{{ .colors.generic.success }}"
+
+    // Derived surfaces
+    readonly property color surfaceContainer: Qt.lighter(surface, 1.12)
+    readonly property color surfaceContainerHigh: Qt.lighter(surface, 1.2)
+
+    // Chrome and separators
+    readonly property color border: Qt.rgba(0, 0, 0, 0.15)
+    readonly property color separator: Qt.rgba(foreground.r, foreground.g, foreground.b, 0.12)
+    readonly property color highlightTop: Qt.rgba(1, 1, 1, 0.04)
+
+    readonly property color outline: Qt.rgba(0,0,0,0.2)
+    readonly property color shadow: Qt.rgba(0,0,0,0.4)
+
+    // Text ramps
+    readonly property color textDim: Qt.rgba(foreground.r, foreground.g, foreground.b, 0.7)
+    readonly property color textMuted: Qt.rgba(foreground.r, foreground.g, foreground.b, 0.8)
+    readonly property color textDisabled: Qt.rgba(foreground.r, foreground.g, foreground.b, 0.4)
+    readonly property color textDisabledStrong: Qt.rgba(foreground.r, foreground.g, foreground.b, 0.3)
+}

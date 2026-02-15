@@ -1,117 +1,101 @@
-#!/bin/bash
-# nerdfonts
-# from the Internet + Luca Bello
-# @meta version 0.4
-# @meta require-tools curl,wget,unzip,tar,fc-cache,jq
+#!/usr/bin/env -S just --working-directory . --justfile
+set quiet
 
-# @cmd Download and install a Nerd Font
-# @option --font*,[`_var_available_fonts`] Name of the font to download
-# @option --format[=.zip|.tar.xz]
-# @option --font-version=`_var_latest_font_version`
-install() {
-  for i in "${!argc_font[@]}"; do
-    # Initalize variables
-    local font_filename=${argc_font[$i]}${argc_format}
-    local download_url="https://github.com/ryanoasis/nerd-fonts/releases/download/${argc_font_version}/${font_filename}"
-    local font_dir="$HOME/.local/share/fonts"
-    # Make the font folder if it doesn't exist
-    test -d "$font_dir" || mkdir -p "$font_dir"
-    
-    # Download the font
-    echo "Downloading and installing ${argc_font[$i]}"
-    wget --quiet "$download_url" -O "/tmp/${font_filename}" \
-      || { echo "Error: Unable to download '${argc_font[$i]}'."; return 1; }
-    # Extract the font to the correct folder
-    if [[ $argc_format == ".zip" ]]; then
-      unzip -u -q "/tmp/${font_filename}" -d "${font_dir}" || { echo "Error: Unable to extract '${argc_font[$i]}'."; return 1; }
-    elif [[ $argc_format == ".tar.xz" ]]; then
-      tar --overwrite -xf "/tmp/${font_filename}" -C "${font_dir}" || { echo "Error: Unable to extract '${argc_font[$i]}'."; return 1; }
-    fi
+font_dir := home_directory() + "/.local/share/fonts"
+version := "v3.4.0"
 
-    # Cleanup
-    rm /tmp/${font_filename}
-    fc-cache -f >/dev/null || { echo "Error: Unable to update font cache. Exiting."; exit 1; }
-    echo "'${argc_font[$i]}' installed successfully."
-  done
-} 
+fonts := '''
+  0xProto
+  3270
+  Agave
+  AnonymousPro
+  Arimo
+  AurulentSansMono
+  BigBlueTerminal
+  BitstreamVeraSansMono
+  CascadiaCode
+  CascadiaMono
+  CodeNewRoman
+  ComicShannsMono
+  CommitMono
+  Cousine
+  D2Coding
+  DaddyTimeMono
+  DejaVuSansMono
+  DroidSansMono
+  EnvyCodeR
+  FantasqueSansMono
+  FiraCode
+  FiraMono
+  FontPatcher
+  GeistMono
+  Go-Mono
+  Gohu
+  Hack
+  Hasklig
+  HeavyData
+  Hermit
+  iA-Writer
+  IBMPlexMono
+  Inconsolata
+  InconsolataGo
+  InconsolataLGC
+  IntelOneMono
+  Iosevka
+  IosevkaTerm
+  IosevkaTermSlab
+  JetBrainsMono
+  Lekton
+  LiberationMono
+  Lilex
+  MartianMono
+  Meslo
+  Monaspace
+  Monofur
+  Monoid
+  Mononoki
+  MPlus
+  NerdFontsSymbolsOnly
+  Noto
+  OpenDyslexic
+  Overpass
+  ProFont
+  ProggyClean
+  RobotoMono
+  ShareTechMono
+  SourceCodePro
+  SpaceMono
+  Terminus
+  Tinos
+  Ubuntu
+  UbuntuMono
+  VictorMono
+'''
 
-# @cmd List the Nerd Fonts
-# @meta default-subcommand
-list() {
-  echo "Nerd fonts:"
-  for i in "${!fonts[@]}"; do echo "- ${fonts[$i]}"; done;
-}
+[private]
+default:
+  echo "nerdfont installer\n"
+  just --justfile={{justfile()}} --list
 
-# Constants and variable helpers
-declare -a fonts=(
-  "0xProto"
-  "3270"
-  "Agave"
-  "AnonymousPro"
-  "Arimo"
-  "AurulentSansMono"
-  "BigBlueTerminal"
-  "BitstreamVeraSansMono"
-  "CascadiaCode"
-  "CascadiaMono"
-  "CodeNewRoman"
-  "ComicShannsMono"
-  "CommitMono"
-  "Cousine"
-  "D2Coding"
-  "DaddyTimeMono"
-  "DejaVuSansMono"
-  "DroidSansMono"
-  "EnvyCodeR"
-  "FantasqueSansMono"
-  "FiraCode"
-  "FiraMono"
-  "FontPatcher"
-  "GeistMono"
-  "Go-Mono"
-  "Gohu"
-  "Hack"
-  "Hasklig"
-  "HeavyData"
-  "Hermit"
-  "iA-Writer"
-  "IBMPlexMono"
-  "Inconsolata"
-  "InconsolataGo"
-  "InconsolataLGC"
-  "IntelOneMono"
-  "Iosevka"
-  "IosevkaTerm"
-  "IosevkaTermSlab"
-  "JetBrainsMono"
-  "Lekton"
-  "LiberationMono"
-  "Lilex"
-  "MartianMono"
-  "Meslo"
-  "Monaspace"
-  "Monofur"
-  "Monoid"
-  "Mononoki"
-  "MPlus"
-  "NerdFontsSymbolsOnly"
-  "Noto"
-  "OpenDyslexic"
-  "Overpass"
-  "ProFont"
-  "ProggyClean"
-  "RobotoMono"
-  "ShareTechMono"
-  "SourceCodePro"
-  "SpaceMono"
-  "Terminus"
-  "Tinos"
-  "Ubuntu"
-  "UbuntuMono"
-  "VictorMono"
-)
-_var_available_fonts() { for i in "${!fonts[@]}"; do echo "${fonts[$i]}"; done; }
-_var_latest_font_version() { curl -s "https://api.github.com/repos/ryanoasis/nerd-fonts/tags" | jq -r '.[0].name'; }
+# Install the specified nerdfont
+install font:
+  #!/usr/bin/env bash
+  set -e
+  # Create the font folder if it doesn't exist
+  test -d "{{font_dir}}" || mkdir -p "{{font_dir}}"
+  # Download the font
+  wget --quiet "https://github.com/ryanoasis/nerd-fonts/releases/download/{{version}}/{{font}}.zip" -O "/tmp/{{font}}.zip"
+  unzip -u -q -o "/tmp/{{font}}.zip" -d "{{font_dir}}"
+  rm "/tmp/{{font}}.zip"
+  fc-cache -f >/dev/null
+  echo "{{font}} installed"
 
+# List all the available fonts
+list:
+  echo -n "{{fonts}}"
+ 
+# Check the latest version of nerdfonts
+latest-version:
+  echo "Latest version is $(git ls-remote --tags https://github.com/ryanoasis/nerd-fonts.git | awk -F/ '{print $3}' | sed 's/\^{}//' | sort -V | tail -n1)"
+  echo "Currently using version {{version}}"
 
-eval "$(argc --argc-eval "$0" "$@")"

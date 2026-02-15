@@ -1,0 +1,18 @@
+# Bar, wallpaper
+exec-once = quickshell --config {{ .metadata.style }} &
+exec-once = hyprpaper
+
+# Core components (authentication, lock screen, notification daemon)
+exec-once = gnome-keyring-daemon --start --components=secrets
+exec-once = hypridle
+exec-once = dbus-update-activation-environment --all
+exec-once = sleep 1 && dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP # Some fix idk
+
+# Audio
+exec-once = easyeffects --hide-window --service-mode
+
+# Cursor
+exec-once = hyprctl setcursor Bibata-Modern-Classic 24
+
+# Workspace
+exec-once = hyprctl dispatch workspace 1

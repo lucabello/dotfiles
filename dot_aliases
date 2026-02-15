@@ -1,0 +1,73 @@
+alias rgrep='rgrep --color=auto'
+alias vim='nvim'
+alias bess='batcat --paging=always'
+alias fd='fdfind'
+alias brave='brave-browser'
+alias venv='uv-venv'
+alias fetch='macchina'
+alias fetch-more='macchina --config ~/.config/macchina/more.toml'
+
+function ranger {
+    local IFS=$'\t\n'
+    local tempfile="$(mktemp -t tmp.XXXXXX)"
+    local ranger_cmd=(
+        command
+        ranger
+        --cmd="map Q chain shell echo %d > "$tempfile"; quitall"
+    )
+
+    ${ranger_cmd[@]} "$@"
+    if [[ -f "$tempfile" ]] && [[ "$(cat -- "$tempfile")" != "$(echo -n `pwd`)" ]]; then
+        cd -- "$(cat "$tempfile")" || return
+    fi
+    command rm -f -- "$tempfile" 2>/dev/null
+}
+
+# ls aliases (eza)
+alias l='eza --all --long --group-directories-first --icons --git'
+alias lt='eza --all --long --group-directories-first --icons --git --total-size'
+alias ls='eza'
+alias tree='eza --tree --icons'
+
+# common aliases
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+alias zshrc='${=EDITOR} ~/.zshrc'
+
+# keychain aliases
+alias keychain='keychain --nogui'
+
+# chezmoi aliases
+function chezmoicd {
+    cd "${CHEZMOI_PATH:-$HOME/.local/share/chezmoi}" 
+}
+function chezmoi-data {
+    (chezmoicd; cd .scripts/chezmoi-extras; uv run chezmoi-data "$@")
+}
+function chezmoi-theme {
+    (chezmoicd; cd .scripts/chezmoi-extras; uv run chezmoi-theme "$@")
+}
+function chezmoi-just {
+    (chezmoicd; just "$@")
+}
+
+# just aliases
+alias dotfiles='just -f $(chezmoi source-path)/justfile'
+
+# Utilities
+alias restart-polybar="pkill polybar; ~/.config/polybar/launch.sh"
+alias restart-dunst="pkill dunst; ~/.config/dunst/launch.sh"
+alias daily-timer='termdown 2m -t OVERTIME -f digital'
+
+# Work aliases
+alias charm-resources='if [ -f metadata.yaml ]; then METADATA_FILE=metadata.yaml; else METADATA_FILE=charmcraft.yaml; fi; echo -n $(yq eval ".resources | to_entries | map(select(.value.upstream-source != null) | \"--resource \" + .key + \"=\" + .value.upstream-source) | join (\" \")" $METADATA_FILE)'
+
+# Server aliases
+alias dtop='lazydocker'
+function server-mounts {
+    # Run this only once after chezmoi apply has been run and we have the scripts
+    mount-utils add --uuid="A82222242221F7C8" --path="/pandora"
+    mount-utils add --uuid="460079F80079EEF5" --path="/mnemosyne"
+    mount-utils mount
+}
