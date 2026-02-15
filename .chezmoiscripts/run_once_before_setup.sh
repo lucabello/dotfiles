@@ -13,8 +13,10 @@ source dot_aliases
 
 ## Installation
 # Fetch SSH Keys
-# echo "+ Fetching SSH Keys from BitWarden"
-# bash dot_scripts/executable_bitwarden-cli fetch-keys
+echo "+ Fetching SSH Keys from BitWarden"
+bash dot_scripts/executable_bitwarden-cli fetch-keys
+# Install Nerdfonts
+just --justfile dot_scripts/executable_nerdfonts install Monofur
 # Configure Chezmoi and install things
 echo "+ Configuring Chezmoi"
 chezmoi-data create
