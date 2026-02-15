@@ -32,7 +32,8 @@ window {
     margin:                      0px;
     padding:                     0px;
     border:                      2px solid;
-    border-color:                @selected;
+    border-radius:               16px;
+    border-color:                @selected-background;
     cursor:                      "default";
     background-color:            @background;
 }
@@ -54,7 +55,7 @@ inputbar {
     padding:                     0px;
     border:                      0px;
     border-radius:               12px;
-    border-color:                @selected;
+    border-color:                @selected-background;
     background-color:            transparent;
     text-color:                  @foreground;
     children:                    [ "textbox-prompt-colon", "prompt"];
@@ -84,7 +85,7 @@ message {
     padding:                     10px;
     border:                      0px solid;
     border-radius:               12px;
-    border-color:                @selected;
+    border-color:                @selected-background;
     background-color:            @background-alt;
     text-color:                  @foreground;
 }
@@ -115,7 +116,7 @@ element {
     padding:                     30px 10px;
     border:                      0px solid;
     border-radius:               12px;
-    border-color:                @selected;
+    border-color:                @selected-background;
     background-color:            transparent;
     text-color:                  @foreground;
     cursor:                      pointer;
@@ -147,6 +148,6 @@ element selected.urgent {
     text-color:                  var(background);
 }
 element selected.normal {
-    background-color:            var(selected);
-    text-color:                  var(background);
+    background-color:            var(selected-background);
+    text-color:                  var(selected-foreground);
 }
