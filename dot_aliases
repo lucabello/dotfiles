@@ -48,6 +48,9 @@ function chezmoi-data {
 function chezmoi-theme {
     (chezmoicd; cd .scripts/chezmoi-extras; uv run chezmoi-theme "$@")
 }
+function chezmoi-just {
+    (chezmoicd; just "$@")
+}
 
 # just aliases
 alias dotfiles='just -f $(chezmoi source-path)/justfile'

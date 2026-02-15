@@ -21,11 +21,11 @@ chezmoi-data create
 PROFILE="$(chezmoi-data get profile)"
 PROFILE="${PROFILE,,}"  # Convert PROFILE to lowercase
 echo "+ Installing '${PROFILE,,}' profile"
-just --justfile .scripts/ubuntu.just "$PROFILE" 
+chezmoi-just ubuntu "$PROFILE" 
 # Install optional things if enabled
 CANONICAL="$(chezmoi-data get canonical)"
 CANONICAL="${CANONICAL,,}"  # Convert CANONICAL to lowercase
 if [[ "$CANONICAL" == "true" ]]; then 
   echo "+ Installing Canonical working environment"
-  just --justfile .scripts/canonical.just charm-dev
+  chezmoi-just canonical charm-dev
 fi
