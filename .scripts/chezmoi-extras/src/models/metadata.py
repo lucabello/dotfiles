@@ -21,12 +21,14 @@ class Style(Enum):
 class Metadata:
     profile: Profile
     style: Style
+    canonical: bool = False
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "metadata": {
                 "profile": self.profile.value,
                 "style": self.style.value,
+                "canonical": self.canonical,
             }
         }
 
@@ -39,11 +41,11 @@ class Metadata:
             data = tomllib.load(f)
         profile: str = data.get("metadata", {}).get("profile")
         style: str = data.get("metadata", {}).get("style")
-
+        canonical: bool = data.get("metadata", {}).get("canonical", False)
         if not profile or not style:
             raise ValueError(f"Cannot parse metadata from {filename}")
 
-        return Metadata(profile=Profile[profile.upper()], style=Style[style.upper()])
+        return Metadata(profile=Profile[profile.upper()], style=Style[style.upper()], canonical=canonical)
 
     def save(self, path: Path) -> None:
         with open(path, "w") as f:

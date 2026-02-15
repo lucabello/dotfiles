@@ -108,7 +108,7 @@ install-hyprland:
         # Hyprland utilities
         nwg-displays hyprpaper hyprland-qtutils hypridle
         # Other utilities
-        slurp wl-clipboard wtype
+        slurp wl-clipboard wtype brightnessctl
         # Quickshell build dependencies
         qt6-base-dev qt6-declarative-dev qt6-shadertools-dev spirv-tools-dev pkg-config libcli11-dev libcli11-doc qt6-svg-dev qt6-wayland-dev
         libjemalloc-dev libwayland-dev wayland-protocols libdrm-dev libgbm-dev libxcb1-dev libpam0g-dev libpolkit-gobject-1-dev libglib2.0-dev
@@ -179,9 +179,9 @@ install-desktop-apps:
     )
     sudo apt install -y "${PACKAGES[@]}"
 
-    # Install all snaps
     sudo snap install obsidian --classic
     sudo apt install -y syncthing && sudo systemctl enable syncthing@aegis.service --now
+    sudo systemctl enable --now geoclue.service >/dev/null 2>&1
 
 
 [group('install'), doc('Install Server Applications')]
@@ -220,6 +220,7 @@ install-server-apps:
     # Server setup
     sudo systemctl enable --now ssh
     groups | grep -q docker || (sudo groupadd docker; sudo usermod -a -G docker $USER)
+    ln -s "$HOME/.data/syncthing/Sync" "$HOME/Sync"
 
 
 [group('update'), doc('Update all packages')]

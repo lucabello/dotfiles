@@ -48,8 +48,15 @@ def ask_theme(colors_path: Path) -> Theme:
 
     return selected_theme
 
+def ask_plugins() -> dict[str, bool]:
+    plugins = {
+        "canonical": questionary.confirm("Enable Canonical setup?").ask(),
+    }
+    return plugins
+
 
 def ask_metadata() -> Metadata:
     profile = ask_profile()
     style = ask_style()
-    return Metadata(profile=profile, style=style)
+    plugins = ask_plugins()
+    return Metadata(profile=profile, style=style, canonical=plugins.get("canonical", False))

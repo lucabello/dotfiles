@@ -52,7 +52,7 @@ unlock_bw_vault() {
   attempt=0
   while [[ -z "${BW_SESSION-}" ]]; do
     attempt=$((attempt+1))
-    echo "Attempting to unlock Bitwarden vault (attempt ${attempt})..." >&2
+    echo "Attempting to unlock Bitwarden vault (attempt ${attempt}/5)..." >&2
     BW_SESSION="$(${BW} unlock --raw || true)"
     if [[ -n "${BW_SESSION}" ]]; then
       export BW_SESSION
@@ -72,7 +72,7 @@ login_and_unlock_bw() {
   attempt=0
   while [[ -z "${BW_SESSION-}" ]]; do
     attempt=$((attempt+1))
-    echo "Attempting to login and unlock Bitwarden vault (attempt ${attempt})..." >&2
+    echo "Attempting to login and unlock Bitwarden vault (attempt ${attempt}/5)..." >&2
     BW_SESSION="$(${BW} login --raw || true)"
     if [[ -n "${BW_SESSION}" ]]; then
       export BW_SESSION

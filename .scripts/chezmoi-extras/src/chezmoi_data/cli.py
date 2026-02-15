@@ -16,9 +16,25 @@ CHEZMOI_DATA_METADATA_PATH: Path = CHEZMOI_DATA_PATH.joinpath("metadata.toml")
 CHEZMOI_DATA_COLORS_PATH: Path = CHEZMOI_DATA_PATH.joinpath("colors.toml")
 CHEZMOI_AVAILABLE_COLORS_PATH: Path = CHEZMOI_PATH.joinpath(".colors")
 
+@app.command()
+def get(key: str):
+    """Print a specific part of the Chezmoi metadata in raw format."""
+    metadata_obj = Metadata.from_toml(CHEZMOI_DATA_METADATA_PATH)
+    
+    match key.lower():
+        case "profile":
+            print(f"{metadata_obj.profile.value}")
+        case "style":
+            print(f"{metadata_obj.style.value}")
+        case "canonical":
+            print(f"{metadata_obj.canonical}")
+        case _:
+            raise typer.BadParameter(f"key must be one of {list(Metadata.__dataclass_fields__.keys())}")
+
 
 @app.command()
 def show(
+    profile: bool = typer.Option(False, "--profile", help="Only show the profile"),
     metadata: bool = typer.Option(False, "--metadata", help="Only show the metadata"),
     colors: bool = typer.Option(False, "--colors", help="Only show the colors"),
 ):
@@ -28,6 +44,11 @@ def show(
     provided, only colors are printed. If neither or both are provided, all
     data is shown.
     """
+    if profile:
+        metadata_obj = Metadata.from_toml(CHEZMOI_DATA_METADATA_PATH)
+        console.print(f"{metadata_obj.profile.value}")
+        return
+    
     if not metadata and not colors:
         metadata = True
         colors = True

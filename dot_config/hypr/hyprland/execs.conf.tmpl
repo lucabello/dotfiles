@@ -1,9 +1,5 @@
-source=env.conf
-
 # Bar, wallpaper
-exec-once = ~/.config/hypr/hyprland/scripts/start_geoclue_agent.sh
-# exec-once = qs -c $qsConfig &
-exec-once = qs --config $qsConfig &
+exec-once = quickshell --config {{ .metadata.style }} &
 exec-once = hyprpaper
 
 # Core components (authentication, lock screen, notification daemon)
@@ -17,3 +13,6 @@ exec-once = easyeffects --hide-window --service-mode
 
 # Cursor
 exec-once = hyprctl setcursor Bibata-Modern-Classic 24
+
+# Workspace
+exec-once = hyprctl dispatch workspace 1

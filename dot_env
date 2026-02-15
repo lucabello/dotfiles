@@ -1,16 +1,14 @@
-# Export ENV variables
+# Export ENV variable
 export EDITOR="nvim"
 export BROWSER="brave-browser"
 export PAGER="batcat"
-{{ if eq .metadata.profile "Server" -}}
-export LEDGER_FILE="$HOME/.data/syncthing/Sync/Finance/2025.journal"
 export COMPOSE_HOME="$HOME/Deployments"
-{{- else -}}
 export LEDGER_FILE="$HOME/Sync/Finance/2025.journal"
-{{- end }}
 export GOPATH="$HOME/.local/go"
 # Python Virtual Environments
 export WORKON_HOME="$HOME/VirtualEnvs"
+# Chezmoi paths
+export CHEZMOI_PATH="$HOME/.local/share/chezmoi"
 
 # Extend PATH
 export PATH=$HOME/bin:/usr/local/bin:$PATH

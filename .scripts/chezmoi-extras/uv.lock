@@ -239,6 +239,15 @@ toml = [
 ]
 
 [[package]]
+name = "cvss"
+version = "3.6"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/a5/f6/1f7d315de23f39bbc32b94bb6b33a1b6124856037bfaa3f8bdb1a49584fa/cvss-3.6.tar.gz", hash = "sha256:f21d18224efcd3c01b44ff1b37dec2e3208d29a6d0ce6c87a599c73c21ee1a99", size = 30047, upload-time = "2025-08-04T10:50:13.753Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/63/6d/fe2c65b94a28ae0481dc254e8cd664b82390069003bea945076d8a445f2b/cvss-3.6-py2.py3-none-any.whl", hash = "sha256:e342c6ad9c7eb69d2aebbbc2768a03cabd57eb947c806e145de5b936219833ea", size = 31154, upload-time = "2025-08-04T10:50:12.328Z" },
+]
+
+[[package]]
 name = "dnspython"
 version = "2.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -810,14 +819,14 @@ wheels = [
 
 [[package]]
 name = "typeguard"
-version = "4.4.4"
+version = "4.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c7/68/71c1a15b5f65f40e91b65da23b8224dad41349894535a97f63a52e462196/typeguard-4.4.4.tar.gz", hash = "sha256:3a7fd2dffb705d4d0efaed4306a704c89b9dee850b688f060a8b1615a79e5f74", size = 75203, upload-time = "2025-06-18T09:56:07.624Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7e/ec/adfe3dd6b5f7c5fc0b3cecdf6f893f1756dbd23cf749cd1ae49db069414f/typeguard-4.5.0.tar.gz", hash = "sha256:749bea21cdb2553e12831bc29f1eae980b22c7de8331ab67ae7db9e85470b5a7", size = 79993, upload-time = "2026-02-15T00:24:25.244Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1b/a9/e3aee762739c1d7528da1c3e06d518503f8b6c439c35549b53735ba52ead/typeguard-4.4.4-py3-none-any.whl", hash = "sha256:b5f562281b6bfa1f5492470464730ef001646128b180769880468bd84b68b09e", size = 34874, upload-time = "2025-06-18T09:56:05.999Z" },
+    { url = "https://files.pythonhosted.org/packages/d4/35/7541d1f046491fac8ce05d543d3f0de0af02086ad864dd3a23535ec703b9/typeguard-4.5.0-py3-none-any.whl", hash = "sha256:cfda388fc88a9ce42a41890900d6f31ee124bea9b73bb84701a32438e92165c3", size = 36724, upload-time = "2026-02-15T00:24:23.581Z" },
 ]
 
 [[package]]
@@ -858,10 +867,11 @@ wheels = [
 
 [[package]]
 name = "uv-secure"
-version = "0.15.4"
+version = "0.16.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
+    { name = "cvss" },
     { name = "httpx" },
     { name = "humanize" },
     { name = "inflect" },
@@ -872,9 +882,9 @@ dependencies = [
     { name = "stamina" },
     { name = "typer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/64/f1/253fbc3e9b41a68f7ecc95e8e8144e776353bb9207fbabf1e2b16e8455ef/uv_secure-0.15.4.tar.gz", hash = "sha256:8d52b041a74f1116089842a257177111f27ad0ccb7c819c59c42af225a1a0e92", size = 29563, upload-time = "2025-12-28T12:01:48.749Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7b/76/bd4f42deb5ac4cd276cd563c7d841ba1daa694e6a6f8d1e86a23aa861b08/uv_secure-0.16.0.tar.gz", hash = "sha256:ddc039c8ef07b3c637d78d3e059d6a186f039935046612ff21b38ff4de20f016", size = 36946, upload-time = "2026-02-15T05:08:16.877Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/10/6b/6edfede227360085da173e21e18c01fc6b5167c6966105fd009aa6b90848/uv_secure-0.15.4-py3-none-any.whl", hash = "sha256:dd5c279d1745f45ac2d560ce8807d8ed4d70f40a88baf92d19f574be8d3b2163", size = 39097, upload-time = "2025-12-28T12:01:47.528Z" },
+    { url = "https://files.pythonhosted.org/packages/83/6b/bda5717c4de079b7443652223b3ca6f1b8eef03b38f9476bd3b490bc6a43/uv_secure-0.16.0-py3-none-any.whl", hash = "sha256:f768646599f4b022e13f52c4b4fcc5c7f25192f8e3fe458ccb59f45e32319222", size = 50279, upload-time = "2026-02-15T05:08:15.854Z" },
 ]
 
 [[package]]
