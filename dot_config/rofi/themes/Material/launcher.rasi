@@ -96,8 +96,8 @@ mainbox {
 /*****----- Inputbar -----*****/
 inputbar {
     enabled:                     true;
-    spacing:                     10px;
-    margin:                      0px;
+    spacing:                     14px;
+    margin:                      14px;
     padding:                     0px;
     border:                      0px solid;
     border-radius:               0px;
@@ -128,6 +128,7 @@ entry {
     cursor:                      text;
     placeholder:                 "Search...";
     placeholder-color:           inherit;
+    font:                        var(fontlauncherbar);
 }
 num-filtered-rows {
     enabled:                     true;
@@ -189,7 +190,7 @@ element {
     enabled:                     true;
     spacing:                     10px;
     margin:                      0px;
-    padding:                     5px 10px;
+    padding:                     10px 10px;
     border:                      0px solid;
     border-radius:               10px;
     border-color:                @border-colour;
@@ -236,12 +237,13 @@ element alternate.active {
 element-icon {
     background-color:            transparent;
     text-color:                  inherit;
-    size:                        24px;
+    size:                        36px;
     cursor:                      inherit;
 }
 element-text {
     background-color:            transparent;
     text-color:                  inherit;
+    font:                        var(fontlauncheritems);
     highlight:                   inherit;
     cursor:                      inherit;
     vertical-align:              0.5;

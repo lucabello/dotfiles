@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+cd "$(chezmoi source-path)/.scripts/chezmoi-extras/"; uv run chezmoi-data

@@ -1,7 +1,7 @@
 [project]
-name = "chezmoi-theme"
+name = "chezmoi-extras"
 version = "0.1.0"
-description = "chezmoi-theme"
+description = "chezmoi-extras"
 authors = [
     {name = "Luca Bello", email = "lusgabello@gmail.com"},
 ]
@@ -28,12 +28,6 @@ dev = [
     "uv-secure>=0.15.4",
 ]
 
-[project.urls]
-Homepage = "https://github.com/lucabello/{{project_name}}"
-Documentation = "https://github.com/lucabello/{{project_name}}"
-Repository = "https://github.com/lucabello/{{project_name}}"
-Issues = "https://github.com/lucabello/{{project_name}}/issues"
-Changelog = "https://github.com/lucabello/{{project_name}}/releases"
 
 [project.scripts]
 chezmoi-theme = "chezmoi_theme.cli:app"

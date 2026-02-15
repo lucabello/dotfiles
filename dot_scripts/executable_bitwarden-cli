@@ -1,0 +1,204 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Configuration (override these top-level variables as needed)
+# HOSTNAME: hostname for fetching machine keys
+# GITHUB_USER: username for GitHub
+# BW_INSTALL_DIR: where to install the bw binary
+HOSTNAME="$(hostname)"
+GITHUB_USER="lucabello"
+BW_INSTALL_DIR="${HOME}/.local/bin"
+BW="${BW_INSTALL_DIR}/bw"
+
+ensure_bw_installed() {
+  DL_DIR="$(mktemp -d /tmp/bw.XXXXXX)"
+  trap 'rm -rf "${DL_DIR}" || true' EXIT
+
+  if [[ -x "${BW}" ]]; then
+    echo "bw already installed in ${BW_INSTALL_DIR}"
+    return 0
+  fi
+
+  echo "Bitwarden CLI (bw) not found — attempting automatic install..."
+  TAG="cli-v2026.1.0"
+  VERSION="${TAG#cli-v}"
+  FILE="bw-linux-${VERSION}.zip"
+  URL="https://github.com/bitwarden/clients/releases/download/${TAG}/${FILE}"
+
+  echo "Downloading ${FILE} from GitHub releases..."
+  wget --no-verbose -q -O "${DL_DIR}/${FILE}" "${URL}"
+  unzip -q "${DL_DIR}/${FILE}" -d "${DL_DIR}"
+
+  mkdir -p "${BW_INSTALL_DIR}"
+  install -m 755 "${DL_DIR}/bw" "${BW}"
+  echo "Bitwarden (bw) installed to ${BW_INSTALL_DIR}"
+}
+
+uninstall_bw() {
+  if [[ -x "${BW}" ]]; then
+    rm -f "${BW}"
+    echo "Bitwarden (bw) has been uninstalled from ${BW_INSTALL_DIR}"
+  else
+    echo "Bitwarden (bw) is not installed in ${BW_INSTALL_DIR}"
+  fi
+}
+
+unlock_bw_vault() {
+  # Export BW_SESSION global when unlocked
+  if [[ -n "${BW_SESSION-}" ]]; then
+    return 0
+  fi
+
+  attempt=0
+  while [[ -z "${BW_SESSION-}" ]]; do
+    attempt=$((attempt+1))
+    echo "Attempting to unlock Bitwarden vault (attempt ${attempt})..." >&2
+    BW_SESSION="$(${BW} unlock --raw || true)"
+    if [[ -n "${BW_SESSION}" ]]; then
+      export BW_SESSION
+      echo "Bitwarden vault unlocked" >&2
+      return 0
+    fi
+    if [[ $attempt -ge 5 ]]; then
+      echo "Failed to unlock Bitwarden after ${attempt} attempts" >&2
+      return 1
+    fi
+    sleep 1
+  done
+}
+
+login_and_unlock_bw() {
+  # Login, unlock, and export the BW_SESSION global
+  attempt=0
+  while [[ -z "${BW_SESSION-}" ]]; do
+    attempt=$((attempt+1))
+    echo "Attempting to login and unlock Bitwarden vault (attempt ${attempt})..." >&2
+    BW_SESSION="$(${BW} login --raw || true)"
+    if [[ -n "${BW_SESSION}" ]]; then
+      export BW_SESSION
+      echo "Bitwarden vault unlocked" >&2
+      return 0
+    fi
+    if [[ $attempt -ge 5 ]]; then
+      echo "Failed to login and unlock Bitwarden after ${attempt} attempts" >&2
+      return 1
+    fi
+    sleep 1
+  done
+}
+
+unlock_bw_vault_if_needed() {
+  # This function is needed to avoid asking for the master password multiple times
+  echo "Checking for active Bitwarden login..."
+  if ${BW} login --check >/dev/null 2>&1; then
+    echo "Bitwarden login active; trying to unlock vault..."
+    if ! unlock_bw_vault; then
+      echo "Failed to unlock Bitwarden vault" >&2
+      return 1
+    fi
+  else
+    echo "No active Bitwarden login: attempting interactive login..." >&2
+    if ! login_and_unlock_bw; then
+      echo "Failed to login and unlock Bitwarden vault" >&2
+      return 1
+    fi
+  fi
+}
+
+prepare_dirs() {
+  # Prepare .ssh directory with correct permissions and a temporary working directory
+  mkdir -p "${HOME}/.ssh"
+  umask 077
+  TMP_FOLDER="$(mktemp -d --tmpdir="/tmp")"
+  cleanup() { rm -rf "${TMP_FOLDER}" || true; }
+  trap 'cleanup' EXIT
+  cd "${TMP_FOLDER}"
+}
+
+fetch_host_keys() {
+  prepare_dirs
+  if ! unlock_bw_vault_if_needed; then
+    return 1
+  fi
+
+  echo "Getting Bitwarden item for ${HOSTNAME}.machine..."
+  ITEM_ID="$(${BW} get item "${HOSTNAME}.machine" | jq -r .id 2>/dev/null || true)"
+  if [[ -z "${ITEM_ID}" ]]; then
+    echo "No Bitwarden item found for ${HOSTNAME}.machine" >&2
+    return 1
+  fi
+
+  echo "Getting SSH keys for ${HOSTNAME}..."
+  ${BW} get attachment --itemid="${ITEM_ID}" "id_ed25519.pub" --output "${HOSTNAME}.pub" && install -m 644 "${HOSTNAME}.pub" "${HOME}/.ssh/${HOSTNAME}.pub"
+  echo "${HOME}/.ssh/${HOSTNAME}.pub installed with permissions 644"
+  ${BW} get attachment --itemid="${ITEM_ID}" "id_ed25519" --output "${HOSTNAME}" && install -m 600 "${HOSTNAME}" "${HOME}/.ssh/${HOSTNAME}"
+  echo "${HOME}/.ssh/${HOSTNAME} installed with permissions 600"
+
+  echo "Installed SSH keys for ${HOSTNAME} in ${HOME}/.ssh"
+}
+
+fetch_git_keys() {
+  prepare_dirs
+  if ! unlock_bw_vault_if_needed; then
+    return 1
+  fi
+
+  echo "Searching Bitwarden for Git item for user ${GITHUB_USER}..."
+  GIT_ITEM_ID="$(${BW} list items --url='github.com' --search="${GITHUB_USER}" 2>/dev/null | jq -r '.[0].id' 2>/dev/null || true)"
+  if [[ -z "${GIT_ITEM_ID}" ]]; then
+    echo "No Git Bitwarden item found for ${GITHUB_USER}" >&2
+    return 1
+  fi
+
+  echo "Getting Git SSH keys for ${GITHUB_USER}..."
+  ${BW} get attachment --itemid="${GIT_ITEM_ID}" "git.pub" --output "git.pub" && install -m 644 "git.pub" "${HOME}/.ssh/git.pub"
+  echo "${HOME}/.ssh/git.pub installed with permissions 644"
+  ${BW} get attachment --itemid="${GIT_ITEM_ID}" "git" --output "git" && install -m 600 "git" "${HOME}/.ssh/git"
+  echo "${HOME}/.ssh/git installed with permissions 600"
+
+  echo "Installed git keys for ${GITHUB_USER} in ${HOME}/.ssh"
+}
+
+usage() {
+  cat <<EOF
+Usage: $0 <command>
+
+Commands:
+  install           Ensure Bitwarden CLI (bw) is installed
+  uninstall         Remove the installed bw binary
+
+  fetch-host-keys   Fetch SSH keys for host set in HOSTNAME
+  fetch-git-keys    Fetch git SSH keys for user set in GITHUB_USER
+  fetch-keys        Fetch all necessary SSH keys
+
+Top-level variables (edit at top of this file): HOSTNAME, GITHUB_USER, BW_INSTALL_DIR
+EOF
+}
+
+if [[ "$#" -eq 0 ]]; then
+  usage
+  exit 1
+fi
+
+case "$1" in
+  install)
+    ensure_bw_installed
+    ;;
+  uninstall)
+    uninstall_bw
+    ;;
+  fetch-host-keys)
+    fetch_host_keys
+    ;;
+  fetch-git-keys)
+    fetch_git_keys
+    ;;
+  fetch-keys)
+    fetch_host_keys
+    fetch_git_keys
+    ;;
+  *)
+    usage
+    exit 2
+    ;;
+esac

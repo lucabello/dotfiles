@@ -6,8 +6,8 @@ from typing import Optional
 import typer
 from rich.console import Console
 
-from models.colors import Theme
 from chezmoi_theme.prompts import ask_missing
+from models.colors import Theme
 
 app = typer.Typer(no_args_is_help=True)
 console = Console()

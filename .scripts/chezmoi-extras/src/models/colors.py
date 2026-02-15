@@ -7,7 +7,6 @@ from typing import Any, Optional
 import coloraide
 import tomli_w
 
-
 # =======
 # Colors
 # =======

@@ -1,8 +1,0 @@
-* {
-    // Available fonts shown with 'fc-list'
-    font: "Monofur Nerd Font Mono 16";
-    fontlauncher: "Monofur Nerd Font Mono 18";
-    fonticons: "Monofur Nerd Font Mono 40";
-    fontemoji: "Noto Emoji Color 15";
-    fontbuku: "Monofur Nerd Font Mono 16";
-}

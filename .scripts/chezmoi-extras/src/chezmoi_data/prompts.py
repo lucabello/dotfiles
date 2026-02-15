@@ -4,8 +4,8 @@ from typing import Any
 import questionary
 from rich.console import Console
 
-from models.metadata import Metadata, Profile, Style
 from models.colors import Theme, ThemeMode, ThemeModeIcon
+from models.metadata import Metadata, Profile, Style
 
 console = Console()
 

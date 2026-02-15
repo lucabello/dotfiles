@@ -1,4 +1,5 @@
-#!/usr/bin/env -S just -f
+set shell := ["bash", "-uc"]
+
 microk8s-channel := '1.34-strict/stable'
 canonicalk8s-channel := '1.34-classic/stable'
 juju-channel := '3.6/stable'
@@ -9,7 +10,7 @@ ipaddr := `ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'`
 
 [private, no-cd]
 @default:
-    just -f {{justfile_directory()}}/canonical.just --list
+    just -f {{justfile_directory()}}/.scripts/canonical.just --list
 
 [group('presets'), doc("Setup a charm development environment"), no-cd]
 charm-dev: setup-microk8s setup-lxd setup-juju setup-devtools
