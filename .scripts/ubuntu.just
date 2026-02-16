@@ -174,14 +174,26 @@ install-desktop-apps:
     PACKAGES=(
         # Rofi
         rofi rofimoji
+        # Others
+        syncthing
         # Other utilities
         redshift
     )
     sudo apt install -y "${PACKAGES[@]}"
 
     sudo snap install obsidian --classic
-    sudo apt install -y syncthing && sudo systemctl enable syncthing@aegis.service --now
     sudo systemctl enable --now geoclue.service >/dev/null 2>&1
+    ## Syncthing configuration
+    SYNCTHING_STATE="$HOME/.local/state/syncthing"
+    if [[ ! -f "${SYNCTHING_STATE}/.chezmoi" ]]; then
+        pushd "$HOME/.local/share/chezmoi"
+        bash dot_scripts/executable_bitwarden-cli fetch-host-attachment syncthing.zip /tmp/syncthing.zip
+        unzip -o /tmp/syncthing.zip -d "$SYNCTHING_STATE"
+        sudo systemctl enable syncthing@aegis.service --now
+        touch "${SYNCTHING_STATE}/.chezmoi"
+        popd
+    fi
+    # sudo snap install bitwarden; sudo snap connect bitwarden:password-manager-service
 
 
 [group('install'), doc('Install Server Applications')]

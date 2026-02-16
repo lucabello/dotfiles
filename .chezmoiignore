@@ -3,7 +3,6 @@ README
 README.md
 LICENSE
 # Others
-justfile
 canonical.just
 ubuntu.just
 init.just

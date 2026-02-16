@@ -115,6 +115,28 @@ prepare_dirs() {
   cd "${TMP_FOLDER}"
 }
 
+fetch_host_attachment() {
+  # Fetch an attachment from the hostname-related item
+  # Usage: fetch_host_attachment <attachment-name> <destination-file>
+  ATTACHMENT="$1"
+  DEST="$2"
+  prepare_dirs
+  if ! unlock_bw_vault_if_needed; then
+    return 1
+  fi
+
+  echo "Getting Bitwarden item for ${HOSTNAME}.machine..."
+  ITEM_ID="$(${BW} get item "${HOSTNAME}.machine" | jq -r .id 2>/dev/null || true)"
+  if [[ -z "${ITEM_ID}" ]]; then
+    echo "No Bitwarden item found for ${HOSTNAME}.machine" >&2
+    return 1
+  fi
+
+  echo "Getting ${ATTACHMENT} for ${HOSTNAME}..."
+  ${BW} get attachment --itemid="${ITEM_ID}" "${ATTACHMENT}" --output "${DEST}"
+  echo "${ATTACHMENT} saved to ${DEST}"
+}
+
 fetch_host_keys() {
   prepare_dirs
   if ! unlock_bw_vault_if_needed; then
@@ -164,12 +186,13 @@ usage() {
 Usage: $0 <command>
 
 Commands:
-  install           Ensure Bitwarden CLI (bw) is installed
-  uninstall         Remove the installed bw binary
+  install                 Ensure Bitwarden CLI (bw) is installed
+  uninstall               Remove the installed bw binary
 
-  fetch-host-keys   Fetch SSH keys for host set in HOSTNAME
-  fetch-git-keys    Fetch git SSH keys for user set in GITHUB_USER
-  fetch-keys        Fetch all necessary SSH keys
+  fetch-host-attachment   Fetch an ATTACHMENT (fetch-host-attachment attachment output-file)
+  fetch-host-keys         Fetch SSH keys for host set in HOSTNAME
+  fetch-git-keys          Fetch git SSH keys for user set in GITHUB_USER
+  fetch-keys              Fetch all necessary SSH keys
 
 Top-level variables (edit at top of this file): HOSTNAME, GITHUB_USER, BW_INSTALL_DIR
 EOF
@@ -186,6 +209,9 @@ case "$1" in
     ;;
   uninstall)
     uninstall_bw
+    ;;
+  fetch-host-attachment)
+    fetch_host_attachment $2 $3
     ;;
   fetch-host-keys)
     fetch_host_keys
