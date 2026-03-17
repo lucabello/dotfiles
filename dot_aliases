@@ -6,21 +6,14 @@ alias brave='brave-browser'
 alias venv='uv-venv'
 alias fetch='macchina'
 alias fetch-more='macchina --config ~/.config/macchina/more.toml'
+alias trashcd='cd ~/.local/share/Trash'
 
 function ranger {
-    local IFS=$'\t\n'
-    local tempfile="$(mktemp -t tmp.XXXXXX)"
-    local ranger_cmd=(
-        command
-        ranger
-        --cmd="map Q chain shell echo %d > "$tempfile"; quitall"
-    )
-
-    ${ranger_cmd[@]} "$@"
-    if [[ -f "$tempfile" ]] && [[ "$(cat -- "$tempfile")" != "$(echo -n `pwd`)" ]]; then
-        cd -- "$(cat "$tempfile")" || return
-    fi
-    command rm -f -- "$tempfile" 2>/dev/null
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	command yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
 }
 
 # ls aliases (eza)
@@ -51,9 +44,7 @@ function chezmoi-theme {
 function chezmoi-just {
     (chezmoicd; just "$@")
 }
-
-# just aliases
-alias dotfiles='just -f $(chezmoi source-path)/justfile'
+alias dotfiles='chezmoi-just'
 
 # Utilities
 alias restart-polybar="pkill polybar; ~/.config/polybar/launch.sh"

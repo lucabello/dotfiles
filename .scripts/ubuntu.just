@@ -55,6 +55,7 @@ install-shell:
     sudo apt install -y "${PACKAGES[@]}"
 
     # Install all snaps
+    sudo snap install rustup --classic
     sudo snap install astral-uv --channel=latest/candidate --classic
     sudo snap install nvim --classic
     sudo snap install go --classic
@@ -70,14 +71,13 @@ install-shell:
     go install github.com/charmbracelet/gum@latest
 
     # Install rust packages
-    which cargo || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    RUSTUP="$HOME/.cargo/bin/rustup"
-    CARGO="$HOME/.cargo/bin/cargo"
-    $RUSTUP default stable
-    which starship || $CARGO install starship --locked  # Starship prompt for ZSH
-    which sheldon || $CARGO install sheldon --locked  # Sheldon plugin manager for ZSH
-    which tree-sitter || $CARGO install tree-sitter-cli --locked  # nvim plugin
-    which macchina || $CARGO install macchina --locked  # fetch command in Rust
+    which cargo || { rustup default stable; sudo rustup default stable }
+    RUSTUP="/snap/bin/rustup"
+    CARGO="/snap/bin/cargo"
+    which starship || cargo install starship --locked  # Starship prompt for ZSH
+    which sheldon || cargo install sheldon --locked  # Sheldon plugin manager for ZSH
+    which tree-sitter || cargo install tree-sitter-cli --locked  # nvim plugin
+    which macchina || cargo install macchina --locked  # fetch command in Rust
     
     # Install python tools with uv
     uv tool install speedtest-cli --force
@@ -106,7 +106,7 @@ install-hyprland:
         # Hyprland
         hyprland
         # Hyprland utilities
-        nwg-displays hyprpaper hyprland-qtutils hypridle
+        nwg-displays hyprland-qtutils hypridle hyprlock
         # Other utilities
         slurp wl-clipboard wtype brightnessctl
         # Quickshell build dependencies
@@ -115,11 +115,17 @@ install-hyprland:
         ninja-build build-essential
         libxkbcommon-dev qtchooser libegl1-mesa-dev apt info libpipewire-0.3-dev
         "qt6-*dev"
+        # awww (wallpaper) deps
+        lz4 liblz4-dev
     )
     sudo apt install -y "${PACKAGES[@]}"
 
     # Install all snaps
     sudo snap install grim
+
+    # Install rust packages
+    sudo cargo install --root=/usr/local --git https://codeberg.org/LGFae/awww awww         # Wallpapers
+    sudo cargo install --root=/usr/local --git https://codeberg.org/LGFae/awww awww-daemon  # Wallpapers
 
     # Quickshell build deps: google-breakpad
     export GOOGLE_BREAKPAD_VERSION="v2024.02.16"

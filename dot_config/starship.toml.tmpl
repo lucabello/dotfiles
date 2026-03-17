@@ -18,6 +18,7 @@ format = '[⌀ ]($style bold)[$user]($style) at '
 [hostname]
 ssh_symbol = " "
 ssh_only = false
+style = 'bold white'
 {{- if eq .chezmoi.hostname "zeus" }}
 format = '[$ssh_symbol⚡$hostname]($style) in '
 {{- else if eq .chezmoi.hostname "hades" }}

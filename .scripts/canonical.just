@@ -1,10 +1,10 @@
 set shell := ["bash", "-uc"]
 
-microk8s-channel := '1.34-strict/stable'
-canonicalk8s-channel := '1.34-classic/stable'
+k8s-channel := '1.35-classic/stable'
 juju-channel := '3.6/stable'
-rockcraft-channel := 'latest/candidate'
-charmcraft-channel := '3.x/candidate'
+snapcraft-channel := '8.x/stable'
+charmcraft-channel := '3.x/stable'
+rockcraft-channel := 'latest/stable'
 
 ipaddr := `ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'`
 
@@ -13,22 +13,11 @@ ipaddr := `ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'`
     just -f {{justfile_directory()}}/.scripts/canonical.just --list
 
 [group('presets'), doc("Setup a charm development environment"), no-cd]
-charm-dev: setup-microk8s setup-lxd setup-juju setup-devtools
-
-[group('setup'), doc('Setup MicroK8s'), no-cd]
-setup-microk8s:
-    sudo snap install microk8s --channel={{microk8s-channel}}
-    mkdir -p "$HOME"/.kube
-    sudo usermod -aG snap_microk8s $USER
-    exec sg snap_microk8s "microk8s config | sudo tee ~/.kube/config && sudo chown -f -R $USER ~/.kube"
-    exec sg snap_microk8s "microk8s status --wait-ready"
-    exec sg snap_microk8s "sudo microk8s enable dns hostpath-storage ingress rbac && microk8s status --wait-ready"
-    exec sg snap_microk8s "sudo microk8s enable metallb:{{ipaddr}}-{{ipaddr}} && microk8s status --wait-ready"
-    exec sg snap_microk8s "sudo microk8s enable registry && microk8s status --wait-ready"
+charm-dev: setup-lxd setup-k8s setup-crafts setup-juju setup-devtools
 
 [group('setup'), doc('Setup Canonical K8s'), no-cd]
-setup-canonicalk8s:
-    sudo snap install k8s --classic --channel={{canonicalk8s-channel}}
+setup-k8s:
+    sudo snap install k8s --classic --channel={{k8s-channel}}
     sudo k8s bootstrap  # TODO: grep the cluster status from 'sudo k8s status' and ignore if already ready
     sudo k8s status --wait-ready
     sudo k8s enable local-storage
@@ -44,18 +33,22 @@ setup-lxd:
     exec sg lxd "lxd init --auto"
     if which ufw; then sudo ufw allow in on lxdbr0; sudo ufw route allow in on lxdbr0; sudo ufw route allow out on lxdbr0; fi
 
-[group('setup'), doc('Setup Juju and Craft-tools'), no-cd]
+[group('setup'), doc('Setup Juju'), no-cd]
 setup-juju:
     sudo snap install juju --channel={{juju-channel}}
-    # TODO: switch to canonical k8s at some point maybe
-    # sudo k8s config view | sudo -u $USER /snap/juju/current/bin/juju add-k8s canonicalk8s --client
+    sudo k8s config | sudo -u $USER /snap/juju/current/bin/juju add-k8s k8s --client
+
+[group('setup'), doc('Setup Juju and Craft-tools'), no-cd]
+setup-crafts:
     sudo snap install rockcraft --classic --channel={{rockcraft-channel}}
     sudo snap install charmcraft --classic --channel={{charmcraft-channel}}
+    sudo snap install snapcraft --classic --channel={{snapcraft-channel}}
 
 [group('setup'), doc('Setup developer tools'), no-cd]
 setup-devtools:
     if ! which uv; then sudo snap install astral-uv --classic; fi
     if ! which tox; then uv tool install tox; fi
+    sudo snap install multipass
     sudo snap install kubectl --classic
     sudo snap install jhack && sudo snap connect jhack:dot-local-share-juju snapd 
     cargo install --git https://github.com/sed-i/juju-graph
