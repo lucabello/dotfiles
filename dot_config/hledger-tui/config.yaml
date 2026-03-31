@@ -1,0 +1,26 @@
+# Path to hledger file:oOptional if LEDGER_FILE is set, or when using `-f`/`--file`
+# ledger_file: /path/to/hledger.journal
+# Query defaults for filtering results in various tabs
+queries:
+  assets:
+    - acct:assets
+  expenses:
+    - acct:expenses
+    - not:acct:expenses:financial
+    - not:acct:expenses:home:rent
+  tags:
+    - acct:expenses
+
+# Display settings
+depth: 2
+commodity: ""  # Empty = use market prices; set to "$" or "€" to convert
+
+# Period settings
+period:
+  unit: months          # Options: weeks, months, quarters, years
+  subdivision: weekly   # Options: daily, weekly, monthly, yearly
+
+# Extra options for HLedger commands
+extra_options:
+  balance: []   # Example: ["--cost", "--depth", "4"]
+  register: []  # Example: ["--related", "--cost"]
