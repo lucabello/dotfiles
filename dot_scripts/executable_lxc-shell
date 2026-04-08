@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # lxc-shell
 # @describe Open a shell to a LXC container.
-# @author Luca Bello
 # @meta version 0.2
 # @meta require-tools lxc
 

@@ -28,3 +28,8 @@ x =
 y = 
 {{- if eq .metadata.profile "Desktop" }} 16{{- end }}
 {{- if eq .metadata.profile "Laptop" }} 8{{- end }}
+
+[[keyboard.bindings]]
+key = "Return"
+mods = "Shift"
+chars = "\u001B\r"

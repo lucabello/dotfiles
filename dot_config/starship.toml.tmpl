@@ -12,7 +12,7 @@ error_symbol = '[∮](bold red)'
 
 [username]
 show_always = true
-style_user = 'yellow'
+style_user = 'bold yellow'
 format = '[⌀ ]($style bold)[$user]($style) at '
 
 [hostname]
@@ -20,7 +20,7 @@ ssh_symbol = " "
 ssh_only = false
 style = 'bold white'
 {{- if eq .chezmoi.hostname "zeus" }}
-format = '[$ssh_symbol⚡$hostname]($style) in '
+format = '[$ssh_symbol $hostname]($style) in '
 {{- else if eq .chezmoi.hostname "hades" }}
 format = '[$ssh_symbol♇ $hostname]($style) in '
 {{- else if eq .chezmoi.hostname "hestia" }}
