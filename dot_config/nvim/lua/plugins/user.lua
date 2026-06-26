@@ -7,39 +7,29 @@
 return {
 	-- == Examples of Overriding Plugins ==
 
-	-- customize alpha options
+	-- customize dashboard header (snacks.nvim in v6)
 	{
-		"goolord/alpha-nvim",
-		opts = function(_, opts)
-			-- customize the dashboard header
-			opts.section.header.val = {
-				"                      __      ",
-				"                    /` ,\\__   ",
-				"                   |    ).-'  ",
-				"                  / .--'      ",
-				"                 / /          ",
-				"   ,      _.==''`  \\          ",
-				" .'(  _.='         |          ",
-				"{   ``  _.='       |          ",
-				" {    \\`     ;    /           ",
-				"  `.   `'=..'  .='            ",
-				"    `=._    .='               ",
-				"      '-`\\\\`__                ",
-				"          `-._{               ",
-				-- " █████  ███████ ████████ ██████   ██████",
-				-- "██   ██ ██         ██    ██   ██ ██    ██",
-				-- "███████ ███████    ██    ██████  ██    ██",
-				-- "██   ██      ██    ██    ██   ██ ██    ██",
-				-- "██   ██ ███████    ██    ██   ██  ██████",
-				-- " ",
-				-- "    ███    ██ ██    ██ ██ ███    ███",
-				-- "    ████   ██ ██    ██ ██ ████  ████",
-				-- "    ██ ██  ██ ██    ██ ██ ██ ████ ██",
-				-- "    ██  ██ ██  ██  ██  ██ ██  ██  ██",
-				-- "    ██   ████   ████   ██ ██      ██",
-			}
-			return opts
-		end,
+		"folke/snacks.nvim",
+		opts = {
+			dashboard = {
+				preset = {
+					header = [[
+                      __      
+                    /` ,\__   
+                   |    ).-'  
+                  / .--'      
+                 / /          
+   ,      _.==''`  \          
+ .'(  _.='         |          
+{   ``  _.='       |          
+ {    \`     ;    /           
+  `.   `'=..'  .='            
+    `=._    .='               
+      '-`\\`__                
+          `-._{               ]],
+				},
+			},
+		},
 	},
 
 	-- You can disable default plugins as follows:
