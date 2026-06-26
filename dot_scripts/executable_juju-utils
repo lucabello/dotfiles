@@ -1,0 +1,133 @@
+#!/usr/bin/env -S just --working-directory . --justfile
+# set positional-arguments
+set quiet
+
+set shell := ["bash", "-uc"]
+
+[private]
+default:
+  echo "Utility operations for Juju"; echo
+  just --justfile {{justfile()}} --list
+
+[private, group('cleanup')]
+_destroy-models models:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  
+  controller=$(juju whoami --format json | jq -r '.controller')
+  
+  IFS=' ' read -ra input_models <<< "{{models}}"
+  
+  # Filter out "controller" model
+  model_array=()
+  for model in "${input_models[@]}"; do
+    if [[ "$model" != "controller" ]]; then
+      model_array+=("$model")
+    fi
+  done
+  
+  if [[ ${#model_array[@]} -eq 0 ]]; then
+    echo "No models to remove."
+    exit 0
+  fi
+  
+  echo "Controller: $controller"
+  echo -e "\nModels to remove (${#model_array[@]}):"
+  printf '  - %s\n' "${model_array[@]}"
+  
+  echo -e "\nOptions:"
+  echo "  [a] Remove all"
+  echo "  [o] One by one"
+  echo "  [c] Cancel"
+  read -rp "Choice: " choice
+  
+  case "$choice" in
+    a|A)
+      for model in "${model_array[@]}"; do
+        echo "Destroying $controller:$model..."
+        juju destroy-model --no-prompt --force --destroy-storage "$controller:$model"
+      done
+      echo "Done."
+      ;;
+    o|O)
+      for model in "${model_array[@]}"; do
+        read -rp "Destroy $model? [y/N] " confirm
+        if [[ "$confirm" =~ ^[yY]$ ]]; then
+          echo "Destroying $controller:$model..."
+          juju destroy-model --no-prompt --force --destroy-storage "$controller:$model"
+        else
+          echo "Skipped $model"
+        fi
+      done
+      echo "Done."
+      ;;
+    *)
+      echo "Cancelled."
+      exit 0
+      ;;
+  esac
+
+[group('cleanup'), doc('Cleanup all jubilant-* and test-* models')]
+remove-test-models:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  models=$(juju models --format json | jq -r '.models[].["short-name"] | select(startswith("jubilant-") or startswith("test-"))' | tr '\n' ' ')
+  if [[ -z "$models" ]]; then
+    echo "No jubilant-* or test-* models found."
+    exit 0
+  fi
+  just --justfile {{justfile()}} _destroy-models "$models"
+
+[group('cleanup'), doc('Cleanup all models in the current controller')]
+remove-all-models:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  models=$(juju models --format json | jq -r '.models[].["short-name"] | select(. != "controller")' | tr '\n' ' ')
+  if [[ -z "$models" ]]; then
+    echo "No models found."
+    exit 0
+  fi
+  just --justfile {{justfile()}} _destroy-models "$models"
+
+[group('navigation'), doc('Switch to the most recently created model')]
+switch-latest:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  
+  # Parse relative time strings to seconds ago
+  parse_since() {
+    local since="$1"
+    case "$since" in
+      "just now"|"now") echo 0 ;;
+      *" second ago"|*" seconds ago") echo "${since%% *}" ;;
+      *" minute ago"|*" minutes ago") echo $(( ${since%% *} * 60 )) ;;
+      *" hour ago"|*" hours ago") echo $(( ${since%% *} * 3600 )) ;;
+      *" day ago"|*" days ago") echo $(( ${since%% *} * 86400 )) ;;
+      *" week ago"|*" weeks ago") echo $(( ${since%% *} * 604800 )) ;;
+      *" month ago"|*" months ago") echo $(( ${since%% *} * 2592000 )) ;;
+      *" year ago"|*" years ago") echo $(( ${since%% *} * 31536000 )) ;;
+      # ISO date like "2026-05-20" - calculate days from now
+      [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])
+        local then=$(date -d "$since" +%s 2>/dev/null || echo 0)
+        local now=$(date +%s)
+        echo $(( now - then ))
+        ;;
+      *) echo 999999999 ;;  # Unknown format, treat as very old
+    esac
+  }
+  export -f parse_since
+  
+  latest=$(juju models --format json | jq -r '
+    .models[]
+    | select(.["short-name"] | startswith("controller") | not)
+    | "\(.status.since)\t\(.["short-name"])"
+  ' | while IFS=$'\t' read -r since name; do
+    echo "$(parse_since "$since")"$'\t'"$name"
+  done | sort -n | head -1 | cut -f2)
+  
+  if [[ -z "$latest" ]]; then
+    echo "No models found."
+    exit 1
+  fi
+  echo "Switching to $latest"
+  juju switch "$latest"
